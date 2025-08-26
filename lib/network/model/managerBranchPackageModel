@@ -1,0 +1,188 @@
+class ManagerBranchPackageModel {
+  String? message;
+  List<Data>? data;
+
+  ManagerBranchPackageModel({this.message, this.data});
+
+  ManagerBranchPackageModel.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <Data>[];
+      json['data'].forEach((v) {
+        data!.add(new Data.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Data {
+  String? sId;
+  List<BranchId>? branchId;
+  String? packageName;
+  String? description;
+  String? startDate;
+  String? endDate;
+  int? status;
+  List<PackageDetails>? packageDetails;
+  int? packagePrice;
+  String? salonId;
+  List<Null>? usedServices;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
+
+  Data(
+      {this.sId,
+      this.branchId,
+      this.packageName,
+      this.description,
+      this.startDate,
+      this.endDate,
+      this.status,
+      this.packageDetails,
+      this.packagePrice,
+      this.salonId,
+      this.usedServices,
+      this.createdAt,
+      this.updatedAt,
+      this.iV});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    if (json['branch_id'] != null) {
+      branchId = <BranchId>[];
+      json['branch_id'].forEach((v) {
+        branchId!.add(new BranchId.fromJson(v));
+      });
+    }
+    packageName = json['package_name'];
+    description = json['description'];
+    startDate = json['start_date'];
+    endDate = json['end_date'];
+    status = json['status'];
+    if (json['package_details'] != null) {
+      packageDetails = <PackageDetails>[];
+      json['package_details'].forEach((v) {
+        packageDetails!.add(new PackageDetails.fromJson(v));
+      });
+    }
+    packagePrice = json['package_price'];
+    salonId = json['salon_id'];
+    if (json['used_services'] != null) {
+      usedServices = <Null>[];
+      json['used_services'].forEach((v) {
+        usedServices!.add(new Null.fromJson(v));
+      });
+    }
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    if (this.branchId != null) {
+      data['branch_id'] = this.branchId!.map((v) => v.toJson()).toList();
+    }
+    data['package_name'] = this.packageName;
+    data['description'] = this.description;
+    data['start_date'] = this.startDate;
+    data['end_date'] = this.endDate;
+    data['status'] = this.status;
+    if (this.packageDetails != null) {
+      data['package_details'] =
+          this.packageDetails!.map((v) => v.toJson()).toList();
+    }
+    data['package_price'] = this.packagePrice;
+    data['salon_id'] = this.salonId;
+    if (this.usedServices != null) {
+      data['used_services'] =
+          this.usedServices!.map((v) => v.toJson()).toList();
+    }
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
+    return data;
+  }
+}
+
+class BranchId {
+  String? sId;
+  String? name;
+
+  BranchId({this.sId, this.name});
+
+  BranchId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    return data;
+  }
+}
+
+class PackageDetails {
+  ServiceId? serviceId;
+  int? discountedPrice;
+  int? quantity;
+  String? sId;
+
+  PackageDetails(
+      {this.serviceId, this.discountedPrice, this.quantity, this.sId});
+
+  PackageDetails.fromJson(Map<String, dynamic> json) {
+    serviceId = json['service_id'] != null
+        ? new ServiceId.fromJson(json['service_id'])
+        : null;
+    discountedPrice = json['discounted_price'];
+    quantity = json['quantity'];
+    sId = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.serviceId != null) {
+      data['service_id'] = this.serviceId!.toJson();
+    }
+    data['discounted_price'] = this.discountedPrice;
+    data['quantity'] = this.quantity;
+    data['_id'] = this.sId;
+    return data;
+  }
+}
+
+class ServiceId {
+  String? sId;
+  String? name;
+  int? regularPrice;
+
+  ServiceId({this.sId, this.name, this.regularPrice});
+
+  ServiceId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+    regularPrice = json['regular_price'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    data['regular_price'] = this.regularPrice;
+    return data;
+  }
+}
