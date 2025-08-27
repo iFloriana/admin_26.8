@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/manager_ui/drawer/drawercontroller.dart';
 import 'package:flutter_template/route/app_route.dart';
+import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import '../../network/network_const.dart';
 import '../../utils/custom_text_styles.dart';
 
 class ManagerDrawerScreen extends StatelessWidget {
@@ -133,20 +135,11 @@ class ManagerDrawerScreen extends StatelessWidget {
               onTap: () => Get.toNamed(Routes.Managerprofilescreen),
               child: CircleAvatar(
                 radius: 25,
-                backgroundColor: secondaryColor, // optional for contrast
-                child: Obx(() {
-                  final name = getController.fullname.value;
-                  final firstLetter =
-                      name.isNotEmpty ? name[0].toUpperCase() : '?';
-                  return Text(
-                    firstLetter,
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      color: white, // match your theme
-                    ),
-                  );
-                }),
+                backgroundImage: getController.image.value == ''
+                    ? const AssetImage(AppImages.placeholder) as ImageProvider
+                    : NetworkImage(
+                        '${Apis.pdfUrl}${getController.image.value}?v=${DateTime.now().millisecondsSinceEpoch}',
+                      ),
               ),
             ),
             accountName: Obx(() => CustomTextWidget(

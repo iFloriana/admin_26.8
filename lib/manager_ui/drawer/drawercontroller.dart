@@ -5,6 +5,7 @@ class managerDrawerController extends GetxController {
   var selectedPage = 0.obs;
   var fullname = ''.obs;
   var email = ''.obs;
+  var image = ''.obs;
   var appBarTitle = 'Dashboard'.obs;
 
   void selectPage(int page) {
@@ -15,6 +16,7 @@ class managerDrawerController extends GetxController {
   void onInit() {
     super.onInit();
     getUserDetails();
+    print("========> u r here");
   }
 
   Future<void> onLogoutPress() async {
@@ -25,5 +27,6 @@ class managerDrawerController extends GetxController {
     final manager = await prefs.getManagerUser();
     fullname.value = manager!.manager!.fullName.toString();
     email.value = manager.manager!.email.toString();
+    image.value = manager.manager!.imageUrl.toString();
   }
 }
