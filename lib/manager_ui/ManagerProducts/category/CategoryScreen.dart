@@ -17,7 +17,7 @@ import '../../../../network/model/category_model.dart' as model;
 
 class ManagerCategoryscreen extends StatelessWidget {
   ManagerCategoryscreen({super.key});
-  final getController = Get.put( ManagerCategorycontroller ());
+  final getController = Get.put(ManagerCategorycontroller());
   bool _isAllowedImageExtension(String path) {
     final ext = path.toLowerCase();
     return ext.endsWith('.jpg') ||
@@ -31,7 +31,7 @@ class ManagerCategoryscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Product Categories',
       ),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: RefreshIndicator(
           color: primaryColor,
           onRefresh: () async {
@@ -230,7 +230,7 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -315,7 +315,7 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

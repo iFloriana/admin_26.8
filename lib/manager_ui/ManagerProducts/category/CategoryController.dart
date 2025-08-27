@@ -33,7 +33,7 @@ class ManagerCategorycontroller extends GetxController {
 
     getCategories();
     getBrand();
-    getBranches();
+    // getBranches();
   }
 
   Future<void> getCategories() async {
@@ -41,7 +41,8 @@ class ManagerCategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getAllCategory}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/productCategories/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser.manager?.branchId?.sId}',
+        // '${Apis.baseUrl}${Endpoints.getAllCategory}${loginUser!.manager?.salonId}',
         (json) {
           final response = model.CategoryResponse.fromJson(json);
           categories.value = response.data;
@@ -62,7 +63,8 @@ class ManagerCategorycontroller extends GetxController {
         '${Apis.baseUrl}${Endpoints.getBrandName}${loginUser!.manager?.salonId}',
         (json) => json,
       );
-
+      print(
+          '==> Brand Response: ${Apis.baseUrl}${Endpoints.getBrandName}${loginUser!.manager?.salonId}');
       final data = response['data'] as List;
       brandList.value = data.map((e) => model.Brand.fromJson(e)).toList();
     } catch (e) {
@@ -70,29 +72,24 @@ class ManagerCategorycontroller extends GetxController {
     }
   }
 
-  Future<void> getBranches() async {
-    final loginUser = await prefs.getManagerUser();
-    try {
-      final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.manager?.salonId}',
-        (json) => json,
-      );
+  // Future<void> getBranches() async {
+  //   final loginUser = await prefs.getManagerUser();
+  //   try {
+  //     final response = await dioClient.getData(
+  //       '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.manager?.salonId}',
+  //       (json) => json,
+  //     );
 
-      final data = response['data'] as List;
-      branchList.value = data.map((e) => model.Branch.fromJson(e)).toList();
-    } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
-    }
-  }
+  //     final data = response['data'] as List;
+  //     branchList.value = data.map((e) => model.Branch.fromJson(e)).toList();
+  //   } catch (e) {
+  //     CustomSnackbar.showError('Error', 'Failed to get data: $e');
+  //   }
+  // }
 
   Future onAddSubCategory() async {
     if (nameController.text.isEmpty) {
       CustomSnackbar.showError('Error', 'Please enter subcategory name');
-      return;
-    }
-
-    if (selectedBranches.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select at least one branch');
       return;
     }
 
@@ -104,7 +101,7 @@ class ManagerCategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': loginUser!.manager?.branchId?.sId,
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
       'brand_id': selectedBrand.map((brand) => brand.id).toList(),

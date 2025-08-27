@@ -98,22 +98,22 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _addressController.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
-    _countryController.dispose();
-    _postalCodeController.dispose();
-    _contactNumberController.dispose();
-    _contactEmailController.dispose();
-    _descriptionController.dispose();
-    _landmarkController.dispose();
-    // _latitudeController.dispose();
-    // _longitudeController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _nameController.dispose();
+  //   _addressController.dispose();
+  //   _cityController.dispose();
+  //   _stateController.dispose();
+  //   _countryController.dispose();
+  //   _postalCodeController.dispose();
+  //   _contactNumberController.dispose();
+  //   _contactEmailController.dispose();
+  //   _descriptionController.dispose();
+  //   _landmarkController.dispose();
+  //   // _latitudeController.dispose();
+  //   // _longitudeController.dispose();
+  //   super.dispose();
+  // }
 
   void _updateBranch() {
     if (_formKey.currentState!.validate()) {

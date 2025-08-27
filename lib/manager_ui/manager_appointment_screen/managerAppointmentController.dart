@@ -131,7 +131,8 @@ class Managerappointmentcontroller extends GetxController {
       // final loginUser = await prefs.getUser();
       final manager = await prefs.getManagerUser();
       var response = await dioClient.getData(
-        '${Apis.baseUrl}/staffs?salon_id=${manager!.manager!.salonId}',
+        // '${Apis.baseUrl}/staffs?salon_id=${manager!.manager!.salonId}',
+        '${Apis.baseUrl}/staffs/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
         (json) => json,
       );
       final staffData = response['data'] as List;

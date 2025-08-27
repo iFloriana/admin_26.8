@@ -106,7 +106,7 @@ class ManagerUnitscontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getUnits}${loginUser!.manager?.salonId}',
+        "${Apis.baseUrl}/units/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}",
         (json) => json,
       );
       final data = response['data'] as List;

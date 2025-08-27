@@ -22,12 +22,6 @@ class Getbranchescontroller extends GetxController {
   final paymentMethodController = MultiSelectController<String>();
   final serviceController = MultiSelectController<Service>();
 
-  @override
-  void onClose() {
-    paymentMethodController.dispose();
-    serviceController.dispose();
-    super.onClose();
-  }
 
   @override
   void onInit() {

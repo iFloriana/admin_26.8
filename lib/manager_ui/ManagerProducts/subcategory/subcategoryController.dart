@@ -94,7 +94,7 @@ class ManagerSubcategorycontroller extends GetxController {
     try {
       isLoading.value = true;
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getProductSubCategories}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/productSubCategories/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
         (json) => json,
       );
 
@@ -153,10 +153,10 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBrandName}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/brands/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
         (json) => json,
       );
-
+// /in-house-product/by-branch?salon_id=${salonId}&branch_id=${branchId}
       final data = response['data'] as List;
       brandList.value = data.map((e) => Subcategorys.fromJson(e)).toList();
     } catch (e) {
@@ -168,7 +168,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getproductName}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/productCategories/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
         (json) => json,
       );
 
@@ -209,7 +209,8 @@ class ManagerSubcategorycontroller extends GetxController {
       final file = File(pickedFile.path);
       final mimeType = _getMimeType(pickedFile.path);
       if (mimeType == null) {
-        CustomSnackbar.showError('Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
+        CustomSnackbar.showError(
+            'Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
         return;
       }
       if (await file.length() < maxSizeInBytes) {
@@ -221,7 +222,6 @@ class ManagerSubcategorycontroller extends GetxController {
   }
 
   Future onAddSubCategory() async {
-  
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
@@ -237,7 +237,8 @@ class ManagerSubcategorycontroller extends GetxController {
       if (singleImage.value != null) {
         final mimeType = _getMimeType(singleImage.value!.path);
         if (mimeType == null) {
-          CustomSnackbar.showError('Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
+          CustomSnackbar.showError(
+              'Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
           return;
         }
         final mimeParts = mimeType.split('/');
@@ -252,7 +253,8 @@ class ManagerSubcategorycontroller extends GetxController {
         await dioClient.dio.post(
           '${Apis.baseUrl}${Endpoints.productSubcategory}',
           data: formData,
-          options: dio.Options(headers: {'Content-Type': 'multipart/form-data'}),
+          options:
+              dio.Options(headers: {'Content-Type': 'multipart/form-data'}),
         );
       } else {
         await dioClient.postData(
@@ -261,11 +263,10 @@ class ManagerSubcategorycontroller extends GetxController {
           (json) => json,
         );
       }
-      // Get.back(); 
+      // Get.back();
       getSubCategories();
-      resetForm(); 
-       CustomSnackbar.showSuccess(
-          'Success', 'SubCategory Added Successfully'); 
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
@@ -287,7 +288,8 @@ class ManagerSubcategorycontroller extends GetxController {
       if (singleImage.value != null) {
         final mimeType = _getMimeType(singleImage.value!.path);
         if (mimeType == null) {
-          CustomSnackbar.showError('Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
+          CustomSnackbar.showError(
+              'Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
           return;
         }
         final mimeParts = mimeType.split('/');
@@ -302,7 +304,8 @@ class ManagerSubcategorycontroller extends GetxController {
         await dioClient.dio.put(
           '${Apis.baseUrl}${Endpoints.productSubcategory}/$subCategoryId?salon_id=${loginUser!.manager?.salonId}',
           data: formData,
-          options: dio.Options(headers: {'Content-Type': 'multipart/form-data'}),
+          options:
+              dio.Options(headers: {'Content-Type': 'multipart/form-data'}),
         );
       } else {
         await dioClient.putData(

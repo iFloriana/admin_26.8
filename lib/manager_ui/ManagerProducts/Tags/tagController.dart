@@ -114,7 +114,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getTags}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/tags/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
         (json) => json,
       );
       final data = response['data'] as List;

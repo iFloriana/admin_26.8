@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/manager_ui/manager_appointment_screen/getappointmentManagerController.dart';
 import 'package:flutter_template/manager_ui/manager_appointment_screen/managerAppointmentSScreen.dart';
+import 'package:flutter_template/manager_ui/manager_appointment_screen/managerpayment_sheet.dart';
 
 import 'package:flutter_template/ui/drawer/appointment/payment_sheet.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -343,7 +344,7 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                                         : 0.0,
                                     tip: 0.0,
                                   );
-                                  Get.to(() => PaymentSummaryScreen(a: a));
+                                  Get.to(() => ManagerPaymentSummaryScreen(a: a));
                                 }
                               : null,
                           child: Chip(

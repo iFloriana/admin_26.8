@@ -311,7 +311,6 @@ class Getappointmentmanagercontroller extends GetxController {
     final manager = await prefs.getManagerUser();
     isLoading.value = true;
     try {
-
       final response = await dioClient.getData(
         '${Apis.baseUrl}/appointments/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
         (json) => json,
@@ -334,11 +333,11 @@ class Getappointmentmanagercontroller extends GetxController {
 
   Future<void> getTax() async {
     //  final manager = await prefs.getManagerUser();
-      final manager = await prefs.getManagerUser();
+    final manager = await prefs.getManagerUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getTex}${manager?.manager?.salonId}',
+        '${Apis.baseUrl}/taxes/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
         (json) => json,
       );
       if (response != null && response['data'] != null) {
@@ -353,11 +352,11 @@ class Getappointmentmanagercontroller extends GetxController {
   }
 
   Future<void> getCoupons() async {
-     final manager = await prefs.getManagerUser();
+    final manager = await prefs.getManagerUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getCoupons}${manager?.manager?.salonId}',
+        '${Apis.baseUrl}/coupons/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
         (json) => json,
       );
       if (response != null && response['data'] != null) {
@@ -438,7 +437,7 @@ class Getappointmentmanagercontroller extends GetxController {
   // Get payment data by appointment ID and open PDF
   Future<void> openAppointmentPdf(String appointmentId) async {
     try {
-       final manager = await prefs.getManagerUser();
+      final manager = await prefs.getManagerUser();
       final response = await dioClient.getData(
         '${Apis.baseUrl}/payments?salon_id=${manager?.manager?.salonId}',
         (json) => json,
