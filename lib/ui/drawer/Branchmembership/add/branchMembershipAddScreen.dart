@@ -78,7 +78,7 @@ class Branchmembershipaddscreen extends StatelessWidget {
               ? null
               : getController.selected_Subscription_plan.value,
           items: getController.Subscription_plan_option,
-          hintText: 'Subscription Plan',
+          // hintText: 'Subscription Plan',
           labelText: 'Subscription Plan',
           onChanged: (newValue) {
             if (newValue != null) {
@@ -94,7 +94,7 @@ class Branchmembershipaddscreen extends StatelessWidget {
               ? null
               : getController.selected_discountType.value,
           items: getController.discountType_option,
-          hintText: 'Discount Type',
+          // hintText: 'Discount Type',
           labelText: 'Discount Type',
           onChanged: (newValue) {
             if (newValue != null) {

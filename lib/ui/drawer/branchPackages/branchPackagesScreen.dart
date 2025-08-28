@@ -101,7 +101,8 @@ class DynamicInputScreen extends StatelessWidget {
                                 },
                                 decoration: InputDecoration(
                                   labelText: "Select Service",
-                                  labelStyle: TextStyle(color: grey),
+                                 labelStyle: CustomTextStyles.textFontMedium(
+                                      size: 14.sp, color: grey),
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8.0)),
@@ -238,7 +239,7 @@ class DynamicInputScreen extends StatelessWidget {
         value: controller.selectedBranch.value,
         decoration: InputDecoration(
           labelText: "Select Branch",
-          labelStyle: TextStyle(color: grey),
+        labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),

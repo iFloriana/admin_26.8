@@ -424,7 +424,7 @@ class EditCustomerScreen extends StatelessWidget {
               ? (customer.gender.isNotEmpty ? customer.gender : 'Male')
               : customerController.selectedGender.value,
           items: customerController.genderOptions,
-          hintText: 'Gender',
+          // hintText: 'Gender',
           labelText: 'Gender',
           onChanged: (newValue) {
             if (newValue != null) {

@@ -205,7 +205,7 @@ class Managerscreen extends StatelessWidget {
               ? null
               : getController.selectedGender.value,
           items: getController.dropdownItems,
-          hintText: 'Gender',
+          // hintText: 'Gender',
           labelText: 'Gender',
           onChanged: (newValue) {
             if (newValue != null) {
@@ -300,7 +300,8 @@ class Managerscreen extends StatelessWidget {
           value: getController.selectedBranch.value,
           decoration: InputDecoration(
             labelText: 'Branch *',
-            labelStyle: CustomTextStyles.textFontMedium(size: 14, color: grey),
+         labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),

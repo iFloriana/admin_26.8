@@ -99,7 +99,7 @@ class AddManagerPackagescreen extends StatelessWidget {
                                 },
                                 decoration: InputDecoration(
                                   labelText: "Select Service",
-                                  labelStyle: TextStyle(color: grey),
+                                  labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8.0)),
@@ -122,7 +122,7 @@ class AddManagerPackagescreen extends StatelessWidget {
                                       controller:
                                           data.discountedPriceController,
                                       labelText: 'Discounted Price',
-                                      hintText: 'Enter Discounted Price',
+                                      // hintText: 'Enter Discounted Price',
                                       keyboardType: TextInputType.number,
                                     ),
                                   ),
@@ -130,7 +130,7 @@ class AddManagerPackagescreen extends StatelessWidget {
                                     child: CustomTextFormField(
                                       controller: data.quantityController,
                                       labelText: 'Quantity',
-                                      hintText: 'Enter Quantity',
+                                      // hintText: 'Enter Quantity',
                                       keyboardType: TextInputType.number,
                                     ),
                                   ),

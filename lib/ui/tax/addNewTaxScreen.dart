@@ -174,7 +174,7 @@ class Addnewtaxscreen extends StatelessWidget {
               ? null
               : getController.selectedDropdownType.value,
           items: getController.dropdownType,
-          hintText: 'Select Type',
+          // hintText: 'Select Type',
           labelText: 'Type',
           onChanged: (newValue) {
             if (newValue != null) {
@@ -190,7 +190,7 @@ class Addnewtaxscreen extends StatelessWidget {
               ? null
               : getController.selectedDropdownModule.value,
           items: getController.dropdownModule,
-          hintText: 'Select Module',
+          // hintText: 'Select Module',
           labelText: 'Module',
           onChanged: (newValue) {
             if (newValue != null) {

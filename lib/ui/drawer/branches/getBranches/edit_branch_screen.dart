@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import '../../../../network/model/branch_model.dart';
 import '../../../../wiget/Custome_button.dart';
@@ -161,7 +162,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
           lower.endsWith('.jpeg') ||
           lower.endsWith('.png');
       if (!isAllowed) {
-        Get.snackbar(
+        CustomSnackbar.showError(
             'Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
         return;
       }
@@ -172,7 +173,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
           });
         }
       } else {
-        Get.snackbar('Error', 'Image size must be less than 150KB');
+        CustomSnackbar.showError('Error', 'Image size must be less than 150KB');
       }
     }
   }

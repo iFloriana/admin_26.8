@@ -8,22 +8,23 @@ import '../utils/custom_text_styles.dart';
 class CustomDropdown<T> extends StatelessWidget {
   final T? value;
   final List<T> items;
-  final String? hintText;
+  // final String? hintText;
   final String? labelText;
   final IconData? prefixIcon;
   final Function(T?) onChanged;
   final FormFieldValidator<T>? validator;
   final String Function(T)? itemToString;
-  final String Function(T)?
-      getId; // optional identifier extractor to normalize value
-  final TextStyle labelStyle = CustomTextStyles.textFontMedium(size: 14.sp);
+  final String Function(T)? getId;
+  final TextStyle labelStyle = CustomTextStyles.textFontMedium(
+    size: 14.sp,
+  );
 
   CustomDropdown({
     Key? key,
     required this.value,
     required this.items,
     required this.onChanged,
-    this.hintText,
+    // this.hintText,
     this.labelText,
     this.prefixIcon,
     this.validator,
@@ -38,7 +39,7 @@ class CustomDropdown<T> extends StatelessWidget {
       value: normalizedValue,
       validator: validator,
       decoration: InputDecoration(
-        hintText: items.isEmpty ? 'No items available' : hintText,
+        // hintText: items.isEmpty ? 'No items available' : hintText,
         labelText: labelText,
         labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,

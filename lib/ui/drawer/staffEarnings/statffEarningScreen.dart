@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 
+import '../../../utils/custom_text_styles.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/loading.dart';
@@ -248,7 +249,8 @@ class Statffearningscreen extends StatelessWidget {
                     onChanged: (v) => paymentMethod.value = v ?? '',
                     decoration: InputDecoration(
                       labelText: 'Select Method *',
-                      labelStyle: TextStyle(color: grey),
+                  labelStyle: CustomTextStyles.textFontMedium(
+                          size: 14.sp, color: grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),

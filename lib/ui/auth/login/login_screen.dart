@@ -57,7 +57,6 @@ class LoginScreen extends StatelessWidget {
               ? null
               : getController.selectedRole.value,
           items: getController.dropdownItems,
-          hintText: 'Role',
           labelText: 'Role',
           onChanged: (newValue) {
             if (newValue != null) {

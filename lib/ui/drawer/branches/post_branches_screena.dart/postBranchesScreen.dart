@@ -181,7 +181,7 @@ class Postbranchesscreen extends StatelessWidget {
               ? null
               : getController.selectedCategory.value,
           items: getController.dropdownItemSelectedCategory,
-          hintText: 'Category',
+          // hintText: 'Category',
           labelText: 'Category',
           onChanged: (newValue) {
             if (newValue != null) {

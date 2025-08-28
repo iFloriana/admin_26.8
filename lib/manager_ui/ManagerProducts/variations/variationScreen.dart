@@ -17,7 +17,7 @@ import '../../../../wiget/loading.dart';
 
 class ManagerVariationscreen extends StatelessWidget {
   ManagerVariationscreen({super.key});
-  final  getController = Get.put(ManagerVariationcontroller());
+  final getController = Get.put(ManagerVariationcontroller());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,6 @@ class ManagerVariationscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Variations',
       ),
-
       drawer: ManagerDrawerScreen(),
       body: Padding(
         padding: EdgeInsets.all(10),
@@ -181,7 +180,6 @@ class ManagerVariationscreen extends StatelessWidget {
               ? null
               : getController.selectedType.value,
           items: getController.dropdownItemsType,
-          hintText: 'Type',
           labelText: 'Type',
           onChanged: (newValue) {
             if (newValue != null) {

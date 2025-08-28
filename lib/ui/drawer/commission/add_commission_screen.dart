@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:get/get.dart';
+import '../../../utils/custom_text_styles.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/custome_snackbar.dart';
 import '../../../wiget/loading.dart';
@@ -51,7 +52,8 @@ class AddCommissionScreen extends StatelessWidget {
                           value: controller.selectedBranch.value,
                           decoration: InputDecoration(
                             labelText: "Select Branch",
-                            labelStyle: TextStyle(color: grey),
+                            labelStyle: CustomTextStyles.textFontMedium(
+                                size: 14.sp, color: grey),
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
@@ -100,7 +102,8 @@ class AddCommissionScreen extends StatelessWidget {
                               controller.commissionType.value = val ?? '',
                           decoration: InputDecoration(
                             labelText: 'Commission Type *',
-                            labelStyle: TextStyle(color: grey),
+                            labelStyle: CustomTextStyles.textFontMedium(
+                                size: 14.sp, color: grey),
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),

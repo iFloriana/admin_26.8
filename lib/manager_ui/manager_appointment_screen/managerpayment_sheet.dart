@@ -4,15 +4,18 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
-
+import '../../utils/custom_text_styles.dart';
+import '../../wiget/custome_text.dart';
 
 class ManagerPaymentSummaryScreen extends StatefulWidget {
   final dynamic a; // pass appointment object
 
-  const ManagerPaymentSummaryScreen({Key? key, required this.a}) : super(key: key);
+  const ManagerPaymentSummaryScreen({Key? key, required this.a})
+      : super(key: key);
 
   @override
-  State<ManagerPaymentSummaryScreen> createState() => _PaymentSummaryScreenState();
+  State<ManagerPaymentSummaryScreen> createState() =>
+      _PaymentSummaryScreenState();
 }
 
 class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
@@ -108,7 +111,10 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                   Expanded(
                     child: DropdownButtonFormField(
                       value: state.selectedTax.value, // null => blank
-                      hint: const Text("Select Tax"),
+                      hint: CustomTextWidget(
+                          text: "Select Tax",
+                          textStyle: CustomTextStyles.textFontMedium(
+                              size: 14.sp, color: grey)),
                       items: controller.taxes
                           .map((tax) => DropdownMenuItem(
                                 value: tax,
@@ -135,7 +141,10 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                       value: state.paymentMethod.value.isEmpty
                           ? null
                           : state.paymentMethod.value, // null => blank
-                      hint: const Text("Select Payment Method"),
+                      hint: CustomTextWidget(
+                          text: "Select Payment Method",
+                          textStyle: CustomTextStyles.textFontMedium(
+                              size: 14.sp, color: grey)),
                       items: ["UPI", "Cash", "Card"]
                           .map(
                               (m) => DropdownMenuItem(value: m, child: Text(m)))
@@ -195,7 +204,11 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                         value: state.discountType.value.isEmpty
                             ? null
                             : state.discountType.value, // null => blank
-                        hint: const Text("Select Discount Type"),
+                        hint: CustomTextWidget(
+                            text: "Select Discount Type",
+                            textStyle: CustomTextStyles.textFontMedium(
+                                size: 14.sp, color: grey)
+                        ),
                         items: const [
                           DropdownMenuItem(
                               value: "percentage", child: Text("Percentage")),

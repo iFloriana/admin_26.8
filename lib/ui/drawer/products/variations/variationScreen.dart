@@ -179,7 +179,7 @@ class Variationscreen extends StatelessWidget {
               ? null
               : getController.selectedType.value,
           items: getController.dropdownItemsType,
-          hintText: 'Type',
+          // hintText: 'Type',
           labelText: 'Type',
           onChanged: (newValue) {
             if (newValue != null) {

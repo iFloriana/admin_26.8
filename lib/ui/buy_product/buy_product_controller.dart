@@ -209,11 +209,9 @@ class BuyProductController extends GetxController {
               selectedVariant.value = null;
             }
           }
-          Get.snackbar(
+          CustomSnackbar.showSuccess(
             'Success',
             'Found ${filteredProducts.length} product(s) with barcode: $scannedSku',
-            backgroundColor: Theme.of(Get.context!).colorScheme.primary,
-            colorText: Theme.of(Get.context!).colorScheme.onPrimary,
           );
         } else {
           CustomSnackbar.showError(

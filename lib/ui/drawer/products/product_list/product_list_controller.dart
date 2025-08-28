@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 
 import 'package:barcode_scan2/barcode_scan2.dart';
@@ -83,10 +84,10 @@ class ProductListController extends GetxController {
       }
 
       Get.back(); // Close bottom sheet
-      Get.snackbar('Success', 'Stock updated successfully');
+      CustomSnackbar.showSuccess('Success', 'Stock updated successfully');
       fetchProducts(); // Refresh the list
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update stock: $e');
+      CustomSnackbar.showError('Error', 'Failed to update stock: $e');
     } finally {
       isLoading(false);
     }
@@ -102,10 +103,10 @@ class ProductListController extends GetxController {
         (json) => json,
       );
 
-      Get.snackbar('Success', 'Product deleted successfully');
+      CustomSnackbar.showSuccess('Success', 'Product deleted successfully');
       fetchProducts(); // Refresh the list
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete product: $e');
+      CustomSnackbar.showError('Error', 'Failed to delete product: $e');
     } finally {
       isLoading(false);
     }

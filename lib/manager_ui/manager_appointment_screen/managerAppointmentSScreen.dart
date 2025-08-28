@@ -555,7 +555,7 @@ class Managerappointmentsscreen extends StatelessWidget {
                   ? null
                   : getController.selectedGender.value,
               items: getController.genderOptions,
-              hintText: 'Gender',
+              // hintText: 'Gender',
               labelText: 'Gender',
               onChanged: (newValue) {
                 if (newValue != null) {

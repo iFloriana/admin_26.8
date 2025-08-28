@@ -228,8 +228,10 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildBranchDropdown() {
     return Obx(() => DropdownButtonFormField<Branch>(
           value: controller.selectedBranch.value,
-          decoration: const InputDecoration(
-              labelText: 'Branch *', border: OutlineInputBorder()),
+          decoration:  InputDecoration(
+              labelText: 'Branch *', 
+               labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey)
+              ,border: OutlineInputBorder()),
           items: controller.branchList
               .map((item) =>
                   DropdownMenuItem(value: item, child: Text(item.name ?? '')))

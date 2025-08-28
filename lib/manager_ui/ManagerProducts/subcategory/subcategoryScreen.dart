@@ -25,7 +25,7 @@ class ManagerSubcategoryscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Sub Categories',
       ),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Container(
           child: Obx(
         () => getController.isLoading.value
@@ -170,7 +170,7 @@ class ManagerSubcategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   caregoryDropdown(),
                   Obx(() => Row(
@@ -454,8 +454,11 @@ class ManagerSubcategoryscreen extends StatelessWidget {
         value: getController.selectedCategory.value,
         decoration: InputDecoration(
           labelText: "Select Category",
-          labelStyle: TextStyle(color: grey),
-          border: OutlineInputBorder(),
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(

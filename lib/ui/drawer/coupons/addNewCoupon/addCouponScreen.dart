@@ -194,7 +194,7 @@ class AddCouponScreen extends StatelessWidget {
               ? null
               : getController.selectedCouponType.value,
           items: getController.dropdownCouponTypeItem,
-          hintText: 'Coupon type',
+          // hintText: 'Coupon type',
           labelText: 'Coupon type',
           onChanged: (newValue) {
             if (newValue != null) {
@@ -210,7 +210,7 @@ class AddCouponScreen extends StatelessWidget {
               ? null
               : getController.selectedDiscountType.value,
           items: getController.dropdownDiscountTypeItem,
-          hintText: 'Discount Type',
+          // hintText: 'Discount Type',
           labelText: 'Discount Type',
           onChanged: (newValue) {
             if (newValue != null) {

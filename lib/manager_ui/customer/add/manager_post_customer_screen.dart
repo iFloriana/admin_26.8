@@ -282,7 +282,7 @@ class ManagerPostCustomerScreen extends StatelessWidget {
               ? null
               : customerController.selectedGender.value,
           items: customerController.genderOptions,
-          hintText: 'Gender',
+          // hintText: 'Gender',
           labelText: 'Gender',
           onChanged: (newValue) {
             if (newValue != null) {

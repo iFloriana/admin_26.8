@@ -224,9 +224,10 @@ class AddProductScreen extends StatelessWidget {
   Widget _buildBrandDropdown(AddProductController controller) {
     return Obx(() => DropdownButtonFormField<Brand>(
           value: controller.selectedBrand.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Brand *',
-            labelStyle: TextStyle(color: grey),
+             labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -245,9 +246,10 @@ class AddProductScreen extends StatelessWidget {
   Widget _buildCategoryDropdown(AddProductController controller) {
     return Obx(() => DropdownButtonFormField<Category>(
           value: controller.selectedCategory.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Category *',
-            labelStyle: TextStyle(color: grey),
+           labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -266,9 +268,10 @@ class AddProductScreen extends StatelessWidget {
   Widget _buildTagDropdown(AddProductController controller) {
     return Obx(() => DropdownButtonFormField<Tag>(
           value: controller.selectedTag.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Tag *',
-            labelStyle: TextStyle(color: grey),
+            labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -287,9 +290,10 @@ class AddProductScreen extends StatelessWidget {
   Widget _buildUnitDropdown(AddProductController controller) {
     return Obx(() => DropdownButtonFormField<Unit>(
           value: controller.selectedUnit.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Unit *',
-            labelStyle: TextStyle(color: grey),
+             labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -485,9 +489,10 @@ class AddProductScreen extends StatelessWidget {
             flex: 2,
             child: Obx(() => DropdownButtonFormField<Variation>(
                   value: group.selectedType.value,
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     labelText: 'Variation Type',
-                    labelStyle: TextStyle(color: grey),
+                     labelStyle: CustomTextStyles.textFontMedium(
+                        size: 14.sp, color: grey),
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),

@@ -354,7 +354,8 @@ class AddNewService extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         labelText: "Select Category",
-                        labelStyle: TextStyle(color: grey),
+                         labelStyle: CustomTextStyles.textFontMedium(
+                            size: 14.sp, color: grey),
                       ),
                       value: getController.selectedCategory.value,
                       items: getController.categories.map((category) {

@@ -460,7 +460,7 @@ class Subcategoryscreen extends StatelessWidget {
         value: getController.selectedCategory.value,
         decoration: InputDecoration(
           labelText: "Select Category",
-          labelStyle: TextStyle(color: grey),
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
           border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/network/model/productSubCategory.dart';
 import 'package:get/get.dart';
@@ -225,7 +227,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': jsonEncode(loginUser?.manager?.branchId?.sId),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
       'product_category_id': selectedCategory.value!.id,
@@ -268,7 +270,6 @@ class ManagerSubcategorycontroller extends GetxController {
       resetForm();
       CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
     } catch (e) {
-      print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
     }
   }
@@ -277,7 +278,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': jsonEncode(loginUser?.manager?.branchId?.sId),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
       'product_category_id': selectedCategory.value!.id,

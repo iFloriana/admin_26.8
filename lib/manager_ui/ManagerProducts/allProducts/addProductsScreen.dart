@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/manager_ui/ManagerProducts/allProducts/addProductsController.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -13,8 +14,8 @@ import '../../../../wiget/custome_text.dart';
 import '../../../../utils/custom_text_styles.dart';
 
 class ManagerAddProductScreen extends StatelessWidget {
- ManagerAddProductScreen({super.key});
-    final controller = Get.put(ManagerAddProductController());
+  ManagerAddProductScreen({super.key});
+  final controller = Get.put(ManagerAddProductController());
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -24,6 +25,7 @@ class ManagerAddProductScreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: isEditMode ? 'Update Product' : 'Add Product',
       ),
+      drawer: ManagerDrawerScreen(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -71,7 +73,7 @@ class ManagerAddProductScreen extends StatelessWidget {
               // Removed _buildDiscountSection(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Status'),
-              _buildBranchDropdown(controller),
+              // _buildBranchDropdown(controller),
               _buildStatusSelector(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Branch *'),
@@ -223,9 +225,9 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildBrandDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Brand>(
           value: controller.selectedBrand.value,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Brand *',
-            labelStyle: TextStyle(color: grey),
+        labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -244,9 +246,10 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildCategoryDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Category>(
           value: controller.selectedCategory.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Category *',
-            labelStyle: TextStyle(color: grey),
+            labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -265,9 +268,10 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildTagDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Tag>(
           value: controller.selectedTag.value,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Tag *',
-            labelStyle: TextStyle(color: grey),
+            labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -286,9 +290,10 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildUnitDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Unit>(
           value: controller.selectedUnit.value,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Unit *',
-            labelStyle: TextStyle(color: grey),
+            labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -484,9 +489,10 @@ class ManagerAddProductScreen extends StatelessWidget {
             flex: 2,
             child: Obx(() => DropdownButtonFormField<Variation>(
                   value: group.selectedType.value,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Variation Type',
-                    labelStyle: TextStyle(color: grey),
+                    labelStyle: CustomTextStyles.textFontMedium(
+                        size: 14.sp, color: grey),
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),

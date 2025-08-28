@@ -15,6 +15,7 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/network/network_const.dart';
 
+import '../../../utils/custom_text_styles.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 
 class Addnewstaffscreen extends StatelessWidget {
@@ -412,7 +413,7 @@ class Addnewstaffscreen extends StatelessWidget {
               ? null
               : getController.selectedGender.value,
           items: getController.dropdownItems,
-          hintText: 'Gender',
+          // hintText: 'Gender',
           labelText: 'Gender',
           onChanged: (newValue) {
             if (newValue != null) {
@@ -546,6 +547,7 @@ class Addnewstaffscreen extends StatelessWidget {
         value: getController.selectedBranch.value,
         decoration: InputDecoration(
           labelText: "Select Branch",
+           labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Colors.grey),
@@ -583,6 +585,7 @@ class Addnewstaffscreen extends StatelessWidget {
         value: getController.selectedCommitionId.value,
         decoration: InputDecoration(
           labelText: "Select Commision",
+           labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
           border: OutlineInputBorder(),
         ),
         items: getController.commitionList.map((Commition commition) {
