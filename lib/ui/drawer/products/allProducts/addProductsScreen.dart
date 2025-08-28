@@ -228,10 +228,26 @@ class AddProductScreen extends StatelessWidget {
             labelText: 'Brand *',
              labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.brandList
@@ -250,10 +266,26 @@ class AddProductScreen extends StatelessWidget {
             labelText: 'Category *',
            labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.categoryList
@@ -272,10 +304,26 @@ class AddProductScreen extends StatelessWidget {
             labelText: 'Tag *',
             labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.tagList
@@ -294,10 +342,26 @@ class AddProductScreen extends StatelessWidget {
             labelText: 'Unit *',
              labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.unitList
@@ -493,10 +557,26 @@ class AddProductScreen extends StatelessWidget {
                     labelText: 'Variation Type',
                      labelStyle: CustomTextStyles.textFontMedium(
                         size: 14.sp, color: grey),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: primaryColor, width: 2.0),
+                      borderSide: BorderSide(
+                        color: grey,
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: red,
+                        width: 1.0,
+                      ),
                     ),
                   ),
                   items: controller.variationList

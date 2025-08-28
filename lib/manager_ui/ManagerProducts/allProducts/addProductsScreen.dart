@@ -227,11 +227,28 @@ class ManagerAddProductScreen extends StatelessWidget {
           value: controller.selectedBrand.value,
           decoration: InputDecoration(
             labelText: 'Brand *',
-        labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            labelStyle:
+                CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.brandList
@@ -246,14 +263,30 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildCategoryDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Category>(
           value: controller.selectedCategory.value,
-          decoration:  InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Category *',
             labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.categoryList
@@ -268,14 +301,30 @@ class ManagerAddProductScreen extends StatelessWidget {
   Widget _buildTagDropdown(ManagerAddProductController controller) {
     return Obx(() => DropdownButtonFormField<Tag>(
           value: controller.selectedTag.value,
-          decoration:  InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Tag *',
             labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.tagList
@@ -294,10 +343,26 @@ class ManagerAddProductScreen extends StatelessWidget {
             labelText: 'Unit *',
             labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              borderSide: BorderSide(color: primaryColor, width: 2.0),
+              borderSide: BorderSide(
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           items: controller.unitList
@@ -493,10 +558,26 @@ class ManagerAddProductScreen extends StatelessWidget {
                     labelText: 'Variation Type',
                     labelStyle: CustomTextStyles.textFontMedium(
                         size: 14.sp, color: grey),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: primaryColor, width: 2.0),
+                      borderSide: BorderSide(
+                        color: grey,
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: red,
+                        width: 1.0,
+                      ),
                     ),
                   ),
                   items: controller.variationList

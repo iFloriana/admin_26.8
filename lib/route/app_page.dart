@@ -39,6 +39,7 @@ import '../manager_ui/dashboard/dashboardScreen.dart';
 import '../manager_ui/inhouse_manager/get/inhouseProduct_screen.dart';
 import '../manager_ui/manager_appointment_screen/getappointmentManagerScreen.dart';
 import '../manager_ui/manager_appointment_screen/managerAppointmentSScreen.dart';
+import '../manager_ui/manager_orders/order_report_screen.dart';
 import '../manager_ui/manager_packages/manager_packageScreen.dart';
 import '../manager_ui/manager_profile/managerProfilescreen.dart';
 import '../manager_ui/report/customer_membership/manager_customer_membership_report_screen.dart';
@@ -219,108 +220,82 @@ class AppPages {
         name: Routes.DailybookingScreen,
         page: () => DailybookingScreen(),
         transition: Transition.rightToLeft),
-          GetPage(
+    GetPage(
         name: Routes.OrderReportScreen,
         page: () => OrderReportScreen(),
         transition: Transition.rightToLeft),
-            GetPage(
+    GetPage(
         name: Routes.OverallBookingScreen,
         page: () => OverallBookingScreen(),
         transition: Transition.rightToLeft),
-
-            GetPage(
+    GetPage(
         name: Routes.Staffpayoutreportscreen,
         page: () => Staffpayoutreportscreen(),
         transition: Transition.rightToLeft),
-
-            GetPage(
+    GetPage(
         name: Routes.StaffServiceReportScreen,
         page: () => StaffServiceReportScreen(),
         transition: Transition.rightToLeft),
-
-        
-
-
-
-
-
     GetPage(
         name: Routes.ProductListScreen,
         page: () => ProductListScreen(),
         transition: Transition.rightToLeft),
-        
     GetPage(
         name: Routes.Getbrandsscreen,
         page: () => Getbrandsscreen(),
         transition: Transition.rightToLeft),
-        
-            GetPage(
+    GetPage(
         name: Routes.Categoryscreen,
         page: () => Categoryscreen(),
         transition: Transition.rightToLeft),
-        
-            GetPage(
+    GetPage(
         name: Routes.Subcategoryscreen,
         page: () => Subcategoryscreen(),
         transition: Transition.rightToLeft),
-        
-            GetPage(
+    GetPage(
         name: Routes.Unitsscreen,
         page: () => Unitsscreen(),
         transition: Transition.rightToLeft),
-        
-            GetPage(
+    GetPage(
         name: Routes.Tagsscreen,
         page: () => Tagsscreen(),
         transition: Transition.rightToLeft),
-        
-            GetPage(
+    GetPage(
         name: Routes.VariationGetscreen,
         page: () => VariationGetscreen(),
         transition: Transition.rightToLeft),
-        
     GetPage(
         name: Routes.InhouseproductScreen,
         page: () => InhouseproductScreen(),
         transition: Transition.rightToLeft),
-
-          GetPage(
+    GetPage(
         name: Routes.Statffearningscreen,
         page: () => Statffearningscreen(),
         transition: Transition.rightToLeft),
-
-            GetPage(
+    GetPage(
         name: Routes.CommissionListScreen,
         page: () => CommissionListScreen(),
         transition: Transition.rightToLeft),
-
-
-      GetPage(
+    GetPage(
         name: Routes.Adminprofilescreen,
         page: () => Adminprofilescreen(),
         transition: Transition.rightToLeft),
-
-          GetPage(
+    GetPage(
         name: Routes.Managerappointmentsscreen,
         page: () => Managerappointmentsscreen(),
         transition: Transition.rightToLeft),
-
-              GetPage(
+    GetPage(
         name: Routes.Getappointmentmanagerscreen,
         page: () => Getappointmentmanagerscreen(),
         transition: Transition.rightToLeft),
-
-
     GetPage(
         name: Routes.ManagerDashboardScreen,
         page: () => ManagerDashboardScreen(),
         transition: Transition.rightToLeft),
-
     GetPage(
         name: Routes.ManagerServicescreen,
         page: () => ManagerServicescreen(),
         transition: Transition.rightToLeft),
-
     GetPage(
         name: Routes.ManagerPackagescreen,
         page: () => ManagerPackagescreen(),
@@ -329,11 +304,11 @@ class AppPages {
         name: Routes.MenagerStaffScreen,
         page: () => ManagerStaffScreen(),
         transition: Transition.rightToLeft),
-          GetPage(
+    GetPage(
         name: Routes.ManagerCouponsScreen,
         page: () => ManagerCouponsScreen(),
         transition: Transition.rightToLeft),
-          GetPage(
+    GetPage(
         name: Routes.ManagerTaxesScreen,
         page: () => ManagerTaxesScreen(),
         transition: Transition.rightToLeft),
@@ -341,12 +316,11 @@ class AppPages {
         name: Routes.ManagerGetStaffScreen,
         page: () => ManagerGetStaffScreen(),
         transition: Transition.rightToLeft),
-           GetPage(
+    GetPage(
         name: Routes.ManagerPostCustomerScreen,
         page: () => ManagerPostCustomerScreen(),
         transition: Transition.rightToLeft),
-
-            GetPage(
+    GetPage(
         name: Routes.ManagerEditCustomer,
         page: () => ManagerEditCustomer(),
         transition: Transition.rightToLeft),
@@ -358,46 +332,44 @@ class AppPages {
         name: Routes.ManagerINhouseScreen,
         page: () => ManagerGetInHouseProductScreen(),
         transition: Transition.rightToLeft),
-
     GetPage(
         name: Routes.ManagerProductListScreen,
         page: () => ManagerProductListScreen(),
         transition: Transition.rightToLeft),
-
-         GetPage(
+    GetPage(
         name: Routes.ManagerGetbrandsscreen,
         page: () => ManagerGetbrandsscreen(),
         transition: Transition.rightToLeft),
-         GetPage(
+    GetPage(
         name: Routes.ManagerCategoryscreen,
         page: () => ManagerCategoryscreen(),
         transition: Transition.rightToLeft),
-         GetPage(
+    GetPage(
         name: Routes.ManagerSubcategoryscreen,
         page: () => ManagerSubcategoryscreen(),
         transition: Transition.rightToLeft),
-         GetPage(
+    GetPage(
         name: Routes.ManagerTagsscreen,
         page: () => ManagerTagsscreen(),
         transition: Transition.rightToLeft),
-         GetPage(
+    GetPage(
         name: Routes.ManagerUnitsscreen,
         page: () => ManagerUnitsscreen(),
         transition: Transition.rightToLeft),
-         GetPage(
+    GetPage(
         name: Routes.ManagerVariationGetscreen,
         page: () => ManagerVariationGetscreen(),
         transition: Transition.rightToLeft),
-
-          GetPage(
+    GetPage(
         name: Routes.ManagerAddProductScreen,
         page: () => ManagerAddProductScreen(),
         transition: Transition.rightToLeft),
-
-
-
-        GetPage(
-        name: Routes.Managerprofilescreen,  
+    GetPage(
+        name: Routes.ManagerOrderReportScreen,
+        page: () => ManagerOrderReportScreen(),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: Routes.Managerprofilescreen,
         page: () => Managerprofilescreen(),
         transition: Transition.rightToLeft),
   ];

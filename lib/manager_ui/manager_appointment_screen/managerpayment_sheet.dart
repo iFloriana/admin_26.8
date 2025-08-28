@@ -131,7 +131,30 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                       initialValue: state.tips.value,
                       onChanged: (val) => state.tips.value = val,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: "Tips"),
+                      decoration: const InputDecoration(
+                        labelText: "Tips",
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: red,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -152,8 +175,30 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                       onChanged: (val) {
                         if (val != null) state.paymentMethod.value = val;
                       },
-                      decoration:
-                          const InputDecoration(labelText: "Payment Method"),
+                      decoration: const InputDecoration(
+                        labelText: "Payment Method",
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: red,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -207,8 +252,7 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                         hint: CustomTextWidget(
                             text: "Select Discount Type",
                             textStyle: CustomTextStyles.textFontMedium(
-                                size: 14.sp, color: grey)
-                        ),
+                                size: 14.sp, color: grey)),
                         items: const [
                           DropdownMenuItem(
                               value: "percentage", child: Text("Percentage")),
@@ -218,8 +262,33 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                         onChanged: (val) {
                           if (val != null) state.discountType.value = val;
                         },
-                        decoration:
-                            const InputDecoration(labelText: "Discount Type"),
+                        decoration: const InputDecoration(
+                          labelText: "Discount Type",
+                          border: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: grey,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: red,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),

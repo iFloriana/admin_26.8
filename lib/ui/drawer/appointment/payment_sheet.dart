@@ -115,7 +115,30 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                               ))
                           .toList(),
                       onChanged: (val) => state.selectedTax.value = val,
-                      decoration: const InputDecoration(labelText: "Tax"),
+                      decoration: const InputDecoration(
+                        labelText: "Tax",
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: red,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -142,8 +165,30 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                       onChanged: (val) {
                         if (val != null) state.paymentMethod.value = val;
                       },
-                      decoration:
-                          const InputDecoration(labelText: "Payment Method"),
+                      decoration: const InputDecoration(
+                        labelText: "Payment Method",
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: red,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -204,8 +249,33 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         onChanged: (val) {
                           if (val != null) state.discountType.value = val;
                         },
-                        decoration:
-                            const InputDecoration(labelText: "Discount Type"),
+                        decoration: const InputDecoration(
+                          labelText: "Discount Type",
+                          border: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: grey,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: red,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -214,8 +284,33 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         initialValue: state.discountValue.value,
                         onChanged: (val) => state.discountValue.value = val,
                         keyboardType: TextInputType.number,
-                        decoration:
-                            const InputDecoration(labelText: "Discount Value"),
+                        decoration: const InputDecoration(
+                          labelText: "Discount Value",
+                          border: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: grey,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide: BorderSide(
+                              color: red,
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
                       ),
                     )
                   ],

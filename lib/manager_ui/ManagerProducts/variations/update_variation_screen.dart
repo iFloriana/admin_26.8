@@ -13,6 +13,7 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/custome_dropdown.dart';
 import '../../../../wiget/custome_text.dart';
 import '../../../../wiget/loading.dart';
+import '../../drawer/drawerscreen.dart';
 
 class ManagerUpdateVariationscreen extends StatelessWidget {
   final Data variationToEdit;
@@ -28,6 +29,7 @@ class ManagerUpdateVariationscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Update Variations',
       ),
+            drawer: ManagerDrawerScreen(),
       body: Padding( 
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(

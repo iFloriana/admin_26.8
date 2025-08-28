@@ -42,10 +42,26 @@ class Upgradefromexistingscreen extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'Staff *',
             labelStyle: CustomTextStyles.textFontMedium(size: 14, color: grey),
-            border: const OutlineInputBorder(),
-            focusedBorder: const OutlineInputBorder(
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
               borderSide: BorderSide(
-                  color: primaryColor, width: 2.0), // Active/focused border
+                color: grey,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2.0,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              borderSide: BorderSide(
+                color: red,
+                width: 1.0,
+              ),
             ),
           ),
           isExpanded: true,

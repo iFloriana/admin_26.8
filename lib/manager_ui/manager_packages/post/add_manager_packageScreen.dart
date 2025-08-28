@@ -100,9 +100,13 @@ class AddManagerPackagescreen extends StatelessWidget {
                                 decoration: InputDecoration(
                                   labelText: "Select Service",
                                   labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-                                  border: OutlineInputBorder(
+                                   border: const OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8.0)),
+                                    borderSide: BorderSide(
+                                      color: grey,
+                                      width: 1.0,
+                                    ),
                                   ),
                                   focusedBorder: const OutlineInputBorder(
                                     borderRadius:
@@ -110,6 +114,14 @@ class AddManagerPackagescreen extends StatelessWidget {
                                     borderSide: BorderSide(
                                       color: primaryColor,
                                       width: 2.0,
+                                    ),
+                                  ),
+                                  errorBorder: const OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.0)),
+                                    borderSide: BorderSide(
+                                      color: red,
+                                      width: 1.0,
                                     ),
                                   ),
                                 ),
