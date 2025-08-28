@@ -22,19 +22,15 @@ class ManagerProductListController extends GetxController {
   void fetchProducts() async {
     final loginUser = await prefs.getManagerUser();
     try {
-      // /in-house-product/by-branch?salon_id=${salonId}&branch_id=${branchId}
       isLoading(true);
       var response = await dioClient.dio.get(
           '${Apis.baseUrl}/products/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser.manager?.branchId?.sId}');
-      // if (response.statusCode == 200) {
-      // The response has structure: {"message": "...", "data": [...]}
       var responseData = response.data;
       if (responseData is Map && responseData.containsKey('data')) {
         var products = productFromJson(jsonEncode(responseData['data']));
         productList.assignAll(products);
         _allProducts = products;
       } else {
-        // Fallback: try to parse as direct array
         var products = productFromJson(jsonEncode(responseData));
         productList.assignAll(products);
         _allProducts = products;

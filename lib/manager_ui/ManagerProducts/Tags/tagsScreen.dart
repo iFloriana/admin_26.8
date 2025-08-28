@@ -14,13 +14,13 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 
 class ManagerTagsscreen extends StatelessWidget {
   ManagerTagsscreen({super.key});
-  final  getController = Get.put(ManagerTagcontroller());
+  final getController = Get.put(ManagerTagcontroller());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Product Tags"),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: RefreshIndicator(
         color: primaryColor,
         onRefresh: () async {
@@ -61,7 +61,7 @@ class ManagerTagsscreen extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.delete_outline, color: primaryColor),
                       onPressed: () async {
-                         getController.deleteTag(tag.id!);
+                        getController.deleteTag(tag.id!);
                         // final confirm = await showDialog<bool>(
                         //   context: context,
                         //   builder: (context) => AlertDialog(
@@ -129,7 +129,7 @@ class ManagerTagsscreen extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   validator: (value) => Validation.validatename(value),
                 ),
-                branchDropdown(),
+                // branchDropdown(),
                 Obx(() => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -194,7 +194,7 @@ class ManagerTagsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

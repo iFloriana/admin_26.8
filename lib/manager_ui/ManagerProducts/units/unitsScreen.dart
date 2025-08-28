@@ -100,7 +100,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -159,7 +159,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -87,7 +89,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
     };
@@ -149,7 +151,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> tagData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
     };

@@ -68,7 +68,7 @@ class ManagerUnitscontroller extends GetxController {
     Map<String, dynamic> unitsData = {
       'name': nameController.text,
       'status': isActive.value ? 1 : 0,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'salon_id': loginUser!.manager?.salonId,
     };
 
@@ -135,7 +135,7 @@ class ManagerUnitscontroller extends GetxController {
     Map<String, dynamic> unitsData = {
       'name': nameController.text,
       'status': isActive.value ? 1 : 0,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'salon_id': loginUser!.manager?.salonId,
     };
 
