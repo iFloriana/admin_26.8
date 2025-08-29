@@ -56,11 +56,14 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
         final selectedTax = state.selectedTax.value; // TaxModel? (can be null)
         final tips = double.tryParse(state.tips.value) ?? 0.0;
         final paymentMethod = state.paymentMethod.value; // '' means blank
-        final coupon = state.appliedCoupon.value;
+        // Use controller-level appliedCoupon (API Map) so we honor discount_type values
+        final couponMap = controller.appliedCoupon.value;
+        final isCouponApplied = controller.couponApplied.value;
         final addAdditionalDiscount = state.addAdditionalDiscount.value;
         final discountType = state.discountType.value; // '' means blank
         final discountValue = double.tryParse(state.discountValue.value) ?? 0.0;
-        final memberDiscount = (widget.a.branchMembershipDiscount ?? 0.0).toDouble();
+        final memberDiscount =
+            (widget.a.branchMembershipDiscount ?? 0.0).toDouble();
         final memberType = widget.a.branchMembershipDiscountType;
 
         double productTotal = 0.0;
@@ -79,20 +82,44 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
           }
         }
 
+        // Build base and compute discounts exactly as per formula
+        final double serviceAmount = (widget.a.amount ?? 0).toDouble();
+        final double additionalCharges = _showAdditionalCharges
+            ? (double.tryParse(_additionalChargesCtrl.text) ?? 0)
+            : 0;
+        double baseForDiscounts = serviceAmount + additionalCharges;
+
+        double membershipDeduction = 0;
+        if (memberDiscount > 0) {
+          final isPercent =
+              (memberType ?? '').toLowerCase().startsWith('percent');
+          membershipDeduction = isPercent
+              ? (memberDiscount * baseForDiscounts / 100.0)
+              : memberDiscount;
+        }
+        baseForDiscounts -= membershipDeduction;
+        if (baseForDiscounts < 0) baseForDiscounts = 0;
+
+        double couponDeduction = 0;
+        if (couponMap != null) {
+          final String cType = (couponMap['discount_type'] ?? '').toString().toLowerCase();
+          final num cAmount = (couponMap['discount_amount'] ?? 0) as num;
+          couponDeduction = cType == 'percent'
+              ? (cAmount.toDouble() * baseForDiscounts / 100.0)
+              : cAmount.toDouble();
+        }
+
         controller.calculateGrandTotal(
-          serviceAmount: (widget.a.amount ?? 0).toDouble(),
-          additionalCharges: _showAdditionalCharges ? (double.tryParse(_additionalChargesCtrl.text) ?? 0) : 0,
+          serviceAmount: serviceAmount,
+          additionalCharges: additionalCharges,
           productTotal: productTotal,
           membershipDiscount: memberDiscount,
           membershipDiscountType: memberType,
-          couponDiscount: coupon != null
-              ? (coupon.discountType.toLowerCase().startsWith('percent')
-                  ? coupon.discountAmount
-                  : coupon.discountAmount)
-              : 0.0,
+          couponDiscount: couponDeduction,
           hasAdditionalDiscount: addAdditionalDiscount,
           additionalDiscountValue: discountValue,
-          additionalDiscountType: discountType.isEmpty ? 'percentage' : discountType,
+          additionalDiscountType:
+              discountType.isEmpty ? 'percentage' : discountType,
           taxPercent: selectedTax?.value ?? 0,
           tip: tips,
         );
@@ -121,21 +148,31 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               const SizedBox(height: 4),
               if (widget.a.branchMembershipDiscount != null)
                 Row(children: [
-                  const Text('Membership Discount: ', style: TextStyle(color: Colors.black87)),
+                  const Text('Membership Discount: ',
+                      style: TextStyle(color: Colors.black87)),
                   Text(
-                    (widget.a.branchMembershipDiscountType?.toLowerCase().startsWith('percent') ?? false)
+                    (widget.a.branchMembershipDiscountType
+                                ?.toLowerCase()
+                                .startsWith('percent') ??
+                            false)
                         ? '${widget.a.branchMembershipDiscount}%'
                         : '₹ ${widget.a.branchMembershipDiscount}',
-                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.w600),
                   )
                 ])
               else
-                const Text('Customer has no membership', style: TextStyle(color: Colors.orange)),
+                const Text('Customer has no membership',
+                    style: TextStyle(color: Colors.orange)),
               const SizedBox(height: 6),
               Text(
-                (widget.a.package == 'Yes') ? 'Customer have active package' : 'Customer has no package',
+                (widget.a.package == 'Yes')
+                    ? 'Customer have active package'
+                    : 'Customer has no package',
                 style: TextStyle(
-                  color: (widget.a.package == 'Yes') ? Colors.green : Colors.orange,
+                  color: (widget.a.package == 'Yes')
+                      ? Colors.green
+                      : Colors.orange,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -143,7 +180,9 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               // Product details (optional)
               if (productsList.isNotEmpty) ...[
                 const SizedBox(height: 10),
-                const Text('Product Details', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                const Text('Product Details',
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                 const SizedBox(height: 6),
                 Table(
                   border: TableBorder.all(color: Colors.grey),
@@ -155,21 +194,42 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   },
                   children: [
                     const TableRow(children: [
-                      Padding(padding: EdgeInsets.all(8), child: Text('Product', style: TextStyle(fontWeight: FontWeight.w600))),
-                      Padding(padding: EdgeInsets.all(8), child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-                      Padding(padding: EdgeInsets.all(8), child: Text('Price (₹)', style: TextStyle(fontWeight: FontWeight.w600))),
-                      Padding(padding: EdgeInsets.all(8), child: Text('Total (₹)', style: TextStyle(fontWeight: FontWeight.w600))),
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Product',
+                              style: TextStyle(fontWeight: FontWeight.w600))),
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Qty',
+                              style: TextStyle(fontWeight: FontWeight.w600))),
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Price (₹)',
+                              style: TextStyle(fontWeight: FontWeight.w600))),
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text('Total (₹)',
+                              style: TextStyle(fontWeight: FontWeight.w600))),
                     ]),
                     ...(productsList.map<TableRow>((prod) {
                       final name = prod['name'] ?? '';
                       final qty = (prod['quantity'] ?? 0).toString();
                       final price = (prod['unit_price'] ?? 0).toString();
-                      final total = ((prod['quantity'] ?? 0) * (prod['unit_price'] ?? 0)).toString();
+                      final total =
+                          ((prod['quantity'] ?? 0) * (prod['unit_price'] ?? 0))
+                              .toString();
                       return TableRow(children: [
-                        Padding(padding: const EdgeInsets.all(8), child: Text('$name')),
-                        Padding(padding: const EdgeInsets.all(8), child: Text(qty)),
-                        Padding(padding: const EdgeInsets.all(8), child: Text(price)),
-                        Padding(padding: const EdgeInsets.all(8), child: Text(total)),
+                        Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text('$name')),
+                        Padding(
+                            padding: const EdgeInsets.all(8), child: Text(qty)),
+                        Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(price)),
+                        Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(total)),
                       ]);
                     })).toList()
                   ],
@@ -288,11 +348,15 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                           const Spacer(),
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              value: row['method']!.isEmpty ? null : row['method'],
+                              value:
+                                  row['method']!.isEmpty ? null : row['method'],
                               items: const [
-                                DropdownMenuItem(value: 'Cash', child: Text('Cash')),
-                                DropdownMenuItem(value: 'Card', child: Text('Card')),
-                                DropdownMenuItem(value: 'UPI', child: Text('UPI')),
+                                DropdownMenuItem(
+                                    value: 'Cash', child: Text('Cash')),
+                                DropdownMenuItem(
+                                    value: 'Card', child: Text('Card')),
+                                DropdownMenuItem(
+                                    value: 'UPI', child: Text('UPI')),
                               ],
                               onChanged: (v) {
                                 setState(() => row['method'] = v ?? '');
@@ -304,7 +368,8 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                           Expanded(
                             child: TextFormField(
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(labelText: 'Amount'),
+                              decoration:
+                                  const InputDecoration(labelText: 'Amount'),
                               initialValue: row['amount'],
                               onChanged: (v) => row['amount'] = v,
                             ),
@@ -313,15 +378,19 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                           Row(children: [
                             if (index == _splitPayments.length - 1)
                               ElevatedButton(
-                                onPressed: () => setState(() => _splitPayments.add({"method": '', "amount": ''})),
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                onPressed: () => setState(() => _splitPayments
+                                    .add({"method": '', "amount": ''})),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green),
                                 child: const Text('+'),
                               ),
                             const SizedBox(width: 6),
                             if (_splitPayments.length > 1)
                               OutlinedButton(
-                                onPressed: () => setState(() => _splitPayments.removeAt(index)),
-                                style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                                onPressed: () => setState(
+                                    () => _splitPayments.removeAt(index)),
+                                style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.red),
                                 child: const Text('×'),
                               ),
                           ]),
@@ -358,6 +427,17 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   ),
                 ],
               ),
+              if (isCouponApplied && couponMap != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
+                  child: Text(
+                    'Coupon applied: ' +
+                        ((couponMap['discount_type'] ?? '').toString().toLowerCase() == 'percent'
+                            ? '${couponMap['discount_amount']}%'
+                            : '₹ ${couponMap['discount_amount']}'),
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ),
               Row(
                 children: [
                   Checkbox(
@@ -483,18 +563,28 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       if (state.paymentMethod.value.isEmpty) {
-                        CustomSnackbar.showError('Error', 'Please select a payment method');
+                        CustomSnackbar.showError(
+                            'Error', 'Please select a payment method');
                         return;
                       }
                       List<Map<String, dynamic>>? paymentSplit;
                       if (state.paymentMethod.value == 'Split') {
-                        if (_splitPayments.any((r) => (r['method'] ?? '').isEmpty || (r['amount'] ?? '').isEmpty)) {
-                          CustomSnackbar.showError('Error', 'Please fill all split payment fields');
+                        if (_splitPayments.any((r) =>
+                            (r['method'] ?? '').isEmpty ||
+                            (r['amount'] ?? '').isEmpty)) {
+                          CustomSnackbar.showError(
+                              'Error', 'Please fill all split payment fields');
                           return;
                         }
-                        final sum = _splitPayments.fold<double>(0.0, (s, r) => s + (double.tryParse(r['amount']!) ?? 0));
-                        if (sum.toStringAsFixed(2) != state.grandTotal.value.toStringAsFixed(2)) {
-                          CustomSnackbar.showError('Error', 'Split amounts must match the grand total');
+                        final sum = _splitPayments.fold<double>(0.0,
+                            (s, r) => s + (double.tryParse(r['amount']!) ?? 0));
+                        // Compare with tolerance to avoid float errors
+                        final expected = double.tryParse(
+                                state.grandTotal.value.toStringAsFixed(2)) ??
+                            state.grandTotal.value;
+                        if ((sum - expected).abs() > 0.01) {
+                          CustomSnackbar.showError('Error',
+                              'Split amounts must match the grand total');
                           return;
                         }
                         paymentSplit = _splitPayments
@@ -513,19 +603,29 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         'tips': tips,
                         'payment_method': state.paymentMethod.value,
                         'coupon_id': state.appliedCoupon.value?.id,
-                        'additional_discount_type': state.discountType.value.isEmpty ? 'percentage' : state.discountType.value,
-                        'additional_discount': addAdditionalDiscount ? (double.tryParse(state.discountValue.value) ?? 0) : 0,
-                        'additional_charges': _showAdditionalCharges ? (double.tryParse(_additionalChargesCtrl.text) ?? 0) : 0,
+                        'additional_discount_type':
+                            state.discountType.value.isEmpty
+                                ? 'percentage'
+                                : state.discountType.value,
+                        'additional_discount': addAdditionalDiscount
+                            ? (double.tryParse(state.discountValue.value) ?? 0)
+                            : 0,
+                        'additional_charges': _showAdditionalCharges
+                            ? (double.tryParse(_additionalChargesCtrl.text) ??
+                                0)
+                            : 0,
                         'invoice_format': _invoiceFormat,
                         if (paymentSplit != null) 'payment_split': paymentSplit,
                       };
                       try {
-                        final res = await dioClient.postData<Map<String, dynamic>>(
+                        final res =
+                            await dioClient.postData<Map<String, dynamic>>(
                           '${Apis.baseUrl}/payments',
                           payload,
                           (json) => json,
                         );
-                        CustomSnackbar.showSuccess('Success', 'Bill generated successfully');
+                        CustomSnackbar.showSuccess(
+                            'Success', 'Bill generated successfully');
                         final url = res['invoice_pdf_url'];
                         if (url != null) {
                           final fullUrl = '${Apis.pdfUrl}$url';
@@ -533,7 +633,8 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         }
                         Get.back();
                       } catch (e) {
-                        CustomSnackbar.showError('Error', 'Failed to generate bill: $e');
+                        CustomSnackbar.showError(
+                            'Error', 'Failed to generate bill: $e');
                       }
                     },
                     style: ElevatedButton.styleFrom(
