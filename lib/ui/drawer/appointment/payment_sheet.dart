@@ -102,7 +102,8 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
 
         double couponDeduction = 0;
         if (couponMap != null) {
-          final String cType = (couponMap['discount_type'] ?? '').toString().toLowerCase();
+          final String cType =
+              (couponMap['discount_type'] ?? '').toString().toLowerCase();
           final num cAmount = (couponMap['discount_amount'] ?? 0) as num;
           couponDeduction = cType == 'percent'
               ? (cAmount.toDouble() * baseForDiscounts / 100.0)
@@ -432,7 +433,10 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
                   child: Text(
                     'Coupon applied: ' +
-                        ((couponMap['discount_type'] ?? '').toString().toLowerCase() == 'percent'
+                        ((couponMap['discount_type'] ?? '')
+                                    .toString()
+                                    .toLowerCase() ==
+                                'percent'
                             ? '${couponMap['discount_amount']}%'
                             : '₹ ${couponMap['discount_amount']}'),
                     style: const TextStyle(color: Colors.green),
