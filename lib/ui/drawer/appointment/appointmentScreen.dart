@@ -267,7 +267,6 @@ class Appointmentscreen extends StatelessWidget {
                           onTap: a.paymentStatus != 'Paid'
                               ? () {
                                   final controller = getController;
-                                  // Set initial values for the payment summary state
                                   controller.paymentSummaryState.tips.value =
                                       '0';
                                   controller.paymentSummaryState.paymentMethod
@@ -287,15 +286,22 @@ class Appointmentscreen extends StatelessWidget {
                                       .value = 'percentage';
                                   controller.paymentSummaryState.discountValue
                                       .value = '0';
-                                  // Calculate initial grand total
+                                  // Calculate initial grand total (new signature)
                                   controller.calculateGrandTotal(
-                                    servicePrice: a.amount.toDouble(),
-                                    memberDiscount:
-                                        a.branchMembershipDiscount ?? 0.0,
-                                    taxValue: controller.taxes.isNotEmpty
-                                        ? controller.taxes.first.value *
-                                            a.amount /
-                                            100
+                                    serviceAmount: a.amount.toDouble(),
+                                    additionalCharges: 0,
+                                    productTotal: 0,
+                                    membershipDiscount:
+                                        (a.branchMembershipDiscount ?? 0.0)
+                                            .toDouble(),
+                                    membershipDiscountType:
+                                        a.branchMembershipDiscountType,
+                                    couponDiscount: 0,
+                                    hasAdditionalDiscount: false,
+                                    additionalDiscountValue: 0,
+                                    additionalDiscountType: 'percentage',
+                                    taxPercent: controller.taxes.isNotEmpty
+                                        ? controller.taxes.first.value
                                         : 0.0,
                                     tip: 0.0,
                                   );

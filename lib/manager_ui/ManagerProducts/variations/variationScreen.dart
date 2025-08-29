@@ -39,12 +39,12 @@ class ManagerVariationscreen extends StatelessWidget {
                 validator: (value) => Validation.validatename(value),
               ),
               SizedBox(height: 10),
-              Obx(() {
-                if (getController.isLoading.value) {
-                  return Center(child: CustomLoadingAvatar());
-                }
-                return branchDropdown();
-              }),
+              // Obx(() {
+              //   if (getController.isLoading.value) {
+              //     return Center(child: CustomLoadingAvatar());
+              //   }
+              //   return branchDropdown();
+              // }),
               SizedBox(height: 10),
               Type(),
               SizedBox(height: 10),

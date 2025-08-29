@@ -21,16 +21,15 @@ class ManagerUpdateVariationscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final getController =
-        Get.put(
+    final getController = Get.put(
         ManagerUpdateVariationcontroller(variationToEdit: variationToEdit));
 
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Update Variations',
       ),
-            drawer: ManagerDrawerScreen(),
-      body: Padding( 
+      drawer: ManagerDrawerScreen(),
+      body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
@@ -42,13 +41,13 @@ class ManagerUpdateVariationscreen extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 validator: (value) => Validation.validatename(value),
               ),
-              SizedBox(height: 10),
-              Obx(() {
-                if (getController.isLoading.value) {
-                  return Center(child: CustomLoadingAvatar());
-                }
-                return branchDropdown(getController);
-              }),
+              // SizedBox(height: 10),
+              // Obx(() {
+              //   if (getController.isLoading.value) {
+              //     return Center(child: CustomLoadingAvatar());
+              //   }
+              //   return branchDropdown(getController);
+              // }),
               SizedBox(height: 10),
               Type(getController),
               SizedBox(height: 10),

@@ -144,7 +144,7 @@ class ManagerUpdateVariationcontroller extends GetxController {
         valueControllers.map((c) => c.text).where((v) => v.isNotEmpty).toList();
 
     Map<String, dynamic> branchData = {
-      "branch_id": branchIds,
+      "branch_id": loginUser?.manager?.branchId?.sId,
       "name": nameController.text,
       "value": values,
       "type": selectedType.value,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/dio.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:excel/excel.dart';
@@ -10,7 +11,6 @@ import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
-
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
@@ -208,6 +208,9 @@ class AppointmentController extends GetxController {
   var coupons = <CouponModel>[].obs;
   var paymentSummaryState = PaymentSummaryState();
 
+  var appliedCoupon = Rxn<Map<String, dynamic>>();
+  var couponApplied = false.obs;
+  var couponId = ''.obs;
   // Filter and sort variables
   DateTime? selectedDate;
   DateTimeRange? selectedDateRange;
@@ -341,50 +344,106 @@ class AppointmentController extends GetxController {
     }
   }
 
-  void applyCoupon(String code) {
-    final now = DateTime.now();
-    final coupon = coupons.firstWhereOrNull((c) {
-      final start = DateTime.tryParse(c.startDate);
-      final end = DateTime.tryParse(c.endDate);
-      return c.code.toLowerCase() == code.toLowerCase() &&
-          c.status == 1 &&
-          start != null &&
-          end != null &&
-          now.isAfter(start) &&
-          now.isBefore(end.add(const Duration(days: 1)));
-    });
-    if (coupon != null) {
-      paymentSummaryState.appliedCoupon.value = coupon;
-      CustomSnackbar.showSuccess('Coupon Applied', coupon.code);
-    } else {
-      paymentSummaryState.appliedCoupon.value = null;
+  Future<void> applyCoupon(String code) async {
+    final loginUser = await prefs.getUser();
+    try {
+      final res = await dioClient.dio.get("${Apis.baseUrl}/coupons", queryParameters: {
+        "salon_id": loginUser!.salonId,
+      });
+
+      final List<dynamic> allCoupons = res.data["data"] ?? [];
+      final now = DateTime.now();
+
+      final matchedCoupon = allCoupons.firstWhereOrNull((c) {
+        final start = DateTime.tryParse(c["start_date"]);
+        final end = DateTime.tryParse(c["end_date"]);
+        return c["coupon_code"].toString().toLowerCase() ==
+                code.toLowerCase() &&
+            c["status"] == 1 &&
+            start != null &&
+            end != null &&
+            now.isAfter(start) &&
+            now.isBefore(end.add(const Duration(days: 1))); // inclusive
+      });
+
+      if (matchedCoupon != null) {
+        appliedCoupon.value = matchedCoupon;
+        couponId.value = matchedCoupon["_id"];
+        couponApplied.value = true;
+
+        CustomSnackbar.showSuccess(
+            "Coupon Applied", matchedCoupon["coupon_code"]);
+      } else {
+        appliedCoupon.value = null;
+        couponId.value = '';
+        couponApplied.value = false;
+
+        CustomSnackbar.showError(
+            "Invalid Coupon", "Coupon is not active or doesn't exist");
+      }
+    } catch (e) {
       CustomSnackbar.showError(
-          'Invalid Coupon', 'Coupon is not active or does not exist');
+          "Coupon Error", "Something went wrong while applying the coupon.");
+      debugPrint("applyCoupon error: $e");
     }
   }
 
-  // Add this function to calculate the grand total
+  // Calculate the grand total using the requested formula
+  // grandTotal = (serviceAmount + additionalCharges)
+  //               - membershipDiscount
+  //               - couponDiscount
+  //               - additionalDiscount
+  //               + taxAmount (on discounted base)
+  //               + tip
+  //               + productTotal
   void calculateGrandTotal({
-    required double servicePrice,
-    double memberDiscount = 0.0,
-    double taxValue = 0.0,
-    double tip = 0.0,
+    required double serviceAmount,
+    double additionalCharges = 0.0,
+    double productTotal = 0.0,
+    double membershipDiscount = 0.0,
+    String? membershipDiscountType,
     double couponDiscount = 0.0,
-    double additionalDiscount = 0.0,
-    String discountType = 'percentage',
+    bool hasAdditionalDiscount = false,
+    double additionalDiscountValue = 0.0,
+    String additionalDiscountType = 'percentage',
+    double taxPercent = 0.0,
+    double tip = 0.0,
   }) {
-    double total = servicePrice - memberDiscount;
-    total -= couponDiscount;
-    // Apply additional discount if any
-    if (additionalDiscount > 0) {
-      if (discountType == 'percentage') {
-        total -= (total * additionalDiscount / 100);
+    double baseAmount = serviceAmount + additionalCharges;
+
+    double discountedAmount = baseAmount;
+
+    // Membership discount
+    if (membershipDiscount > 0) {
+      final isPercent = (membershipDiscountType ?? '')
+          .toLowerCase()
+          .startsWith('percent');
+      if (isPercent) {
+        discountedAmount -= (membershipDiscount * discountedAmount / 100.0);
       } else {
-        total -= additionalDiscount;
+        discountedAmount -= membershipDiscount;
       }
     }
-    double totalWithTax = total + taxValue;
-    double grandTotal = totalWithTax + tip;
+
+    // Coupon discount (value already computed outside)
+    discountedAmount -= couponDiscount;
+
+    // Additional discount
+    if (hasAdditionalDiscount && additionalDiscountValue > 0) {
+      final isPercent = additionalDiscountType.toLowerCase().startsWith('percent');
+      if (isPercent) {
+        discountedAmount -= (additionalDiscountValue * discountedAmount / 100.0);
+      } else {
+        discountedAmount -= additionalDiscountValue;
+      }
+    }
+
+    if (discountedAmount < 0) discountedAmount = 0;
+
+    // Tax
+    final taxAmount = discountedAmount * (taxPercent / 100.0);
+
+    final grandTotal = discountedAmount + taxAmount + tip + productTotal;
     paymentSummaryState.grandTotal.value = grandTotal < 0 ? 0 : grandTotal;
   }
 
