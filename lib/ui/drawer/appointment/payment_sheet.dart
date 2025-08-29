@@ -537,6 +537,27 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                     )
                   ],
                 ),
+              // Additional charges toggle and amount
+              Row(
+                children: [
+                  Checkbox(
+                    value: _showAdditionalCharges,
+                    onChanged: (v) {
+                      setState(() => _showAdditionalCharges = v ?? false);
+                    },
+                  ),
+                  const Text('Want to add additional charges?'),
+                ],
+              ),
+              if (_showAdditionalCharges)
+                TextFormField(
+                  controller: _additionalChargesCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Additional Charge Amount (₹)'
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
               Divider(color: Colors.grey[400]),
 
               /// GRAND TOTAL
@@ -645,6 +666,36 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         backgroundColor: Colors.brown[300]),
                     child: const Text("Generate Bill"),
                   )
+                ],
+              )
+              ,
+              const SizedBox(height: 12),
+              // Invoice format selection
+              Row(
+                children: [
+                  const Text('Invoice Formate'),
+                  const SizedBox(width: 12),
+                  Row(children: [
+                    Radio<String>(
+                        value: 'fullpage',
+                        groupValue: _invoiceFormat,
+                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
+                    const Text('Full Page'),
+                  ]),
+                  Row(children: [
+                    Radio<String>(
+                        value: 'halfpage',
+                        groupValue: _invoiceFormat,
+                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
+                    const Text('Half Page'),
+                  ]),
+                  Row(children: [
+                    Radio<String>(
+                        value: 'receipt',
+                        groupValue: _invoiceFormat,
+                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
+                    const Text('Receipt'),
+                  ]),
                 ],
               )
             ],
