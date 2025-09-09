@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/network/model/variation_product.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/products/variations/update_variation_controller.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -27,6 +28,7 @@ class UpdateVariationscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Update Variations',
       ),
+      drawer: DrawerScreen(),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(

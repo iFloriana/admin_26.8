@@ -163,7 +163,7 @@ class DashboardScreen extends StatelessWidget {
       {'label': 'Appointments', 'value': dashboard.appointmentCount ?? 0},
       {
         'label': 'Total Commission',
-        'value': dashboard.totalCommission?.toStringAsFixed(2) ?? 0
+        'value': '₹${dashboard.totalCommission?.toStringAsFixed(2)}' ?? 0
       },
       {'label': 'New Customers', 'value': dashboard.customerCount ?? 0},
       {
@@ -172,7 +172,7 @@ class DashboardScreen extends StatelessWidget {
       },
       {
         'label': 'Products',
-        'value': dashboard.productSales?.toStringAsFixed(2) ?? 0
+        'value': '₹${dashboard.productSales?.toStringAsFixed(2)}' ?? 0
       },
     ];
     return Column(

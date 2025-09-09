@@ -17,6 +17,7 @@ import 'package:flutter_template/network/network_const.dart';
 
 import '../../../utils/custom_text_styles.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
+import '../drawer_screen.dart';
 
 class Addnewstaffscreen extends StatelessWidget {
   final bool showAppBar;
@@ -60,8 +61,9 @@ class Addnewstaffscreen extends StatelessWidget {
                   : "Add New Staff",
             )),
       ),
+      drawer: DrawerScreen(),
       body: Form(
-        key: _formKey, 
+        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -547,8 +549,8 @@ class Addnewstaffscreen extends StatelessWidget {
         value: getController.selectedBranch.value,
         decoration: InputDecoration(
           labelText: "Select Branch",
-           labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-       border: const OutlineInputBorder(
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
             borderSide: BorderSide(
               color: grey,
@@ -596,8 +598,8 @@ class Addnewstaffscreen extends StatelessWidget {
         value: getController.selectedCommitionId.value,
         decoration: InputDecoration(
           labelText: "Select Commision",
-           labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-         border: const OutlineInputBorder(
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
             borderSide: BorderSide(
               color: grey,

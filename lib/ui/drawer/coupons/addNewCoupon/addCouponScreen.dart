@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponController.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsController.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
@@ -26,6 +27,7 @@ class AddCouponScreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: getController.isEditMode.value ? 'Edit Coupon' : 'Add Coupon',
       ),
+      drawer: DrawerScreen(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -275,7 +277,8 @@ class AddCouponScreen extends StatelessWidget {
           spacing: 10,
         ),
         fieldDecoration: const FieldDecoration(
-          hintText: 'Select Branches *',
+          labelText: 'Select Branches *',
+          labelStyle: TextStyle(color: grey),
           showClearIcon: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),

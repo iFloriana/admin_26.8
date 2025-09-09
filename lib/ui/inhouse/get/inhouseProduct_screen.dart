@@ -27,9 +27,7 @@ class InhouseproductScreen extends StatelessWidget {
         preferredSize: Size.fromHeight(70.h),
         child: Obx(() {
           return CustomAppBarWithDrawer(
-            title: isSearching.value
-                ? ''
-                : "In-House Product Usage${controller.sortOrder.value == 'asc' ? ' (Oldest Updated)' : ' (Newest Updated)'}",
+            title: "In House Products",
             actions: [
               if (isSearching.value)
                 SizedBox(

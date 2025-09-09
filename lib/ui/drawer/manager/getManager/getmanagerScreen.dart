@@ -119,102 +119,191 @@ class Getmanagerscreen extends StatelessWidget {
                         itemCount: getController.filteredManagers.length,
                         itemBuilder: (context, index) {
                           final manager = getController.filteredManagers[index];
-                          return ExpansionTile(
-                            leading: manager.image_url.isNotEmpty
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      '${Apis.pdfUrl}${manager.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            child: ListTile(
+                              leading: manager.image_url.isNotEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        '${Apis.pdfUrl}${manager.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            width: 50,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: const Icon(
+                                                Icons.image_not_supported),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Container(
                                       width: 50,
                                       height: 50,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Container(
-                                          width: 50,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: const Icon(
-                                              Icons.image_not_supported),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                : Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child:
-                                        const Icon(Icons.image_not_supported),
-                                  ),
-                            // leading: CircleAvatar(
-                            //   backgroundColor: Colors.grey[300],
-                            //   child: manager.image_url.isNotEmpty
-                            //       ? ClipOval(
-                            //           child: Image.network(
-                            //             '${Apis.pdfUrl}${manager.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
-                            //             width: 40,
-                            //             height: 40,
-                            //             fit: BoxFit.cover,
-                            //             errorBuilder:
-                            //                 (context, error, stackTrace) {
-                            //               return Icon(Icons.person,
-                            //                   color: Colors.grey[600]);
-                            //             },
-                            //           ),
-                            //         )
-                            //       : Icon(Icons.person, color: Colors.grey[600]),
-                            // ),
-                            shape: Border.all(color: Colors.transparent),
-                            title: Text('${manager.full_name}'),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${manager.contactNumber}'),
-                                // Text('${manager.email}'),
-                                // Text('${manager.branchName}'),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit_outlined,
-                                      color: primaryColor),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            Managerscreen(manager: manager),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete_outline,
-                                      color: primaryColor),
-                                  onPressed: () {
-                                    getController.deleteManager(manager.id);
-                                  },
-                                ),
-                              ],
+                                      child:
+                                          const Icon(Icons.image_not_supported),
+                                    ),
+                              title: Text(
+                                manager.full_name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Email: ${manager.email}'),
+                                  Text('Contact: ${manager.contactNumber}'),
+                                  Text('Branch: ${manager.branchName}'),
+                                ],
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit_outlined,
+                                        color: primaryColor),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              Managerscreen(manager: manager),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete_outline,
+                                        color: primaryColor),
+                                    onPressed: () {
+                                      getController.deleteManager(manager.id);
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                            children: [
-                              Text('Email: ${manager.email}'),
-                              Text('Contact: ${manager.contactNumber}'),
-                              Text('Branch: ${manager.branchName}'),
-                            ],
                           );
                         },
-                      ),
-              );
+                      )
+
+                // ListView.builder(
+                //     itemCount: getController.filteredManagers.length,
+                //     itemBuilder: (context, index) {
+                //       final manager = getController.filteredManagers[index];
+                //       return ExpansionTile(
+                //         leading: manager.image_url.isNotEmpty
+                //             ? ClipRRect(
+                //                 borderRadius: BorderRadius.circular(8),
+                //                 child: Image.network(
+                //                   '${Apis.pdfUrl}${manager.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
+                //                   width: 50,
+                //                   height: 50,
+                //                   fit: BoxFit.cover,
+                //                   errorBuilder:
+                //                       (context, error, stackTrace) {
+                //                     return Container(
+                //                       width: 50,
+                //                       height: 50,
+                //                       decoration: BoxDecoration(
+                //                         color: Colors.grey[300],
+                //                         borderRadius:
+                //                             BorderRadius.circular(8),
+                //                       ),
+                //                       child: const Icon(
+                //                           Icons.image_not_supported),
+                //                     );
+                //                   },
+                //                 ),
+                //               )
+                //             : Container(
+                //                 width: 50,
+                //                 height: 50,
+                //                 decoration: BoxDecoration(
+                //                   color: Colors.grey[300],
+                //                   borderRadius: BorderRadius.circular(8),
+                //                 ),
+                //                 child:
+                //                     const Icon(Icons.image_not_supported),
+                //               ),
+                //         // leading: CircleAvatar(
+                //         //   backgroundColor: Colors.grey[300],
+                //         //   child: manager.image_url.isNotEmpty
+                //         //       ? ClipOval(
+                //         //           child: Image.network(
+                //         //             '${Apis.pdfUrl}${manager.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
+                //         //             width: 40,
+                //         //             height: 40,
+                //         //             fit: BoxFit.cover,
+                //         //             errorBuilder:
+                //         //                 (context, error, stackTrace) {
+                //         //               return Icon(Icons.person,
+                //         //                   color: Colors.grey[600]);
+                //         //             },
+                //         //           ),
+                //         //         )
+                //         //       : Icon(Icons.person, color: Colors.grey[600]),
+                //         // ),
+                //         shape: Border.all(color: Colors.transparent),
+                //         title: Text('${manager.full_name}'),
+                //         subtitle: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Text('${manager.contactNumber}'),
+                //             // Text('${manager.email}'),
+                //             // Text('${manager.branchName}'),
+                //           ],
+                //         ),
+                //         trailing: Row(
+                //           mainAxisSize: MainAxisSize.min,
+                //           children: [
+                //             IconButton(
+                //               icon: Icon(Icons.edit_outlined,
+                //                   color: primaryColor),
+                //               onPressed: () {
+                //                 Navigator.of(context).push(
+                //                   MaterialPageRoute(
+                //                     builder: (_) =>
+                //                         Managerscreen(manager: manager),
+                //                   ),
+                //                 );
+                //               },
+                //             ),
+                //             IconButton(
+                //               icon: Icon(Icons.delete_outline,
+                //                   color: primaryColor),
+                //               onPressed: () {
+                //                 getController.deleteManager(manager.id);
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //         children: [
+                //           Text('Email: ${manager.email}'),
+                //           Text('Contact: ${manager.contactNumber}'),
+                //           Text('Branch: ${manager.branchName}'),
+                //         ],
+                //       );
+                //     },
+                //   ),
+
+                );
       }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,

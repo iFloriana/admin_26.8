@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class AddCommissionScreen extends StatelessWidget {
                 ? 'Edit Commission'
                 : 'Add Commission',
           ),
+          drawer: DrawerScreen(),
           body: controller.isLoading.value
               ? Center(child: CustomLoadingAvatar())
               : SingleChildScrollView(
@@ -83,16 +85,17 @@ class AddCommissionScreen extends StatelessWidget {
                               controller.branchList.map((BranchModel branch) {
                             return DropdownMenuItem<BranchModel>(
                               value: branch,
-                              child: Text(branch.name),
+                              child: Text(
+                                branch.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
                             );
                           }).toList(),
                           onChanged: (BranchModel? newValue) {
                             if (newValue != null) {
                               controller.selectedBranch.value = newValue;
-                              CustomSnackbar.showSuccess(
-                                'Branch Selected',
-                                'ID: ${newValue.id}',
-                              );
                             }
                           },
                         );
@@ -108,7 +111,13 @@ class AddCommissionScreen extends StatelessWidget {
                               : controller.commissionType.value,
                           items: controller.commissionTypeOptions
                               .map((type) => DropdownMenuItem(
-                                  value: type, child: Text(type)))
+                                  value: type,
+                                  child: Text(
+                                    type,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  )))
                               .toList(),
                           onChanged: (val) =>
                               controller.commissionType.value = val ?? '',

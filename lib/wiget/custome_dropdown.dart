@@ -70,7 +70,7 @@ class CustomDropdown<T> extends StatelessWidget {
           value: item,
           child: Text(
             itemToString != null ? itemToString!(item) : item.toString(),
-            style: CustomTextStyles.textFontRegular(size: 14.sp),
+            style: TextStyle(fontWeight: FontWeight.normal),
           ),
         );
       }).toList(),

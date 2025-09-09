@@ -108,6 +108,19 @@ class Addnewtaxscreen extends StatelessWidget {
     return Column(
       children: [
         InputTxtfield_title(),
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            Expanded(child: type()),
+            SizedBox(width: 10.w),
+            Expanded(child: module()),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        InputTxtfield_value(),
+        SizedBox(height: 10.h),
+        branchDropdown(),
+        SizedBox(height: 10.h),
         Obx(() => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -124,18 +137,6 @@ class Addnewtaxscreen extends StatelessWidget {
                 ),
               ],
             )),
-        SizedBox(height: 10.h),
-        Row(
-          children: [
-            Expanded(child: type()),
-            SizedBox(width: 10.w),
-            Expanded(child: module()),
-          ],
-        ),
-        SizedBox(height: 10.h),
-        InputTxtfield_value(),
-        SizedBox(height: 10.h),
-        branchDropdown(),
         SizedBox(height: 10.h),
         Btn_tax(),
       ],
@@ -217,7 +218,6 @@ class Addnewtaxscreen extends StatelessWidget {
                 ))
             .toList(),
         controller: getController.branchController,
-        
         enabled: true,
         searchEnabled: true,
         chipDecoration: const ChipDecoration(
@@ -251,7 +251,6 @@ class Addnewtaxscreen extends StatelessWidget {
       );
     });
   }
-
 
   // Widget branchChips() {
   //   return Obx(() {
@@ -297,5 +296,4 @@ class Addnewtaxscreen extends StatelessWidget {
   //     );
   //   });
   // }
-
 }

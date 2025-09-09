@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/manager/addManager/managerController.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
@@ -43,10 +44,11 @@ class Managerscreen extends StatelessWidget {
           }
         });
       }
-    } else {
-      // Ensure fresh form when adding new manager
-      getController.resetForm();
     }
+    // else {
+    //   // Ensure fresh form when adding new manager
+    //   getController.resetForm();
+    // }
   }
 
   @override
@@ -56,6 +58,7 @@ class Managerscreen extends StatelessWidget {
         appBar: CustomAppBar(
           title: manager == null ? "Add Manager" : "Edit Manager",
         ),
+        drawer: DrawerScreen(),
         body: Obx(() => getController.isLoading.value
             ? const Center(child: CustomLoadingAvatar())
             : SingleChildScrollView(
@@ -76,16 +79,6 @@ class Managerscreen extends StatelessWidget {
                         Gender(),
                         _buildBranchDropdown(),
                         Btn_saveManager(context),
-                        if (manager == null)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                getController.resetForm();
-                              },
-                              child: const Text('Clear Form'),
-                            ),
-                          ),
                       ],
                     )),
               )));
@@ -300,9 +293,9 @@ class Managerscreen extends StatelessWidget {
           value: getController.selectedBranch.value,
           decoration: InputDecoration(
             labelText: 'Branch *',
-         labelStyle:
+            labelStyle:
                 CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-             border: const OutlineInputBorder(
+            border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
               borderSide: BorderSide(
                 color: grey,

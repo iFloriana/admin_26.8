@@ -20,7 +20,7 @@ class Tagsscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Product SubCategories"),
-            drawer: DrawerScreen(),
+      drawer: DrawerScreen(),
       body: RefreshIndicator(
         color: primaryColor,
         onRefresh: () async {
@@ -35,64 +35,127 @@ class Tagsscreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final tag = getController.tagsList[index];
               final branchNames = tag.branches.map((b) => b.name).join(', ');
-              return ListTile(
-                title: Text(tag.name ?? ''),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tag.status == 1 ? 'Active' : 'Inactive',
-                      style: TextStyle(
-                        color: tag.status == 1 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                    Text('Branches: $branchNames'),
-                  ],
+
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit_outlined, color: primaryColor),
-                      onPressed: () {
-                        showEditTagSheet(context, tag);
-                      },
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(12),
+                  title: Text(
+                    tag.name ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete_outline, color: primaryColor),
-                      onPressed: () async {
-                         getController.deleteTag(tag.id!);
-                        // final confirm = await showDialog<bool>(
-                        //   context: context,
-                        //   builder: (context) => AlertDialog(
-                        //     title: Text('Delete Tag'),
-                        //     content: Text(
-                        //         'Are you sure you want to delete this tag?'),
-                        //     actions: [
-                        //       TextButton(
-                        //         onPressed: () =>
-                        //             Navigator.of(context).pop(false),
-                        //         child: Text('Cancel'),
-                        //       ),
-                        //       TextButton(
-                        //         onPressed: () =>
-                        //             Navigator.of(context).pop(true),
-                        //         child: Text('Delete',
-                        //             style: TextStyle(color: Colors.red)),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // );
-                        // if (confirm == true) {
-                        //   getController.deleteTag(tag.id!);
-                        // }
-                      },
-                    ),
-                  ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 4),
+                      Text(
+                        tag.status == 1 ? 'Active' : 'Inactive',
+                        style: TextStyle(
+                          color: tag.status == 1 ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Branches: $branchNames',
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined,
+                            color: primaryColor),
+                        onPressed: () {
+                          showEditTagSheet(context, tag);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline,
+                            color: primaryColor),
+                        onPressed: () {
+                          getController.deleteTag(tag.id!);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
           );
+
+          // ListView.builder(
+          //   itemCount: getController.tagsList.length,
+          //   itemBuilder: (context, index) {
+          //     final tag = getController.tagsList[index];
+          //     final branchNames = tag.branches.map((b) => b.name).join(', ');
+          //     return ListTile(
+          //       title: Text(tag.name ?? ''),
+          //       subtitle: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             tag.status == 1 ? 'Active' : 'Inactive',
+          //             style: TextStyle(
+          //               color: tag.status == 1 ? Colors.green : Colors.red,
+          //             ),
+          //           ),
+          //           Text('Branches: $branchNames'),
+          //         ],
+          //       ),
+          //       trailing: Row(
+          //         mainAxisSize: MainAxisSize.min,
+          //         children: [
+          //           IconButton(
+          //             icon: Icon(Icons.edit_outlined, color: primaryColor),
+          //             onPressed: () {
+          //               showEditTagSheet(context, tag);
+          //             },
+          //           ),
+          //           IconButton(
+          //             icon: Icon(Icons.delete_outline, color: primaryColor),
+          //             onPressed: () async {
+          //                getController.deleteTag(tag.id!);
+          //               // final confirm = await showDialog<bool>(
+          //               //   context: context,
+          //               //   builder: (context) => AlertDialog(
+          //               //     title: Text('Delete Tag'),
+          //               //     content: Text(
+          //               //         'Are you sure you want to delete this tag?'),
+          //               //     actions: [
+          //               //       TextButton(
+          //               //         onPressed: () =>
+          //               //             Navigator.of(context).pop(false),
+          //               //         child: Text('Cancel'),
+          //               //       ),
+          //               //       TextButton(
+          //               //         onPressed: () =>
+          //               //             Navigator.of(context).pop(true),
+          //               //         child: Text('Delete',
+          //               //             style: TextStyle(color: Colors.red)),
+          //               //       ),
+          //               //     ],
+          //               //   ),
+          //               // );
+          //               // if (confirm == true) {
+          //               //   getController.deleteTag(tag.id!);
+          //               // }
+          //             },
+          //           ),
+          //         ],
+          //       ),
+          //     );
+          //   },
+          // );
         }),
       ),
       floatingActionButton: FloatingActionButton(
