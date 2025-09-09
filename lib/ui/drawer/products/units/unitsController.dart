@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../../main.dart';
 import '../../../../network/model/postUnits.dart';
 import '../../../../network/network_const.dart';

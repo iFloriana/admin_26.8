@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/network/model/taxmodel.dart';
 import 'package:get/get.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import '../../../main.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
@@ -58,9 +59,12 @@ class Addnewtaxcontroller extends GetxController {
   var selectedDropdownType = "".obs;
   var selectedDropdownModule = "".obs;
   var isActive = true.obs;
+   var selectedBranches = <Branch>[].obs;
+  final branchController = MultiSelectController<Branch>();
   var branchList = <Branch>[].obs;
-  var selectedBranches = <Branch>[].obs;
-  bool get allSelected => selectedBranches.length == branchList.length;
+  // var branchList = <Branch>[].obs;
+  // var selectedBranches = <Branch>[].obs;
+  // bool get allSelected => selectedBranches.length == branchList.length;
   var taxList = <TaxModel>[].obs;
 var isEditMode = false.obs;
   String? editingTaxId; 
@@ -91,8 +95,16 @@ var isEditMode = false.obs;
     selectedDropdownType.value = tax.type?.capitalizeFirst ?? '';
     selectedDropdownModule.value = tax.taxType?.capitalizeFirst ?? '';
     isActive.value = tax.status == 1;
-
-    selectedBranches.value = tax.branches ?? [];
+    final selected = branchList
+        .where((b) => tax.branches!.any((ub) => ub.id == b.id))
+        .toList();
+    selectedBranches.value = selected;
+    branchController.clearAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      branchController
+          .selectWhere((item) => selected.contains(item.value));
+    });
+    // selectedBranches.value = tax.branches ?? [];
   }
 
 
@@ -117,7 +129,8 @@ var isEditMode = false.obs;
 
     Map<String, dynamic> taxData = {
       "salon_id": loginUser!.salonId,
-      "branch_id": selectedBranches.map((e) => e.id).toList(),
+      // "branch_id": selectedBranches.map((e) => e.id).toList(),
+        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       "title": titleController.text.trim(),
       "value": int.tryParse(valueController.text.trim()) ?? 0,
       "type": selectedDropdownType.value.toLowerCase(),
@@ -139,7 +152,7 @@ var isEditMode = false.obs;
     }
   }
 
-  Future<void> getBranches() async {
+    Future<void> getBranches() async {
     final loginUser = await prefs.getUser();
     try {
       final response = await dioClient.getData(
@@ -174,7 +187,8 @@ var isEditMode = false.obs;
 
     Map<String, dynamic> taxData = {
       "salon_id": loginUser!.salonId,
-      "branch_id": selectedBranches.map((e) => e.id).toList(),
+      // "branch_id": selectedBranches.map((e) => e.id).toList(),
+        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       "title": titleController.text.trim(),
       "value": int.tryParse(valueController.text.trim()) ?? 0,
       "type": selectedDropdownType.value.toLowerCase(),

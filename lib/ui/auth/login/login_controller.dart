@@ -42,7 +42,6 @@ class LoginController extends GetxController {
 
       await prefs.setUser(loginResponse);
       callgetSignupApi();
-      // CustomSnackbar.showSuccess('success', 'Login Successfully');
       await Get.showOverlay(
         asyncFunction: () async {
           await Future.delayed(const Duration(seconds: 2));

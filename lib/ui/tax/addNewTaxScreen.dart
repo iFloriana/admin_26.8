@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/tax/addNewTaxController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
@@ -9,6 +10,8 @@ import '../../../utils/validation.dart';
 import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/custome_text.dart';
+import '../../wiget/appbar/commen_appbar.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class Addnewtaxscreen extends StatelessWidget {
   Addnewtaxscreen({super.key});
@@ -52,7 +55,8 @@ class Addnewtaxscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add New Tax')),
+      appBar: CustomAppBar(title: 'Add New Tax'),
+      drawer: DrawerScreen(),
       body: Obx(() {
         if (getController.taxList.isEmpty) {
           return Center(child: Text('No taxes found'));
@@ -72,14 +76,14 @@ class Addnewtaxscreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.edit, color: Colors.blue),
+                      icon: Icon(Icons.edit_outlined, color: primaryColor),
                       onPressed: () {
                         getController.editTax(tax);
                         _openBottomSheet(context);
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                      icon: Icon(Icons.delete_outline, color: primaryColor),
                       onPressed: () => getController.deleteTax(tax.id),
                     ),
                   ],
@@ -92,7 +96,10 @@ class Addnewtaxscreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () => _openBottomSheet(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: white,
+        ),
       ),
     );
   }
@@ -128,7 +135,7 @@ class Addnewtaxscreen extends StatelessWidget {
         SizedBox(height: 10.h),
         InputTxtfield_value(),
         SizedBox(height: 10.h),
-        branchChips(),
+        branchDropdown(),
         SizedBox(height: 10.h),
         Btn_tax(),
       ],
@@ -200,48 +207,95 @@ class Addnewtaxscreen extends StatelessWidget {
         ));
   }
 
-  Widget branchChips() {
+  Widget branchDropdown() {
     return Obx(() {
-      return Wrap(
-        spacing: 8.0,
-        runSpacing: 8.0,
-        children: [
-          FilterChip(
-            label:
-                Text(getController.allSelected ? 'Deselect All' : 'Select All'),
-            selected: getController.allSelected,
-            onSelected: (selected) {
-              if (selected) {
-                getController.selectedBranches
-                    .assignAll(getController.branchList);
-              } else {
-                getController.selectedBranches.clear();
-              }
-            },
-            selectedColor: primaryColor.withOpacity(0.2),
+      return MultiDropdown<Branch>(
+        items: getController.branchList
+            .map((branch) => DropdownItem(
+                  label: branch.name ?? '',
+                  value: branch,
+                ))
+            .toList(),
+        controller: getController.branchController,
+        
+        enabled: true,
+        searchEnabled: true,
+        chipDecoration: const ChipDecoration(
+          backgroundColor: secondaryColor,
+          wrap: true,
+          runSpacing: 2,
+          spacing: 10,
+        ),
+        fieldDecoration: FieldDecoration(
+          hintText: 'Select Branches',
+          hintStyle: const TextStyle(color: Colors.grey),
+          showClearIcon: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
           ),
-          ...getController.branchList.map((branch) {
-            final isSelected =
-                getController.selectedBranches.any((b) => b.id == branch.id);
-            return FilterChip(
-              label: Text(branch.name ?? ''),
-              selected: isSelected,
-              onSelected: (selected) {
-                if (selected) {
-                  if (!getController.selectedBranches
-                      .any((b) => b.id == branch.id)) {
-                    getController.selectedBranches.add(branch);
-                  }
-                } else {
-                  getController.selectedBranches
-                      .removeWhere((b) => b.id == branch.id);
-                }
-              },
-              selectedColor: primaryColor.withOpacity(0.2),
-            );
-          }).toList(),
-        ],
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: secondaryColor,
+            ),
+          ),
+        ),
+        dropdownItemDecoration: DropdownItemDecoration(
+          selectedIcon: const Icon(Icons.check_box, color: primaryColor),
+          disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+        ),
+        onSelectionChange: (selectedItems) {
+          getController.selectedBranches.value = selectedItems;
+        },
       );
     });
   }
+
+
+  // Widget branchChips() {
+  //   return Obx(() {
+  //     return Wrap(
+  //       spacing: 8.0,
+  //       runSpacing: 8.0,
+  //       children: [
+  //         FilterChip(
+  //           label:
+  //               Text(getController.allSelected ? 'Deselect All' : 'Select All'),
+  //           selected: getController.allSelected,
+  //           onSelected: (selected) {
+  //             if (selected) {
+  //               getController.selectedBranches
+  //                   .assignAll(getController.branchList);
+  //             } else {
+  //               getController.selectedBranches.clear();
+  //             }
+  //           },
+  //           selectedColor: primaryColor.withOpacity(0.2),
+  //         ),
+  //         ...getController.branchList.map((branch) {
+  //           final isSelected =
+  //               getController.selectedBranches.any((b) => b.id == branch.id);
+  //           return FilterChip(
+  //             label: Text(branch.name ?? ''),
+  //             selected: isSelected,
+  //             onSelected: (selected) {
+  //               if (selected) {
+  //                 if (!getController.selectedBranches
+  //                     .any((b) => b.id == branch.id)) {
+  //                   getController.selectedBranches.add(branch);
+  //                 }
+  //               } else {
+  //                 getController.selectedBranches
+  //                     .removeWhere((b) => b.id == branch.id);
+  //               }
+  //             },
+  //             selectedColor: primaryColor.withOpacity(0.2),
+  //           );
+  //         }).toList(),
+  //       ],
+  //     );
+  //   });
+  // }
+
 }
