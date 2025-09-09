@@ -151,6 +151,20 @@ var isEditMode = false.obs;
       CustomSnackbar.showError('Error', e.toString());
     }
   }
+void resetForm() {
+    isEditMode.value = false;
+    editingTaxId = null;
+
+    titleController.clear();
+    valueController.clear();
+
+    selectedDropdownType.value = "";
+    selectedDropdownModule.value = "";
+    isActive.value = true;
+
+    selectedBranches.clear();
+    branchController.clearAll();
+  }
 
     Future<void> getBranches() async {
     final loginUser = await prefs.getUser();

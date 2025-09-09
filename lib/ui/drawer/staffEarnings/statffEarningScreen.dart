@@ -72,7 +72,7 @@ class Statffearningscreen extends StatelessWidget {
             );
           }),
         ),
-          drawer: DrawerScreen(),
+        drawer: DrawerScreen(),
         body: Obx(() {
           if (getController.isLoading.value) {
             return Center(child: CustomLoadingAvatar());
@@ -182,7 +182,8 @@ class Statffearningscreen extends StatelessWidget {
 
   void _showPayoutSheet(
       BuildContext context, Map staff, Statffearningcontroller controller) {
-    final RxString paymentMethod = ''.obs;
+    // final RxString paymentMethod = ''.obs;
+    final RxnString paymentMethod = RxnString();
     final TextEditingController descController = TextEditingController();
 
     showModalBottomSheet(
@@ -241,35 +242,23 @@ class Statffearningscreen extends StatelessWidget {
               SizedBox(height: 16),
               Obx(() => DropdownButtonFormField<String>(
                     value: paymentMethod.value,
-                    items: [
+                    items: const [
                       DropdownMenuItem(value: 'cash', child: Text('Cash')),
-                      DropdownMenuItem(value: 'upi', child: Text('Upi')),
+                      DropdownMenuItem(value: 'upi', child: Text('UPI')),
                       DropdownMenuItem(value: 'online', child: Text('Online')),
                     ],
-                    onChanged: (v) => paymentMethod.value = v ?? '',
-                    decoration: InputDecoration(
+                    onChanged: (v) => paymentMethod.value = v,
+                    decoration: const InputDecoration(
                       labelText: 'Select Method *',
-                  labelStyle: CustomTextStyles.textFontMedium(
-                          size: 14.sp, color: grey),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(
-                          color: grey,
-                          width: 1.0,
-                        ),
+                      labelStyle: TextStyle(color: grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                       focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         borderSide: BorderSide(
                           color: primaryColor,
                           width: 2.0,
-                        ),
-                      ),
-                      errorBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(
-                          color: red,
-                          width: 1.0,
                         ),
                       ),
                     ),
@@ -298,9 +287,14 @@ class Statffearningscreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Commission Earn: ₹ ${staff['commission_earning']}'),
-                    Text('Tip Earn: ₹ ${staff['tip_earning']}'),
-                    Text('Salary: ₹ ${staff['staff_earning']}'),
+                    Text('Earn Commission: ₹ ${staff['commission_earning']}'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Tip: ₹ ${staff['tip_earning']}'),
+                        Text('Salary: ₹ ${staff['staff_earning']}'),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -308,7 +302,9 @@ class Statffearningscreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                    'Total Pay : ₹ ${staff['staff_earning'] + staff['tip_earning']}'),
+                  'Total Pay : ₹ ${staff['staff_earning'] + staff['tip_earning']}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               SizedBox(height: 16),
               SizedBox(
@@ -317,7 +313,7 @@ class Statffearningscreen extends StatelessWidget {
                   onPressed: () {
                     controller.payoutStaff(
                       staffId: staff['staff_id'],
-                      paymentMethod: paymentMethod.value,
+                      paymentMethod: paymentMethod.value!,
                       description: descController.text,
                     );
                   },

@@ -95,7 +95,10 @@ class Addnewtaxscreen extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
-        onPressed: () => _openBottomSheet(context),
+        onPressed: () {
+          getController.resetForm();
+          _openBottomSheet(context);
+        },
         child: const Icon(
           Icons.add,
           color: white,

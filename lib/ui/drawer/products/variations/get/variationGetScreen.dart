@@ -44,9 +44,11 @@ class VariationGetscreen extends StatelessWidget {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Type: ${variation.type ?? ''}'),
+                          // Text('Type: ${variation.type ?? ''}'),
                           // Text('Values: ${variation.value?.join(", ") ?? ''}'),
-                          Text('Branches: $branchNames'),
+                          Text('$branchNames',
+                              style:
+                                  TextStyle(overflow: TextOverflow.ellipsis)),
                           Text(
                             ' ${variation.status == 1 ? 'Active' : 'Inactive'}',
                             style: TextStyle(

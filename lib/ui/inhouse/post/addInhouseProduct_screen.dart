@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import '../../../utils/custom_text_styles.dart';
@@ -23,6 +24,7 @@ class AddInhouseproductScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBarWithDrawer(title: "Product Utilization Entry"),
+      drawer: DrawerScreen(),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CustomLoadingAvatar());
