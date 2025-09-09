@@ -155,9 +155,15 @@ class Staffdetailsscreen extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (staff.email != null) Text("Email: ${staff.email}"),
-                      if (staff.branchId?.name != null)
-                        Text("Branch: ${staff.branchId!.name}"),
+                      if (staff.email != null)
+                        Text(
+                          "${staff.email}",
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      // if (staff.branchId?.name != null)
+                      //   Text("Branch: ${staff.branchId!.name}"),
                     ],
                   ),
                   trailing: Row(

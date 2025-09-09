@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:get/get.dart';
 
 import '../../../../utils/colors.dart';
@@ -19,6 +20,7 @@ class Upgradefromexistingscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Upgrade from existing staff',
       ),
+      drawer: DrawerScreen(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

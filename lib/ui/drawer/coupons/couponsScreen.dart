@@ -66,15 +66,23 @@ class CouponsScreen extends StatelessWidget {
                               child: const Icon(Icons.image_not_supported),
                             ),
                       title: Text(coupon.name ?? '-',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Type: ${coupon.couponType ?? '-'}"),
-                          Text("Discount Type: ${coupon.discountType ?? '-'}"),
-                          Text("Use Limit: ${coupon.useLimit ?? 0}"),
+                          // Text("${coupon.couponType ?? '-'}",
+                          //     style:
+                          //         TextStyle(overflow: TextOverflow.ellipsis)),
+                          Text("Type: ${coupon.discountType ?? '-'}",
+                              style:
+                                  TextStyle(overflow: TextOverflow.ellipsis)),
+                          Text("Use Limit: ${coupon.useLimit ?? 0}",
+                              style:
+                                  TextStyle(overflow: TextOverflow.ellipsis)),
                           Text(
-                            "Status: ${coupon.status == 1 ? 'Active' : 'Deactive'}",
+                            "${coupon.status == 1 ? 'Active' : 'Deactive'}",
                             style: TextStyle(
                               color: coupon.status == 1
                                   ? Colors.green

@@ -14,6 +14,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/loading.dart';
+import '../../drawer_screen.dart';
 import '../customerController.dart';
 
 class EditCustomerScreen extends StatelessWidget {
@@ -114,6 +115,7 @@ class EditCustomerScreen extends StatelessWidget {
 
       return Scaffold(
         appBar: CustomAppBar(title: "Edit Customer"),
+        drawer: DrawerScreen(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -143,23 +145,7 @@ class EditCustomerScreen extends StatelessWidget {
                   validator: (value) => Validation.validatePhone(value),
                 ),
                 genderDropdown(customer),
-                Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          text: 'Status',
-                          textStyle:
-                              CustomTextStyles.textFontRegular(size: 14.sp),
-                        ),
-                        Switch(
-                          value: customerController.isActive.value,
-                          onChanged: (value) {
-                            customerController.isActive.value = value;
-                          },
-                          activeColor: primaryColor,
-                        ),
-                      ],
-                    )),
+
                 // Enable Package & Membership toggle and dropdowns
                 Obx(() => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,6 +249,24 @@ class EditCustomerScreen extends StatelessWidget {
                         ],
                       )
                     : const SizedBox()),
+
+                Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          text: 'Status',
+                          textStyle:
+                              CustomTextStyles.textFontRegular(size: 14.sp),
+                        ),
+                        Switch(
+                          value: customerController.isActive.value,
+                          onChanged: (value) {
+                            customerController.isActive.value = value;
+                          },
+                          activeColor: primaryColor,
+                        ),
+                      ],
+                    )),
                 Btn_updateCustomer(customer.id),
                 SizedBox(height: 20.h),
               ],

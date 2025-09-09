@@ -169,9 +169,13 @@ class Getmanagerscreen extends StatelessWidget {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Email: ${manager.email}'),
-                                  Text('Contact: ${manager.contactNumber}'),
-                                  Text('Branch: ${manager.branchName}'),
+                                  Text('${manager.email}',
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis)),
+                                  Text('${manager.contactNumber}',
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis)),
+                                  // Text('${manager.branchName}'),
                                 ],
                               ),
                               trailing: Row(

@@ -58,23 +58,7 @@ class Addcustomerscreen extends StatelessWidget {
               ),
 
               genderDropdown(),
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextWidget(
-                        text: 'Status',
-                        textStyle:
-                            CustomTextStyles.textFontRegular(size: 14.sp),
-                      ),
-                      Switch(
-                        value: customerController.isActive.value,
-                        onChanged: (value) {
-                          customerController.isActive.value = value;
-                        },
-                        activeColor: primaryColor,
-                      ),
-                    ],
-                  )),
+
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -172,6 +156,23 @@ class Addcustomerscreen extends StatelessWidget {
                       ],
                     )
                   : const SizedBox()),
+              Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        text: 'Status',
+                        textStyle:
+                            CustomTextStyles.textFontRegular(size: 14.sp),
+                      ),
+                      Switch(
+                        value: customerController.isActive.value,
+                        onChanged: (value) {
+                          customerController.isActive.value = value;
+                        },
+                        activeColor: primaryColor,
+                      ),
+                    ],
+                  )),
               Btn_addCustomer(),
               SizedBox(height: 20.h),
             ],
