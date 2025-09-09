@@ -45,12 +45,24 @@ class BranchMembershipListScreen extends StatelessWidget {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Plan: ${membership.subscriptionPlan}'),
-                    Text('Amount: ₹${membership.membershipAmount}'),
+                    Row(
+                      spacing: 10,
+                      children: [
+                        Text('${membership.subscriptionPlan}'),
+                        Text('|'),
+                        Text('₹${membership.membershipAmount}'),
+                      ],
+                    ),
                     Text(
                         'Discount: ${membership.discountType == 'percentage' ? '%' : ' ₹'} ${membership.discount}'),
                     Text(
-                        'Status: ${membership.status == 1 ? 'Active' : 'Inactive'}'),
+                      membership.status == 1 ? 'Active' : 'Inactive',
+                      style: TextStyle(
+                        color:
+                            membership.status == 1 ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
                 trailing: Row(

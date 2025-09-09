@@ -27,8 +27,8 @@ class BranchMembershipListController extends GetxController {
     addController.discountAmountController.clear();
     addController.membershipAmountController.clear();
 
-    addController.selected_Subscription_plan.value = '6-Months';
-    addController.selected_discountType.value = 'Fixed';
+    addController.selected_Subscription_plan.value = '';
+    addController.selected_discountType.value = '';
     addController.isActive.value = true;
   }
 

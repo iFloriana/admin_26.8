@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/Branchmembership/add/branchMembershipAddController.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +21,7 @@ class Branchmembershipaddscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBar(title: "Add Branch Membership"),
+        drawer: DrawerScreen(),
         body: Padding(
             padding: EdgeInsets.all(10),
             child: Column(

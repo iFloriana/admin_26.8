@@ -25,6 +25,7 @@ class Variationscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Variations',
       ),
+      drawer: DrawerScreen(),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
@@ -147,16 +148,19 @@ class Variationscreen extends StatelessWidget {
         ),
         fieldDecoration: FieldDecoration(
           hintText: 'Select Branches',
-          hintStyle: const TextStyle(color: Colors.grey),
           showClearIcon: true,
           border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 1.0,
+            ),
             borderRadius: BorderRadius.circular(8),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
               color: primaryColor,
-              width: 2.0,
+              width: 1.0,
             ),
           ),
         ),

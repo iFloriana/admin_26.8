@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchescontroller.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
@@ -23,6 +24,7 @@ class Postbranchesscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Add Branch"),
+      drawer: DrawerScreen(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -202,10 +204,7 @@ class Postbranchesscreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CustomLoadingAvatar()),
+              SizedBox(width: 16, height: 16, child: CustomLoadingAvatar()),
               SizedBox(width: 12),
               Text('Loading services...',
                   style: TextStyle(color: Colors.grey.shade600)),

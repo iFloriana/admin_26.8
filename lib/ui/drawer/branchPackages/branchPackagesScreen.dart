@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -22,6 +23,7 @@ class DynamicInputScreen extends StatelessWidget {
     return Scaffold(
       appBar:
           CustomAppBar(title: isEditing ? 'Update Package' : 'Create Package'),
+      drawer: DrawerScreen(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -85,7 +87,7 @@ class DynamicInputScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              DropdownButtonFormField<Service>( 
+                              DropdownButtonFormField<Service>(
                                 value: data.selectedService.value,
                                 items: controller.serviceList
                                     .map((service) => DropdownMenuItem(
@@ -101,7 +103,7 @@ class DynamicInputScreen extends StatelessWidget {
                                 },
                                 decoration: InputDecoration(
                                   labelText: "Select Service",
-                                 labelStyle: CustomTextStyles.textFontMedium(
+                                  labelStyle: CustomTextStyles.textFontMedium(
                                       size: 14.sp, color: grey),
                                   border: const OutlineInputBorder(
                                     borderRadius:
@@ -251,8 +253,8 @@ class DynamicInputScreen extends StatelessWidget {
         value: controller.selectedBranch.value,
         decoration: InputDecoration(
           labelText: "Select Branch",
-        labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
-        border: const OutlineInputBorder(
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
             borderSide: BorderSide(
               color: grey,
