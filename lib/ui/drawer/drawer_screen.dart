@@ -216,11 +216,14 @@ class DrawerScreen extends StatelessWidget {
           ...drawerItems.map((item) {
             if (item.subItems.isNotEmpty) {
               return Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
+                data: Theme.of(context).copyWith(
+                    dividerColor: transparent, focusColor: primaryColor),
                 child: ExpansionTile(
                   dense: true,
-                  leading: Icon(item.icon, size: 18.sp),
+                  leading: Icon(
+                    item.icon,
+                    size: 18.sp,
+                  ),
                   title: CustomTextWidget(
                     text: item.title,
                     textStyle: CustomTextStyles.textFontMedium(size: 13.sp),
