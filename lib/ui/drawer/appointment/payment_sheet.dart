@@ -3,6 +3,7 @@ import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
+import '../../../wiget/Custome_button.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/custome_snackbar.dart';
 import 'appointmentController.dart';
@@ -130,59 +131,32 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
+            spacing: 5,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Date: ${widget.a.date}",
-                  style: TextStyle(color: Colors.black87, fontSize: 14.sp)),
-              const SizedBox(height: 6),
-              Text("Customer Details",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp)),
-              Text("Name: ${widget.a.clientName}",
-                  style: const TextStyle(color: Colors.black87)),
+              Center(
+                child: Text("Customer Details",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp)),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Name: ${widget.a.clientName}",
+                      style: const TextStyle(color: Colors.black87)),
+                  Text("Date: ${widget.a.date}",
+                      style: TextStyle(color: Colors.black87, fontSize: 14.sp)),
+                ],
+              ),
               Text("Phone: ${widget.a.clientPhone ?? ''}",
                   style: const TextStyle(color: Colors.black87)),
-              const SizedBox(height: 10),
               Text("Service Amount: ₹ ${widget.a.amount}",
                   style: const TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w500)),
-              const SizedBox(height: 4),
-              if (widget.a.branchMembershipDiscount != null)
-                Row(children: [
-                  const Text('Membership Discount: ',
-                      style: TextStyle(color: Colors.black87)),
-                  Text(
-                    (widget.a.branchMembershipDiscountType
-                                ?.toLowerCase()
-                                .startsWith('percent') ??
-                            false)
-                        ? '${widget.a.branchMembershipDiscount}%'
-                        : '₹ ${widget.a.branchMembershipDiscount}',
-                    style: const TextStyle(
-                        color: Colors.green, fontWeight: FontWeight.w600),
-                  )
-                ])
-              else
-                const Text('Customer has no membership',
-                    style: TextStyle(color: Colors.orange)),
-              const SizedBox(height: 6),
-              Text(
-                (widget.a.package == 'Yes')
-                    ? 'Customer have active package'
-                    : 'Customer has no package',
-                style: TextStyle(
-                  color: (widget.a.package == 'Yes')
-                      ? Colors.green
-                      : Colors.orange,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-              // Product details (optional)
               if (productsList.isNotEmpty) ...[
-                const SizedBox(height: 10),
                 const Text('Product Details',
                     style:
                         TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
@@ -247,96 +221,130 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               const SizedBox(height: 12),
 
               /// TAX + TIPS + PAYMENT METHOD
-              Row(
+              Column(
+                spacing: 10,
                 children: [
-                  // TAX (blank until user selects)
-                  Expanded(
-                    child: DropdownButtonFormField(
-                      value: state.selectedTax.value, // null => blank
-                      hint: const Text("Select Tax"),
-                      items: controller.taxes
-                          .map((tax) => DropdownMenuItem(
-                                value: tax,
-                                child: Text('${tax.title} (${tax.value}%)'),
-                              ))
-                          .toList(),
-                      onChanged: (val) => state.selectedTax.value = val,
-                      decoration: const InputDecoration(
-                        labelText: "Tax",
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: grey,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: primaryColor,
-                            width: 2.0,
-                          ),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: red,
-                            width: 1.0,
+                  Row(
+                    spacing: 5,
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField(
+                          value: state.selectedTax.value, // null => blank
+                          // hint: const Text("Select Tax"),
+                          items: controller.taxes
+                              .map((tax) => DropdownMenuItem(
+                                    value: tax,
+                                    child: Text('${tax.title} (${tax.value}%)'),
+                                  ))
+                              .toList(),
+                          onChanged: (val) => state.selectedTax.value = val,
+                          decoration: const InputDecoration(
+                            labelText: "Tax",
+                            labelStyle: TextStyle(color: grey),
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: primaryColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            errorBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: red,
+                                width: 1.0,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          value: state.paymentMethod.value.isEmpty
+                              ? null
+                              : state.paymentMethod.value, // null => blank
+                          // hint: const Text("Select Payment Method"),
+                          items: ["Cash", "Card", "UPI", "Split"]
+                              .map((m) =>
+                                  DropdownMenuItem(value: m, child: Text(m)))
+                              .toList(),
+                          onChanged: (val) {
+                            if (val != null) state.paymentMethod.value = val;
+                          },
+                          decoration: const InputDecoration(
+                            labelText: "Payment Method",
+                            labelStyle: TextStyle(color: grey),
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: primaryColor,
+                                width: 2.0,
+                              ),
+                            ),
+                            errorBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)),
+                              borderSide: BorderSide(
+                                color: red,
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextFormField(
-                      initialValue: state.tips.value,
-                      onChanged: (val) => state.tips.value = val,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: "Tips"),
+                  TextFormField(
+                    initialValue: state.tips.value,
+                    onChanged: (val) => state.tips.value = val,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "Tips",
+                      labelStyle: TextStyle(color: grey),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(
+                          color: grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(
+                          color: primaryColor,
+                          width: 2.0,
+                        ),
+                      ),
+                      errorBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(
+                          color: red,
+                          width: 1.0,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   // PAYMENT METHOD (blank until user selects)
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      value: state.paymentMethod.value.isEmpty
-                          ? null
-                          : state.paymentMethod.value, // null => blank
-                      hint: const Text("Select Payment Method"),
-                      items: ["Cash", "Card", "UPI", "Split"]
-                          .map(
-                              (m) => DropdownMenuItem(value: m, child: Text(m)))
-                          .toList(),
-                      onChanged: (val) {
-                        if (val != null) state.paymentMethod.value = val;
-                      },
-                      decoration: const InputDecoration(
-                        labelText: "Payment Method",
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: grey,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: primaryColor,
-                            width: 2.0,
-                          ),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                          borderSide: BorderSide(
-                            color: red,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
               if (paymentMethod == 'Split') ...[
@@ -418,14 +426,49 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                     child: TextFormField(
                       initialValue: state.couponCode.value,
                       onChanged: (val) => state.couponCode.value = val,
-                      decoration:
-                          const InputDecoration(labelText: "Coupon Code"),
+                      decoration: const InputDecoration(
+                        labelText: "Coupon Code",
+                        labelStyle: TextStyle(color: grey),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: grey,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide: BorderSide(
+                            color: red,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () =>
                         controller.applyCoupon(state.couponCode.value),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor, // button background color
+                      foregroundColor: Colors.white, // text/icon color
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 13,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8), // rounded corners
+                      ),
+                    ),
                     child: const Text("Apply"),
                   ),
                 ],
@@ -448,6 +491,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                 children: [
                   Checkbox(
                       value: addAdditionalDiscount,
+                      activeColor: primaryColor,
                       onChanged: (val) =>
                           state.addAdditionalDiscount.value = val ?? false),
                   const Text("Add additional discount?",
@@ -463,7 +507,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         value: state.discountType.value.isEmpty
                             ? null
                             : state.discountType.value, // null => blank
-                        hint: const Text("Select Discount Type"),
+                        // hint: const Text("Select Discount Type"),
                         items: const [
                           DropdownMenuItem(
                               value: "percentage", child: Text("Percentage")),
@@ -475,6 +519,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         },
                         decoration: const InputDecoration(
                           labelText: "Discount Type",
+                          labelStyle: TextStyle(color: grey),
                           border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0)),
@@ -510,6 +555,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           labelText: "Discount Value",
+                          labelStyle: TextStyle(color: grey),
                           border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.0)),
@@ -544,6 +590,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                 children: [
                   Checkbox(
                     value: _showAdditionalCharges,
+                    activeColor: primaryColor,
                     onChanged: (v) {
                       setState(() => _showAdditionalCharges = v ?? false);
                     },
@@ -556,11 +603,64 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   controller: _additionalChargesCtrl,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: 'Additional Charge Amount (₹)'
+                    labelText: 'Additional Charge Amount (₹)',
+                    labelStyle: TextStyle(color: grey),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: grey,
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(
+                        color: red,
+                        width: 1.0,
+                      ),
+                    ),
                   ),
                   onChanged: (_) => setState(() {}),
                 ),
               Divider(color: Colors.grey[400]),
+
+              if (widget.a.branchMembershipDiscount != null)
+                Row(children: [
+                  const Text('Membership Discount: ',
+                      style: TextStyle(color: Colors.black87)),
+                  Text(
+                    (widget.a.branchMembershipDiscountType
+                                ?.toLowerCase()
+                                .startsWith('percent') ??
+                            false)
+                        ? '${widget.a.branchMembershipDiscount}%'
+                        : '₹ ${widget.a.branchMembershipDiscount}',
+                    style: const TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.w600),
+                  )
+                ])
+              else
+                const Text('Customer has no membership',
+                    style: TextStyle(color: Colors.orange)),
+              // const SizedBox(height: 6),
+              Text(
+                (widget.a.package == 'Yes')
+                    ? 'Customer have active package'
+                    : 'Customer has no package',
+                style: TextStyle(
+                  color: (widget.a.package == 'Yes')
+                      ? Colors.green
+                      : Colors.orange,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
 
               /// GRAND TOTAL
               Row(
@@ -579,127 +679,123 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text("Cancel",
-                          style: TextStyle(color: Colors.red))),
-                  const SizedBox(width: 12),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (state.paymentMethod.value.isEmpty) {
-                        CustomSnackbar.showError(
-                            'Error', 'Please select a payment method');
-                        return;
-                      }
-                      List<Map<String, dynamic>>? paymentSplit;
-                      if (state.paymentMethod.value == 'Split') {
-                        if (_splitPayments.any((r) =>
-                            (r['method'] ?? '').isEmpty ||
-                            (r['amount'] ?? '').isEmpty)) {
-                          CustomSnackbar.showError(
-                              'Error', 'Please fill all split payment fields');
-                          return;
-                        }
-                        final sum = _splitPayments.fold<double>(0.0,
-                            (s, r) => s + (double.tryParse(r['amount']!) ?? 0));
-                        // Compare with tolerance to avoid float errors
-                        final expected = double.tryParse(
-                                state.grandTotal.value.toStringAsFixed(2)) ??
-                            state.grandTotal.value;
-                        if ((sum - expected).abs() > 0.01) {
-                          CustomSnackbar.showError('Error',
-                              'Split amounts must match the grand total');
-                          return;
-                        }
-                        paymentSplit = _splitPayments
-                            .map((r) => {
-                                  'method': r['method'],
-                                  'amount': double.tryParse(r['amount']!) ?? 0,
-                                })
-                            .toList();
-                      }
 
-                      final loginUser = await prefs.getUser();
-                      final payload = <String, dynamic>{
-                        'salon_id': loginUser?.salonId,
-                        'appointment_id': widget.a.appointmentId,
-                        'tax_id': state.selectedTax.value?.id,
-                        'tips': tips,
-                        'payment_method': state.paymentMethod.value,
-                        'coupon_id': state.appliedCoupon.value?.id,
-                        'additional_discount_type':
-                            state.discountType.value.isEmpty
-                                ? 'percentage'
-                                : state.discountType.value,
-                        'additional_discount': addAdditionalDiscount
-                            ? (double.tryParse(state.discountValue.value) ?? 0)
-                            : 0,
-                        'additional_charges': _showAdditionalCharges
-                            ? (double.tryParse(_additionalChargesCtrl.text) ??
-                                0)
-                            : 0,
-                        'invoice_format': _invoiceFormat,
-                        if (paymentSplit != null) 'payment_split': paymentSplit,
-                      };
-                      try {
-                        final res =
-                            await dioClient.postData<Map<String, dynamic>>(
-                          '${Apis.baseUrl}/payments',
-                          payload,
-                          (json) => json,
-                        );
-                        CustomSnackbar.showSuccess(
-                            'Success', 'Bill generated successfully');
-                        final url = res['invoice_pdf_url'];
-                        if (url != null) {
-                          final fullUrl = '${Apis.pdfUrl}$url';
-                          await controller.openPdf(fullUrl);
-                        }
-                        Get.back();
-                      } catch (e) {
-                        CustomSnackbar.showError(
-                            'Error', 'Failed to generate bill: $e');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.brown[300]),
-                    child: const Text("Generate Bill"),
-                  )
-                ],
-              )
-              ,
-              const SizedBox(height: 12),
               // Invoice format selection
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('Invoice Formate'),
-                  const SizedBox(width: 12),
-                  Row(children: [
-                    Radio<String>(
-                        value: 'fullpage',
-                        groupValue: _invoiceFormat,
-                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
-                    const Text('Full Page'),
-                  ]),
-                  Row(children: [
-                    Radio<String>(
-                        value: 'halfpage',
-                        groupValue: _invoiceFormat,
-                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
-                    const Text('Half Page'),
-                  ]),
-                  Row(children: [
-                    Radio<String>(
-                        value: 'receipt',
-                        groupValue: _invoiceFormat,
-                        onChanged: (v) => setState(() => _invoiceFormat = v!)),
-                    const Text('Receipt'),
-                  ]),
+                  Row(
+                    children: [
+                      Row(children: [
+                        Radio<String>(
+                            activeColor: primaryColor,
+                            value: 'fullpage',
+                            groupValue: _invoiceFormat,
+                            onChanged: (v) =>
+                                setState(() => _invoiceFormat = v!)),
+                        const Text('Full Page'),
+                      ]),
+                      Row(children: [
+                        Radio<String>(
+                            activeColor: primaryColor,
+                            value: 'halfpage',
+                            groupValue: _invoiceFormat,
+                            onChanged: (v) =>
+                                setState(() => _invoiceFormat = v!)),
+                        const Text('Half Page'),
+                      ]),
+                      Row(children: [
+                        Radio<String>(
+                            activeColor: primaryColor,
+                            value: 'receipt',
+                            groupValue: _invoiceFormat,
+                            onChanged: (v) =>
+                                setState(() => _invoiceFormat = v!)),
+                        const Text('Receipt'),
+                      ]),
+                    ],
+                  )
                 ],
-              )
+              ),
+              const SizedBox(height: 12),
+              ElevatedButtonExample(
+                onPressed: () async {
+                  if (state.paymentMethod.value.isEmpty) {
+                    CustomSnackbar.showError(
+                        'Error', 'Please select a payment method');
+                    return;
+                  }
+                  List<Map<String, dynamic>>? paymentSplit;
+                  if (state.paymentMethod.value == 'Split') {
+                    if (_splitPayments.any((r) =>
+                        (r['method'] ?? '').isEmpty ||
+                        (r['amount'] ?? '').isEmpty)) {
+                      CustomSnackbar.showError(
+                          'Error', 'Please fill all split payment fields');
+                      return;
+                    }
+                    final sum = _splitPayments.fold<double>(0.0,
+                        (s, r) => s + (double.tryParse(r['amount']!) ?? 0));
+                    // Compare with tolerance to avoid float errors
+                    final expected = double.tryParse(
+                            state.grandTotal.value.toStringAsFixed(2)) ??
+                        state.grandTotal.value;
+                    if ((sum - expected).abs() > 0.01) {
+                      CustomSnackbar.showError(
+                          'Error', 'Split amounts must match the grand total');
+                      return;
+                    }
+                    paymentSplit = _splitPayments
+                        .map((r) => {
+                              'method': r['method'],
+                              'amount': double.tryParse(r['amount']!) ?? 0,
+                            })
+                        .toList();
+                  }
+
+                  final loginUser = await prefs.getUser();
+                  final payload = <String, dynamic>{
+                    'salon_id': loginUser?.salonId,
+                    'appointment_id': widget.a.appointmentId,
+                    'tax_id': state.selectedTax.value?.id,
+                    'tips': tips,
+                    'payment_method': state.paymentMethod.value,
+                    'coupon_id': state.appliedCoupon.value?.id,
+                    'additional_discount_type': state.discountType.value.isEmpty
+                        ? 'percentage'
+                        : state.discountType.value,
+                    'additional_discount': addAdditionalDiscount
+                        ? (double.tryParse(state.discountValue.value) ?? 0)
+                        : 0,
+                    'additional_charges': _showAdditionalCharges
+                        ? (double.tryParse(_additionalChargesCtrl.text) ?? 0)
+                        : 0,
+                    'invoice_format': _invoiceFormat,
+                    if (paymentSplit != null) 'payment_split': paymentSplit,
+                  };
+                  try {
+                    final res = await dioClient.postData<Map<String, dynamic>>(
+                      '${Apis.baseUrl}/payments',
+                      payload,
+                      (json) => json,
+                    );
+                    CustomSnackbar.showSuccess(
+                        'Success', 'Bill generated successfully');
+                    final url = res['invoice_pdf_url'];
+                    if (url != null) {
+                      final fullUrl = '${Apis.pdfUrl}$url';
+                      await controller.openPdf(fullUrl);
+                    }
+                    Get.back();
+                  } catch (e) {
+                    CustomSnackbar.showError(
+                        'Error', 'Failed to generate bill: $e');
+                  }
+                },
+                text: 'Generate Bill',
+              ),
+              const SizedBox(height: 12),
             ],
           ),
         );
