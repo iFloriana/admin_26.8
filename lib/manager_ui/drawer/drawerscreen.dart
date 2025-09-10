@@ -60,7 +60,7 @@ class ManagerDrawerScreen extends StatelessWidget {
             DrawerItem(
                 title: 'Customer Package',
                 icon: Icons.stacked_line_chart_outlined,
-                route: Routes.CustomerMembershipReportScreen)
+                route: Routes.ManagerCustomerMembershipReportScreen)
           ]),
       DrawerItem(
           title: 'Finance',

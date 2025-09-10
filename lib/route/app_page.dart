@@ -61,6 +61,7 @@ import '../ui/drawer/products/subcategory/subcategoryScreen.dart';
 import '../ui/drawer/products/units/unitsScreen.dart';
 import '../ui/drawer/products/variations/get/variationGetScreen.dart';
 import '../ui/drawer/products/variations/variationScreen.dart';
+import '../ui/drawer/reports/customerMembershipReport/customer_membership_report_screen.dart';
 import '../ui/drawer/reports/customerPackageReport/customer_package_report_screen.dart';
 import '../ui/drawer/reports/dailyBooking/dailyBooking_screen.dart';
 import '../ui/drawer/reports/orderReport/order_report_screen.dart';
@@ -213,8 +214,12 @@ class AppPages {
         page: () => CustomerPackageReportScreen(),
         transition: Transition.rightToLeft),
     GetPage(
-        name: Routes.CustomerMembershipReportScreen,
+        name: Routes.ManagerCustomerMembershipReportScreen,
         page: () => ManagerCustomerMembershipReportScreen(),
+        transition: Transition.rightToLeft),
+        GetPage(
+        name: Routes.CustomerMembershipReportScreen,
+        page: () => CustomerMembershipReportScreen(),
         transition: Transition.rightToLeft),
     GetPage(
         name: Routes.DailybookingScreen,

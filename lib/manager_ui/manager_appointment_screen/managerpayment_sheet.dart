@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/manager_ui/manager_appointment_screen/getappointmentManagerController.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,6 +56,7 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(title: "Payment Summary"),
+      drawer: ManagerDrawerScreen(),
       body: Obx(() {
         final selectedTax = state.selectedTax.value; // TaxModel? (can be null)
         final tips = double.tryParse(state.tips.value) ?? 0.0;

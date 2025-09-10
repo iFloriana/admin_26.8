@@ -7,11 +7,9 @@ import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../utils/custom_text_styles.dart';
-import 'branches/getBranches/getBranchesController.dart';
 
 class DrawerScreen extends StatelessWidget {
   DrawerScreen({super.key});
-  final getController = Get.put(Getbranchescontroller());
   @override
   Widget build(BuildContext context) {
     final DrawermenuController getController = Get.put(DrawermenuController());

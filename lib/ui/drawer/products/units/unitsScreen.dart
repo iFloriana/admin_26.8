@@ -51,16 +51,15 @@ class Unitsscreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      'Branches: $branchNames',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    Text(
                       unit.status == 1 ? 'Active' : 'Inactive',
                       style: TextStyle(
                         color: unit.status == 1 ? Colors.green : Colors.red,
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Branches: $branchNames',
-                      style: TextStyle(color: Colors.grey[600]),
                     ),
                   ],
                 ),

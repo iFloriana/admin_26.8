@@ -36,7 +36,7 @@ class CustomerPackageReportData {
 
   CustomerPackageReportData.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
-    image = json['image'];
+    image = json['image_url'];
     fullName = json['full_name'];
     email = json['email'];
     branchPackageValidTill = json['branch_package_valid_till']?.toString();

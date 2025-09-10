@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -52,6 +53,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(title: "Payment Summary"),
+      drawer: DrawerScreen(),
       body: Obx(() {
         final selectedTax = state.selectedTax.value; // TaxModel? (can be null)
         final tips = double.tryParse(state.tips.value) ?? 0.0;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/products/allProducts/addProductsController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class AddProductScreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: isEditMode ? 'Update Product' : 'Add Product',
       ),
+      drawer: DrawerScreen(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(

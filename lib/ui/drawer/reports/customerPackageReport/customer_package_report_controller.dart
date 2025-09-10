@@ -27,6 +27,7 @@ class CustomerPackageReportController extends GetxController {
   void onInit() {
     super.onInit();
     getCustomerPackages();
+    
   }
 
   Future<void> getCustomerPackages() async {

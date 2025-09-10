@@ -10,12 +10,11 @@ import '../../../../wiget/loading.dart';
 import '../../../../network/network_const.dart';
 
 class CustomerPackageReportScreen extends StatelessWidget {
- CustomerPackageReportScreen({super.key});
+  CustomerPackageReportScreen({super.key});
   final CustomerPackageReportController controller =
       Get.put(CustomerPackageReportController());
   @override
   Widget build(BuildContext context) {
-   
     final RxBool isSearching = false.obs;
     final TextEditingController searchController = TextEditingController();
 
@@ -25,7 +24,7 @@ class CustomerPackageReportScreen extends StatelessWidget {
           preferredSize: Size.fromHeight(70.h),
           child: Obx(() {
             return CustomAppBar(
-              title: isSearching.value ? '' : _getAppBarTitle(controller),
+              title: "Package Report",
               backgroundColor: primaryColor,
               actions: [
                 if (isSearching.value)
@@ -39,7 +38,7 @@ class CustomerPackageReportScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           fillColor: Colors.white,
                           filled: true,
-                          hintText: 'Search by Customer Name',
+                          hintText: 'Search by Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
@@ -185,22 +184,21 @@ class CustomerPackageReportScreen extends StatelessWidget {
                       DataCell(
                         Row(
                           children: [
-                            // Customer image or fallback icon
-                            customer.image != null && customer.image!.isNotEmpty
-                                ? CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        '${Apis.pdfUrl}/${customer.image!}'),
-                                    radius: 20,
-                                  )
-                                : const CircleAvatar(
-                                    backgroundColor: secondaryColor,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: black,
-                                    ),
-                                    radius: 20,
-                                  ),
-                            const SizedBox(width: 8),
+                            // customer.image != null && customer.image!.isNotEmpty
+                            //     ? CircleAvatar(
+                            //         backgroundImage: NetworkImage(
+                            //             '${Apis.pdfUrl}${customer.image}'),
+                            //         radius: 20,
+                            //       )
+                            //     : const CircleAvatar(
+                            //         backgroundColor: secondaryColor,
+                            //         child: Icon(
+                            //           Icons.person,
+                            //           color: black,
+                            //         ),
+                            //         radius: 20,
+                            //       ),
+                            // const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 customer.fullName ?? '',
@@ -336,24 +334,24 @@ class CustomerPackageReportScreen extends StatelessWidget {
     );
   }
 
-  String _getAppBarTitle(CustomerPackageReportController controller) {
-    String title = 'Customer Package Report';
+  // String _getAppBarTitle(CustomerPackageReportController controller) {
+  //   String title = 'Package Report';
 
-    if (controller.selectedDate.value != null) {
-      title += ' (Filtered by Date)';
-    } else if (controller.selectedDateRange.value != null) {
-      title += ' (Filtered by Date Range)';
-    } else if (controller.searchQuery.value.isNotEmpty) {
-      title += ' (Search Results)';
-    }
+  //   if (controller.selectedDate.value != null) {
+  //     title += ' (Filtered by Date)';
+  //   } else if (controller.selectedDateRange.value != null) {
+  //     title += ' (Filtered by Date Range)';
+  //   } else if (controller.searchQuery.value.isNotEmpty) {
+  //     title += ' (Search Results)';
+  //   }
 
-    // Add sort indicator
-    if (controller.sortOrder.value == 'asc') {
-      title += ' [Oldest First]';
-    } else if (controller.sortOrder.value == 'desc') {
-      title += ' [Newest First]';
-    }
+  //   // Add sort indicator
+  //   if (controller.sortOrder.value == 'asc') {
+  //     title += ' [Oldest First]';
+  //   } else if (controller.sortOrder.value == 'desc') {
+  //     title += ' [Newest First]';
+  //   }
 
-    return title;
-  }
+  //   return title;
+  // }
 }

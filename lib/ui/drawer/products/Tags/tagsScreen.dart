@@ -19,7 +19,7 @@ class Tagsscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Product SubCategories"),
+      appBar: CustomAppBar(title: "Tags"),
       drawer: DrawerScreen(),
       body: RefreshIndicator(
         color: primaryColor,
@@ -56,16 +56,15 @@ class Tagsscreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 4),
                       Text(
+                        'Branches: $branchNames',
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                      Text(
                         tag.status == 1 ? 'Active' : 'Inactive',
                         style: TextStyle(
                           color: tag.status == 1 ? Colors.green : Colors.red,
                           fontWeight: FontWeight.w600,
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Branches: $branchNames',
-                        style: const TextStyle(color: Colors.black54),
                       ),
                     ],
                   ),

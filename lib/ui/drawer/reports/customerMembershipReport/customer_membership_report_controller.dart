@@ -1,8 +1,8 @@
+import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
 
-import '../../../main.dart';
-import '../../../network/network_const.dart';
-import '../../../wiget/custome_snackbar.dart';
+import '../../../../main.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Customer {
   final String id;
@@ -42,7 +42,7 @@ class Customer {
     );
   }
 }
-class ManagerCustomerMembershipReportController extends GetxController {
+class CustomerMembershipReportController extends GetxController {
   var customers = <Customer>[].obs;
   var isLoading = false.obs;
   var page = 1;
@@ -59,11 +59,11 @@ class ManagerCustomerMembershipReportController extends GetxController {
 
     isLoading.value = true;
     try {
-      final loginUser = await prefs.getManagerUser();
+      final loginUser = await prefs.getUser();
       if (loginUser == null) return;
 
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/customers?salon_id=${loginUser?.manager?.salonId}&page=$page&limit=$limit',
+        '${Apis.baseUrl}/customers?salon_id=${loginUser?.salonId}&page=$page&limit=$limit',
         (json) => json,
       );
 

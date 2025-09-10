@@ -36,7 +36,7 @@ class _ManagerCustomerMembershipReportScreen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Customers  Membership"),
+      appBar: CustomAppBar(title: "Customers Membership"),
       drawer: ManagerDrawerScreen(),
       body: Obx(() {
         if (controller.customers.isEmpty && controller.isLoading.value) {

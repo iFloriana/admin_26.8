@@ -42,9 +42,10 @@ abstract class Routes {
   static const managerDashboard = '/ManagerDashboard';
   static const GetBranchPackagesScreen = "/GetBranchPackagesScreen";
   static const CustomerPackageReportScreen = "/CustomerPackageReportScreen";
-  static const CustomerMembershipReportScreen =
+  static const ManagerCustomerMembershipReportScreen =
+      "/ManagerCustomerMembershipReportScreen";
+static const CustomerMembershipReportScreen =
       "/CustomerMembershipReportScreen";
-
   static const DailybookingScreen = "/DailybookingScreen";
   static const OrderReportScreen = "/OrderReportScreen";
 
