@@ -123,7 +123,7 @@ class MaanagerNewappointmentscreen extends StatelessWidget {
 
   Widget navigationButtons() {
     return Obx(() {
-        final step = getController.currentStep.value;
+      final step = getController.currentStep.value;
       final isLoading = getController.isBookingLoading.value;
       final lastIndex = nodeTitles.length - 1;
       return Row(
@@ -146,12 +146,11 @@ class MaanagerNewappointmentscreen extends StatelessWidget {
                 ? null
                 : () {
                     if (_formKey.currentState!.validate()) {
-                      if (step == 3) {
+                      if (step == 4) {
                         getController.addBooking();
                       } else if (step >= lastIndex) {
                         Get.back();
                       } else {
-
                         if (getController.canProceedToNextStep()) {
                           getController.nextStep();
                         } else {
@@ -366,6 +365,7 @@ class MaanagerNewappointmentscreen extends StatelessWidget {
       );
     });
   }
+
   Widget Case3() {
     return Obx(() {
       // Fetch staff if not already fetched
@@ -458,7 +458,7 @@ class MaanagerNewappointmentscreen extends StatelessWidget {
     });
   }
 
-Widget Case4() {
+  Widget Case4() {
     return Obx(() {
       final selectedDate = getController.selectedDate.value;
       final availableSlots = getController.availableSlots;
@@ -689,8 +689,9 @@ Widget Case4() {
                     spacing: 5.h,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(branch?.name ?? '',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Name: $name"),
+                      // Text(branch?.name ?? '',
+                      //     style: TextStyle(fontWeight: FontWeight.bold)),
                       Row(
                         children: [
                           Icon(Icons.phone, size: 16, color: secondaryColor),
@@ -716,7 +717,7 @@ Widget Case4() {
                               }
                             },
                             child: Text(
-                              "${branch?.contactNumber ?? ''}",
+                              "Number: $phone",
                               style: TextStyle(
                                 color: primaryColor,
                                 decoration: TextDecoration.underline,
