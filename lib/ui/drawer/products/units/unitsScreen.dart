@@ -21,6 +21,7 @@ class Unitsscreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "Units"),
       drawer: DrawerScreen(),
+
       body: Obx(() {
         if (getController.unitsList.isEmpty) {
           return Center(child: Text('No units found.'));
@@ -85,6 +86,7 @@ class Unitsscreen extends StatelessWidget {
           },
         );
       }),
+      
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () {

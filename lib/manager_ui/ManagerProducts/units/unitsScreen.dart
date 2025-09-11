@@ -15,12 +15,12 @@ import '../../../../wiget/custome_text.dart';
 
 class ManagerUnitsscreen extends StatelessWidget {
   ManagerUnitsscreen({super.key});
-  final  getController = Get.put(ManagerUnitscontroller());
+  final getController = Get.put(ManagerUnitscontroller());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: "Units"),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Obx(() {
         if (getController.unitsList.isEmpty) {
           return Center(child: Text('No units found.'));
@@ -30,33 +30,56 @@ class ManagerUnitsscreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final unit = getController.unitsList[index];
             final branchNames = unit.branches.map((b) => b.name).join(', ');
-            return ListTile(
-              title: Text(unit.name ?? ''),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(unit.status == 1 ? 'Active' : 'Inactive',
-                      style: TextStyle(
-                          color: unit.status == 1 ? Colors.green : Colors.red)),
-                  Text('Branches: ' + branchNames),
-                ],
+
+            return Card(
+              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.edit_outlined, color: primaryColor),
-                    onPressed: () {
-                      showEditUnitSheet(context, unit);
-                    },
+              child: ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                title: Text(
+                  unit.name ?? '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete_outline, color: primaryColor),
-                    onPressed: () async {
-                      getController.deleteUnit(unit.id!);
-                    },
-                  ),
-                ],
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Branches: $branchNames',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    Text(
+                      unit.status == 1 ? 'Active' : 'Inactive',
+                      style: TextStyle(
+                        color: unit.status == 1 ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit_outlined, color: primaryColor),
+                      onPressed: () {
+                        showEditUnitSheet(context, unit);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline, color: primaryColor),
+                      onPressed: () async {
+                        getController.deleteUnit(unit.id!);
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },

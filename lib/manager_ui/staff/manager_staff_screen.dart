@@ -107,7 +107,8 @@ class ManagerStaffScreen extends StatelessWidget {
                     controller.applySpecializationFilter(value),
                 child: Container(
                   padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.more_vert, color: Colors.white, size: 20),
+                  child: const Icon(Icons.more_vert,
+                      color: Colors.white, size: 20),
                 ),
               ),
             ],
@@ -133,6 +134,9 @@ class ManagerStaffScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 elevation: 2,
                 child: ExpansionTile(
+                  iconColor:
+                      Colors.grey[800], // color of the arrow when expanded
+                  collapsedIconColor: Colors.grey[800],
                   leading: (staff.imageUrl != null &&
                           staff.imageUrl!.isNotEmpty)
                       ? ClipRRect(

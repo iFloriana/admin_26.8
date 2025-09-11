@@ -50,24 +50,46 @@ class _ManagerCustomerMembershipReportScreen
           itemBuilder: (context, index) {
             if (index < controller.customers.length) {
               final c = controller.customers[index];
-              return ListTile(
-                // leading: CircleAvatar(child: Text(c.fullName[0])),
-                title: Text(c.fullName),
-                subtitle: Text("${c.membershipName}"),
-                trailing: Text(
-                  c.membershipValidTill != null
-                      ? "Valid till: ${c.membershipValidTill!.split('T').first}"
-                      : "",
-                  style: TextStyle(
-                    color: DateTime.tryParse(c.membershipValidTill ?? "")
-                                ?.isBefore(DateTime.now()) ==
-                            true
-                        ? Colors.red
-                        : Colors.green,
+
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                elevation: 2,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        c.fullName,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${c.membershipName}",
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        c.membershipValidTill != null
+                            ? "Valid till: ${c.membershipValidTill!.split('T').first}"
+                            : "",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: DateTime.tryParse(c.membershipValidTill ?? "")
+                                      ?.isBefore(DateTime.now()) ==
+                                  true
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
             } else {
+              // Loading indicator for pagination
               return Center(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),

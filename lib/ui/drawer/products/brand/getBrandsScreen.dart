@@ -40,6 +40,7 @@ class Getbrandsscreen extends StatelessWidget {
         title: 'Brands',
       ),
       drawer: DrawerScreen(),
+
       body: RefreshIndicator(
           color: primaryColor,
           onRefresh: () async {
@@ -130,6 +131,7 @@ class Getbrandsscreen extends StatelessWidget {
                     );
                   },
                 ))),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);

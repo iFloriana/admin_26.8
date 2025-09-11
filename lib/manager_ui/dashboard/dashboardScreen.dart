@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/manager_ui/dashboard/dashboardController.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manageraddNewAppointment/manager_newAppointmentScreen.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
@@ -136,6 +137,16 @@ class ManagerDashboardScreen extends StatelessWidget {
           controller.getDashbordData();
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => MaanagerNewappointmentscreen());
+        },
+        child: Icon(
+          Icons.add,
+          color: white,
+        ),
+        backgroundColor: primaryColor,
+      ),
     );
   }
 
@@ -144,10 +155,13 @@ class ManagerDashboardScreen extends StatelessWidget {
     // Use root-level fields from the API response
     final List<Map<String, dynamic>> items = [
       {'label': 'Appointments', 'value': dashboard.appointmentCount ?? 0},
-      {'label': 'Total Commission', 'value': dashboard.totalCommission ?? 0},
+      {
+        'label': 'Total Commission',
+        'value': '₹${dashboard.totalCommission}' ?? 0
+      },
       {'label': 'New Customers', 'value': dashboard.customerCount ?? 0},
       {'label': 'Orders', 'value': dashboard.orderCount ?? 0},
-      {'label': 'Products', 'value': dashboard.productSales ?? 0},
+      {'label': 'Products', 'value': '₹${dashboard.productSales}' ?? 0},
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

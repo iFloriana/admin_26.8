@@ -217,10 +217,14 @@ class DrawerScreen extends StatelessWidget {
                 data: Theme.of(context).copyWith(
                     dividerColor: transparent, focusColor: primaryColor),
                 child: ExpansionTile(
+                  iconColor:
+                      Colors.grey[800], // color of the arrow when expanded
+                  collapsedIconColor: Colors.grey[800],
                   dense: true,
                   leading: Icon(
                     item.icon,
                     size: 18.sp,
+                    color: Colors.grey[800],
                   ),
                   title: CustomTextWidget(
                     text: item.title,

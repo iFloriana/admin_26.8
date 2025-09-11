@@ -85,74 +85,92 @@ class ManagerCouponsScreen extends StatelessWidget {
             itemCount: controller.filteredCoupons.length,
             itemBuilder: (context, index) {
               final coupon = controller.filteredCoupons[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                elevation: 2,
-                child: ExpansionTile(
-                  leading: (coupon.imageUrl != null &&
-                          coupon.imageUrl!.isNotEmpty)
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            '${Apis.pdfUrl}${coupon.imageUrl}?v=${DateTime.now().millisecondsSinceEpoch}',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor:
+                      Colors.transparent, // remove top and bottom dividers
+                ),
+                child: Card(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    elevation: 2,
+                    child: ExpansionTile(
+                      iconColor:
+                          Colors.grey[800], // color of the arrow when expanded
+                      collapsedIconColor: Colors.grey[800],
+                      leading: (coupon.imageUrl != null &&
+                              coupon.imageUrl!.isNotEmpty)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                '${Apis.pdfUrl}${coupon.imageUrl}?v=${DateTime.now().millisecondsSinceEpoch}',
                                 width: 50,
                                 height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(Icons.image_not_supported),
-                              );
-                            },
-                          ),
-                        )
-                      : Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(Icons.image_not_supported),
-                        ),
-                  title: Text(
-                    coupon.name ?? '-',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Text(
-                    'Type: ${coupon.couponType ?? '-'} | Discount: ${coupon.discountType ?? '-'} ${coupon.discountAmount ?? 0}',
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: Column(
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child:
+                                        const Icon(Icons.image_not_supported),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.image_not_supported),
+                            ),
+                      title: Text(
+                        coupon.name ?? '-',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Code: ${coupon.couponCode ?? '-'}'),
-                          Text('Use Limit: ${coupon.useLimit ?? 0}'),
-                          Text(
-                              'Status: ${coupon.status == 1 ? 'Active' : 'Deactive'}'),
-                          const SizedBox(height: 8),
-                          const Text('Branches:',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: coupon.branches
-                                .map((b) => Chip(label: Text(b.name ?? '-')))
-                                .toList(),
-                          ),
+                          Text('${coupon.discountType}'),
+                          Text('Discount: ${coupon.discountAmount ?? 0}'),
                         ],
                       ),
-                    ),
-                  ],
-                ),
+                      children: [
+                        // Wrap in Align to fix center alignment issue
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Code: ${coupon.couponCode ?? '-'}'),
+                                Text('Use Limit: ${coupon.useLimit ?? 0}'),
+                                Text(
+                                    'Status: ${coupon.status == 1 ? 'Active' : 'Deactive'}'),
+                                const SizedBox(height: 8),
+                                const Text('Branches:',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600)),
+                                const SizedBox(height: 4),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: coupon.branches
+                                      .map((b) => Text('- ${b.name ?? '-'}'))
+                                      .toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
               );
             },
           ),

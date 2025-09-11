@@ -54,11 +54,11 @@ class ManagerDrawerScreen extends StatelessWidget {
           route: '', // parent doesn’t navigate
           subItems: [
             DrawerItem(
-                title: 'Customer Membership',
+                title: 'Customer Package',
                 icon: Icons.edit_document,
                 route: Routes.ManagerCustomerPackageReportScreen),
             DrawerItem(
-                title: 'Customer Package',
+                title: 'Customer Membership',
                 icon: Icons.stacked_line_chart_outlined,
                 route: Routes.ManagerCustomerMembershipReportScreen)
           ]),
@@ -157,13 +157,20 @@ class ManagerDrawerScreen extends StatelessWidget {
             if (item.subItems.isNotEmpty) {
               return Theme(
                 data: Theme.of(context).copyWith(
-                    dividerColor: Colors.transparent,
-                    highlightColor: Colors.black),
+                  dividerColor: Colors.transparent,
+                  focusColor: primaryColor,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
                 child: ExpansionTile(
+                  iconColor:
+                      Colors.grey[800], // color of the arrow when expanded
+                  collapsedIconColor: Colors.grey[800],
                   dense: true,
                   leading: Icon(
                     item.icon,
                     size: 18.sp,
+                    color: Colors.grey[800],
                   ),
                   title: CustomTextWidget(
                     text: item.title,

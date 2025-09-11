@@ -86,34 +86,36 @@ class ManagerTaxesScreen extends StatelessWidget {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 elevation: 2,
-                child: ExpansionTile(
-                  title: Text(
-                    '${tax.title ?? '-'} - ${tax.value ?? 0}${tax.type == 'percent' ? '%' : ''}',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: Text(
-                    'Module: ${tax.taxType ?? '-'} | Status: ${tax.status == 1 ? 'Active' : 'Inactive'}',
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: Column(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${tax.title ?? '-'} - ${tax.value ?? 0}${tax.type == 'percent' ? '%' : ''}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Module: ${tax.taxType ?? '-'} | Status: ${tax.status == 1 ? 'Active' : 'Inactive'}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 8),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Branches:',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: tax.branches
-                                .map((b) => Chip(label: Text(b.name ?? '-')))
-                                .toList(),
+                          const Text(
+                            'Branches:',
+                            style: TextStyle(fontWeight: FontWeight.w600),
                           ),
+                          const SizedBox(height: 4),
+                          ...tax.branches
+                              .map((b) => Text('- ${b.name ?? '-'}')),
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

@@ -9,12 +9,10 @@ import '../../../../wiget/loading.dart';
 import '../../../../network/network_const.dart';
 
 class ManagerCustomerPackageReportScreen extends StatelessWidget {
- ManagerCustomerPackageReportScreen({super.key});
-  final controller =
-      Get.put(ManagerCustomerPackageReportController());
+  ManagerCustomerPackageReportScreen({super.key});
+  final controller = Get.put(ManagerCustomerPackageReportController());
   @override
   Widget build(BuildContext context) {
-   
     final RxBool isSearching = false.obs;
     final TextEditingController searchController = TextEditingController();
 
@@ -24,7 +22,7 @@ class ManagerCustomerPackageReportScreen extends StatelessWidget {
           preferredSize: Size.fromHeight(70.h),
           child: Obx(() {
             return CustomAppBar(
-              title: isSearching.value ? '' : _getAppBarTitle(controller),
+              title: "Cusrtomer Package",
               backgroundColor: primaryColor,
               actions: [
                 if (isSearching.value)
@@ -182,31 +180,9 @@ class ManagerCustomerPackageReportScreen extends StatelessWidget {
                   return customer.branchPackage!.map((pkg) {
                     return DataRow(cells: [
                       DataCell(
-                        Row(
-                          children: [
-                            // Customer image or fallback icon
-                            customer.image != null && customer.image!.isNotEmpty
-                                ? CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        '${Apis.pdfUrl}/${customer.image!}'),
-                                    radius: 20,
-                                  )
-                                : const CircleAvatar(
-                                    backgroundColor: secondaryColor,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: black,
-                                    ),
-                                    radius: 20,
-                                  ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                customer.fullName ?? '',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          customer.fullName ?? '',
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       DataCell(Text(customer.email ?? '')),

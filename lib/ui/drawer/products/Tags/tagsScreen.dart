@@ -21,6 +21,7 @@ class Tagsscreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "Tags"),
       drawer: DrawerScreen(),
+
       body: RefreshIndicator(
         color: primaryColor,
         onRefresh: () async {
@@ -157,6 +158,7 @@ class Tagsscreen extends StatelessWidget {
           // );
         }),
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);

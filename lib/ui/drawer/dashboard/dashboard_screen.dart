@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/ui/drawer/appointment/addNewAppointment/newAppointmentScreen.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
@@ -152,6 +153,16 @@ class DashboardScreen extends StatelessWidget {
           controller.selectedDateRange.value = null;
           controller.CalllApis();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => Newappointmentscreen());
+        },
+        backgroundColor: primaryColor,
+        child: const Icon(
+          Icons.add,
+          color: white,
+        ),
       ),
     );
   }
