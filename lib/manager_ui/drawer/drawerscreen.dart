@@ -23,7 +23,7 @@ class ManagerDrawerScreen extends StatelessWidget {
       DrawerItem(
           title: 'Booking',
           icon: FontAwesomeIcons.calendarDays,
-          route: Routes.Getappointmentmanagerscreen),
+          route: Routes.Managerappointmentsscreen),
       DrawerItem(
         title: 'Services',
         route: Routes.ManagerServicescreen, // parent doesn’t navigate

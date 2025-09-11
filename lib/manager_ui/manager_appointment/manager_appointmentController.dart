@@ -10,7 +10,6 @@ import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
-
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
@@ -54,6 +53,9 @@ class Appointment {
   factory Appointment.fromJson(Map<String, dynamic> json) {
     final customer = json['customer'] ?? {};
     final services = (json['services'] as List?) ?? [];
+    final firstService = services.isNotEmpty ? services[0] : {};
+    final service = firstService['service'] ?? {};
+    final staff = firstService['staff'] ?? {};
     final branchMembership = customer['branch_membership'];
 
     // Helper function to safely convert dynamic to string
@@ -92,35 +94,6 @@ class Appointment {
       return normalized;
     }
 
-    // Get staff name from first service (assuming all services have same staff)
-    String staffName = '';
-    String staffImage = '';
-    if (services.isNotEmpty) {
-      final firstService = services[0];
-      final staff = firstService['staff'] ?? {};
-      staffName = toString(staff['full_name']);
-      staffImage = staff['image'] is Map ? '' : toString(staff['image']);
-    }
-
-    // Combine service names from all services
-    List<String> serviceNames = [];
-    for (var service in services) {
-      final serviceData = service['service'];
-      if (serviceData != null) {
-        final serviceName = toString(serviceData['name']);
-        if (serviceName.isNotEmpty) {
-          serviceNames.add(serviceName);
-        }
-      }
-    }
-
-    // If no service names found, add a placeholder
-    if (serviceNames.isEmpty) {
-      serviceNames.add('Custom Service');
-    }
-
-    final combinedServiceName = serviceNames.join(', ');
-
     return Appointment(
       appointmentId: toString(json['appointment_id']),
       date: toString(json['appointment_date']).split('T')[0],
@@ -130,9 +103,9 @@ class Appointment {
           customer['image'] is Map ? null : toString(customer['image']),
       clientPhone: toString(customer['phone_number']),
       amount: toInt(json['total_payment']),
-      staffName: staffName,
-      staffImage: staffImage,
-      serviceName: combinedServiceName,
+      staffName: toString(staff['full_name']),
+      staffImage: staff['image'] is Map ? null : toString(staff['image']),
+      serviceName: toString(service['name']),
       membership: customer['branch_membership'] != null ? 'Yes' : '-',
       package: (customer['branch_package'] != null &&
               (customer['branch_package'] is List
@@ -219,12 +192,12 @@ class PaymentSummaryState {
   RxString couponCode = ''.obs;
   Rx<CouponModel?> appliedCoupon = Rx<CouponModel?>(null);
   RxBool addAdditionalDiscount = false.obs;
-  RxString discountType = 'percentage'.obs;
+  RxString discountType = ''.obs;
   RxString discountValue = '0'.obs;
   RxDouble grandTotal = 0.0.obs;
 }
 
-class Getappointmentmanagercontroller extends GetxController {
+class ManagerAppointmentcontroller extends GetxController {
   var appointments = <Appointment>[].obs;
   var currentPage = 1;
   var hasMore = true;
@@ -234,6 +207,9 @@ class Getappointmentmanagercontroller extends GetxController {
   var coupons = <CouponModel>[].obs;
   var paymentSummaryState = PaymentSummaryState();
 
+  var appliedCoupon = Rxn<Map<String, dynamic>>();
+  var couponApplied = false.obs;
+  var couponId = ''.obs;
   // Filter and sort variables
   DateTime? selectedDate;
   DateTimeRange? selectedDateRange;
@@ -308,22 +284,21 @@ class Getappointmentmanagercontroller extends GetxController {
   }
 
   Future<void> getAppointment() async {
-    final manager = await prefs.getManagerUser();
+    final loginUser = await prefs.getManagerUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/appointments/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
         (json) => json,
       );
-
-      if (response != null && response['success'] == true) {
-        final List data = response['data'] ?? [];
-        appointments.value = data.map((e) => Appointment.fromJson(e)).toList();
-        filteredAppointments.value = List.from(appointments);
-        _applyFilters();
-      }
+      // if (response != null && response['success'] == true) {
+      final List data = response['data'] ?? [];
+      appointments.value = data.map((e) => Appointment.fromJson(e)).toList();
+      filteredAppointments.value = List.from(appointments);
+      _applyFilters();
+      // }
       print(
-          "${Apis.baseUrl}/appointments/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}");
+          "${Apis.baseUrl}/appointments?salon_id=${loginUser!.manager!.salonId}");
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     } finally {
@@ -332,14 +307,15 @@ class Getappointmentmanagercontroller extends GetxController {
   }
 
   Future<void> getTax() async {
-    //  final manager = await prefs.getManagerUser();
-    final manager = await prefs.getManagerUser();
+    final loginUser = await prefs.getManagerUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/taxes/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/taxes/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
         (json) => json,
       );
+      print(
+          '=============> ${Apis.baseUrl}/taxes/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}');
       if (response != null && response['data'] != null) {
         final List data = response['data'] ?? [];
         taxes.value = data.map((e) => TaxModel.fromJson(e)).toList();
@@ -352,13 +328,15 @@ class Getappointmentmanagercontroller extends GetxController {
   }
 
   Future<void> getCoupons() async {
-    final manager = await prefs.getManagerUser();
+    final loginUser = await prefs.getManagerUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/coupons/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
         (json) => json,
       );
+      print(
+          '=============> ${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}');
       if (response != null && response['data'] != null) {
         final List data = response['data'] ?? [];
         coupons.value = data.map((e) => CouponModel.fromJson(e)).toList();
@@ -370,50 +348,108 @@ class Getappointmentmanagercontroller extends GetxController {
     }
   }
 
-  void applyCoupon(String code) {
-    final now = DateTime.now();
-    final coupon = coupons.firstWhereOrNull((c) {
-      final start = DateTime.tryParse(c.startDate);
-      final end = DateTime.tryParse(c.endDate);
-      return c.code.toLowerCase() == code.toLowerCase() &&
-          c.status == 1 &&
-          start != null &&
-          end != null &&
-          now.isAfter(start) &&
-          now.isBefore(end.add(const Duration(days: 1)));
-    });
-    if (coupon != null) {
-      paymentSummaryState.appliedCoupon.value = coupon;
-      CustomSnackbar.showSuccess('Coupon Applied', coupon.code);
-    } else {
-      paymentSummaryState.appliedCoupon.value = null;
+  Future<void> applyCoupon(String code) async {
+    final loginUser = await prefs.getManagerUser();
+    try {
+      final res =
+          await dioClient.dio.get("${Apis.baseUrl}/coupons", queryParameters: {
+        "salon_id": loginUser!..manager!.salonId,
+      });
+
+      final List<dynamic> allCoupons = res.data["data"] ?? [];
+      final now = DateTime.now();
+
+      final matchedCoupon = allCoupons.firstWhereOrNull((c) {
+        final start = DateTime.tryParse(c["start_date"]);
+        final end = DateTime.tryParse(c["end_date"]);
+        return c["coupon_code"].toString().toLowerCase() ==
+                code.toLowerCase() &&
+            c["status"] == 1 &&
+            start != null &&
+            end != null &&
+            now.isAfter(start) &&
+            now.isBefore(end.add(const Duration(days: 1))); // inclusive
+      });
+
+      if (matchedCoupon != null) {
+        appliedCoupon.value = matchedCoupon;
+        couponId.value = matchedCoupon["_id"];
+        couponApplied.value = true;
+
+        CustomSnackbar.showSuccess(
+            "Coupon Applied", matchedCoupon["coupon_code"]);
+      } else {
+        appliedCoupon.value = null;
+        couponId.value = '';
+        couponApplied.value = false;
+
+        CustomSnackbar.showError(
+            "Invalid Coupon", "Coupon is not active or doesn't exist");
+      }
+    } catch (e) {
       CustomSnackbar.showError(
-          'Invalid Coupon', 'Coupon is not active or does not exist');
+          "Coupon Error", "Something went wrong while applying the coupon.");
+      debugPrint("applyCoupon error: $e");
     }
   }
 
-  // Add this function to calculate the grand total
+  // Calculate the grand total using the requested formula
+  // grandTotal = (serviceAmount + additionalCharges)
+  //               - membershipDiscount
+  //               - couponDiscount
+  //               - additionalDiscount
+  //               + taxAmount (on discounted base)
+  //               + tip
+  //               + productTotal
   void calculateGrandTotal({
-    required double servicePrice,
-    double memberDiscount = 0.0,
-    double taxValue = 0.0,
-    double tip = 0.0,
+    required double serviceAmount,
+    double additionalCharges = 0.0,
+    double productTotal = 0.0,
+    double membershipDiscount = 0.0,
+    String? membershipDiscountType,
     double couponDiscount = 0.0,
-    double additionalDiscount = 0.0,
-    String discountType = 'percentage',
+    bool hasAdditionalDiscount = false,
+    double additionalDiscountValue = 0.0,
+    String additionalDiscountType = 'percentage',
+    double taxPercent = 0.0,
+    double tip = 0.0,
   }) {
-    double total = servicePrice - memberDiscount;
-    total -= couponDiscount;
-    // Apply additional discount if any
-    if (additionalDiscount > 0) {
-      if (discountType == 'percentage') {
-        total -= (total * additionalDiscount / 100);
+    double baseAmount = serviceAmount + additionalCharges;
+
+    double discountedAmount = baseAmount;
+
+    // Membership discount
+    if (membershipDiscount > 0) {
+      final isPercent =
+          (membershipDiscountType ?? '').toLowerCase().startsWith('percent');
+      if (isPercent) {
+        discountedAmount -= (membershipDiscount * discountedAmount / 100.0);
       } else {
-        total -= additionalDiscount;
+        discountedAmount -= membershipDiscount;
       }
     }
-    double totalWithTax = total + taxValue;
-    double grandTotal = totalWithTax + tip;
+
+    // Coupon discount (value already computed outside)
+    discountedAmount -= couponDiscount;
+
+    // Additional discount
+    if (hasAdditionalDiscount && additionalDiscountValue > 0) {
+      final isPercent =
+          additionalDiscountType.toLowerCase().startsWith('percent');
+      if (isPercent) {
+        discountedAmount -=
+            (additionalDiscountValue * discountedAmount / 100.0);
+      } else {
+        discountedAmount -= additionalDiscountValue;
+      }
+    }
+
+    if (discountedAmount < 0) discountedAmount = 0;
+
+    // Tax
+    final taxAmount = discountedAmount * (taxPercent / 100.0);
+
+    final grandTotal = discountedAmount + taxAmount + tip + productTotal;
     paymentSummaryState.grandTotal.value = grandTotal < 0 ? 0 : grandTotal;
   }
 
@@ -437,9 +473,9 @@ class Getappointmentmanagercontroller extends GetxController {
   // Get payment data by appointment ID and open PDF
   Future<void> openAppointmentPdf(String appointmentId) async {
     try {
-      final manager = await prefs.getManagerUser();
+      final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/payments?salon_id=${manager?.manager?.salonId}',
+        '${Apis.baseUrl}/payments?salon_id=${loginUser!..manager!.salonId}',
         (json) => json,
       );
 

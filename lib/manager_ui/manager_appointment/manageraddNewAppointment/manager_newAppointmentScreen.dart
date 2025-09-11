@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/manager_appointment_screen/managerAppointmentController.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manageraddNewAppointment/manager_newAppointmentController.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -14,8 +15,9 @@ import '../../../../wiget/Custome_textfield.dart';
 import '../../../../wiget/custome_dropdown.dart';
 import '../../../../wiget/loading.dart';
 
-class Managerappointmentsscreen extends StatelessWidget {
-  final getController = Get.put(Managerappointmentcontroller());
+class MaanagerNewappointmentscreen extends StatelessWidget {
+  final ManagerNewappointmentcontroller getController =
+      Get.put(ManagerNewappointmentcontroller());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,6 +61,7 @@ class Managerappointmentsscreen extends StatelessWidget {
         backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: white),
       ),
+      drawer: ManagerDrawerScreen(),
       body: Form(
         key: _formKey,
         child: Column(
@@ -120,13 +123,12 @@ class Managerappointmentsscreen extends StatelessWidget {
 
   Widget navigationButtons() {
     return Obx(() {
-      final step = getController.currentStep.value;
+        final step = getController.currentStep.value;
       final isLoading = getController.isBookingLoading.value;
       final lastIndex = nodeTitles.length - 1;
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Back button: show when not on first step and not on final confirmation
           (step > 0 && step <= lastIndex)
               ? ElevatedButton(
                   onPressed: () => getController.previousStep(),
@@ -142,37 +144,20 @@ class Managerappointmentsscreen extends StatelessWidget {
           ElevatedButton(
             onPressed: isLoading
                 ? null
-                : () async {
-                    if (!_formKey.currentState!.validate()) return;
+                : () {
+                    if (_formKey.currentState!.validate()) {
+                      if (step == 3) {
+                        getController.addBooking();
+                      } else if (step >= lastIndex) {
+                        Get.back();
+                      } else {
 
-                    // If we are on Customer Details step (index 3) -> add booking
-                    // Note: Customer Details moved from 4 -> 3 (after removing branch step)
-                    if (step == 3) {
-                      await getController.addBooking();
-                      return;
-                    }
-
-                    // If already on final confirmation step, just close
-                    if (step >= lastIndex) {
-                      Get.back();
-                      return;
-                    }
-
-                    // Validate current step before proceeding
-                    if (getController.canProceedToNextStep()) {
-                      // Move to next step safely (limit by nodeTitles length)
-                      if (getController.currentStep.value < lastIndex) {
-                        getController.currentStep.value++;
-
-                        // If we just landed on the Date & Time step (now index 2),
-                        // set today's date and fetch slots
-                        if (getController.currentStep.value == 2) {
-                          getController.selectedDate.value = DateTime.now();
-                          await getController.fetchAvailableSlots();
+                        if (getController.canProceedToNextStep()) {
+                          getController.nextStep();
+                        } else {
+                          _showValidationMessage(step);
                         }
                       }
-                    } else {
-                      _showValidationMessage(step);
                     }
                   },
             style: ElevatedButton.styleFrom(
@@ -181,8 +166,7 @@ class Managerappointmentsscreen extends StatelessWidget {
             child: isLoading
                 ? SizedBox(width: 24, height: 24, child: CustomLoadingAvatar())
                 : Text(
-                    // Show "Add Booking" on Customer Details step (index 3)
-                    step == 3
+                    step == 4
                         ? "Add Booking"
                         : (step >= nodeTitles.length - 1 ? "Finish" : "Next"),
                     style: TextStyle(color: white),
@@ -193,7 +177,107 @@ class Managerappointmentsscreen extends StatelessWidget {
     });
   }
 
-  // Removed obsolete Case1 (branch selection)
+  // Widget Case1() {
+  //   return Obx(() {
+  //     final branchList = getController.branches;
+  //     return GridView.builder(
+  //       shrinkWrap: true,
+  //       // physics: NeverScrollableScrollPhysics(),
+  //       itemCount: branchList.length,
+  //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //         crossAxisCount: 2,
+  //         childAspectRatio: 3 / 3.8,
+  //         crossAxisSpacing: 10.w,
+  //         mainAxisSpacing: 10.h,
+  //       ),
+  //       itemBuilder: (context, index) {
+  //         final branch = branchList[index];
+  //         return GestureDetector(
+  //           onTap: () => getController.selectBranch(branch),
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(12.r),
+  //               border: Border.all(
+  //                 color: getController.selectedBranch.value == branch
+  //                     ? primaryColor
+  //                     : Colors.grey.shade200,
+  //                 width: getController.selectedBranch.value == branch ? 2 : 1,
+  //               ),
+  //               boxShadow: [
+  //                 BoxShadow(
+  //                   color: Colors.grey.withOpacity(0.2),
+  //                   spreadRadius: 1,
+  //                   blurRadius: 5,
+  //                   offset: Offset(0, 3), // changes position of shadow
+  //                 ),
+  //               ],
+  //             ),
+  //             // elevation: 4,
+  //             // shape: RoundedRectangleBorder(
+  //             //     borderRadius: BorderRadius.circular(12.r)),
+  //             child: Padding(
+  //               padding: EdgeInsets.all(10.w),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 children: [
+  //                   CircleAvatar(
+  //                     radius: 30.r,
+  //                     backgroundImage: branch.image != null
+  //                         ? NetworkImage("${Apis.pdfUrl}${branch.image}"!)
+  //                         : AssetImage(AppImages.placeholder) as ImageProvider,
+  //                   ),
+  //                   SizedBox(height: 10.h),
+  //                   Text(
+  //                     branch.name,
+  //                     style: TextStyle(
+  //                       fontWeight: FontWeight.bold,
+  //                       color: getController.selectedBranch.value == branch
+  //                           ? primaryColor
+  //                           : Colors.black87,
+  //                     ),
+  //                     textAlign: TextAlign.center,
+  //                   ),
+  //                   SizedBox(height: 5.h),
+  //                   Text(
+  //                     "${branch.country} / ${branch.postalCode}",
+  //                     style: TextStyle(color: Colors.grey),
+  //                     textAlign: TextAlign.center,
+  //                   ),
+  //                   Divider(),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       Icon(Icons.phone, size: 16, color: grey),
+  //                       SizedBox(width: 5),
+  //                       Text(branch.contactNumber,
+  //                           style: TextStyle(fontSize: 12, color: grey)),
+  //                     ],
+  //                   ),
+  //                   SizedBox(height: 5),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       Icon(Icons.email, size: 16, color: grey),
+  //                       SizedBox(width: 5),
+  //                       Expanded(
+  //                         child: Text(
+  //                           branch.contactEmail,
+  //                           style: TextStyle(fontSize: 12, color: grey),
+  //                           overflow: TextOverflow.ellipsis,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     );
+  //   });
+  // }
   Widget Case2() {
     return Obx(() {
       final serviceList = getController.services;
@@ -282,7 +366,6 @@ class Managerappointmentsscreen extends StatelessWidget {
       );
     });
   }
-
   Widget Case3() {
     return Obx(() {
       // Fetch staff if not already fetched
@@ -375,7 +458,7 @@ class Managerappointmentsscreen extends StatelessWidget {
     });
   }
 
-  Widget Case4() {
+Widget Case4() {
     return Obx(() {
       final selectedDate = getController.selectedDate.value;
       final availableSlots = getController.availableSlots;
@@ -524,6 +607,7 @@ class Managerappointmentsscreen extends StatelessWidget {
 
   Widget Case5() {
     return Column(
+      spacing: 10,
       children: [
         CustomTextFormField(
           controller: getController.fullNameController,
@@ -531,14 +615,12 @@ class Managerappointmentsscreen extends StatelessWidget {
           keyboardType: TextInputType.text,
           validator: (value) => Validation.validatename(value),
         ),
-        SizedBox(height: 10),
         CustomTextFormField(
           controller: getController.emailController,
           labelText: 'Email',
           keyboardType: TextInputType.emailAddress,
           validator: (value) => Validation.validateEmail(value),
         ),
-        SizedBox(height: 10),
         CustomTextFormField(
           controller: getController.phoneController,
           labelText: 'Phone Number',
@@ -549,7 +631,6 @@ class Managerappointmentsscreen extends StatelessWidget {
             LengthLimitingTextInputFormatter(10),
           ],
         ),
-        SizedBox(height: 10),
         Obx(() => CustomDropdown<String>(
               value: getController.selectedGender.value.isEmpty
                   ? null
@@ -568,6 +649,7 @@ class Managerappointmentsscreen extends StatelessWidget {
   }
 
   Widget Case6() {
+    final branch = getController.selectedBranch.value;
     final staff = getController.selectedStaff.value;
     final service = getController.selectedService.value;
     final date = getController.selectedDate.value;
@@ -591,6 +673,62 @@ class Managerappointmentsscreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Salon Info
+                Text("SALON INFO",
+                    style: TextStyle(
+                        color: primaryColor, fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: secondaryColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    spacing: 5.h,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(branch?.name ?? '',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Row(
+                        children: [
+                          Icon(Icons.phone, size: 16, color: secondaryColor),
+                          SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () async {
+                              final phoneNumber = branch?.contactNumber ?? '';
+                              if (phoneNumber.isNotEmpty) {
+                                final Uri phoneUri =
+                                    Uri(scheme: 'tel', path: phoneNumber);
+                                if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                } else {
+                                  ScaffoldMessenger.of(Get.context!)
+                                      .showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Could not launch phone dialer'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: Text(
+                              "${branch?.contactNumber ?? ''}",
+                              style: TextStyle(
+                                color: primaryColor,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
                 // Customer Info
                 Text("CUSTOMER INFO",
                     style: TextStyle(
@@ -604,9 +742,9 @@ class Managerappointmentsscreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
+                    spacing: 5.h,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 5),
                       Text("Name: $name"),
                       Row(
                         children: [
@@ -692,9 +830,9 @@ class Managerappointmentsscreen extends StatelessWidget {
                     border: Border.all(color: secondaryColor.withOpacity(0.3)),
                   ),
                   child: Column(
+                    spacing: 5.h,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 5),
                       Row(
                         children: [
                           Text("Staff: ",
@@ -726,12 +864,13 @@ class Managerappointmentsscreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
+                          spacing: 5.h,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 5),
                             Text("Services",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             Row(
+                              spacing: 5.h,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(service?.name ?? ''),

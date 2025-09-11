@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/ui/drawer/drawer_screen.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentController.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/colors.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/custome_snackbar.dart';
-import 'appointmentController.dart';
 import '../../../main.dart';
 import '../../../network/network_const.dart';
-import '../../../network/dio.dart';
 
-class PaymentSummaryScreen extends StatefulWidget {
+class ManagerPaymentSummaryScreen extends StatefulWidget {
   final dynamic a; // pass appointment object
 
-  const PaymentSummaryScreen({Key? key, required this.a}) : super(key: key);
+  const ManagerPaymentSummaryScreen({Key? key, required this.a})
+      : super(key: key);
 
   @override
-  State<PaymentSummaryScreen> createState() => _PaymentSummaryScreenState();
+  State<ManagerPaymentSummaryScreen> createState() =>
+      _PaymentSummaryScreenState();
 }
 
-class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
-  final controller = Get.find<AppointmentController>();
+class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
+  final controller = Get.find<ManagerAppointmentcontroller>();
   final _additionalChargesCtrl = TextEditingController(text: '0');
   String _invoiceFormat = 'fullpage';
   bool _showAdditionalCharges = false;
@@ -54,7 +55,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(title: "Payment Summary"),
-      drawer: DrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Obx(() {
         final selectedTax = state.selectedTax.value; // TaxModel? (can be null)
         final tips = double.tryParse(state.tips.value) ?? 0.0;
@@ -754,9 +755,9 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                         .toList();
                   }
 
-                  final loginUser = await prefs.getUser();
+                  final loginUser = await prefs.getManagerUser();
                   final payload = <String, dynamic>{
-                    'salon_id': loginUser?.salonId,
+                    'salon_id': loginUser?.manager?.salonId,
                     'appointment_id': widget.a.appointmentId,
                     'tax_id': state.selectedTax.value?.id,
                     'tips': tips,
@@ -788,7 +789,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                       await controller.openPdf(fullUrl);
                     }
                     Get.back();
-                    Get.put((AppointmentController())).getAppointment();
+                    Get.put(ManagerAppointmentcontroller()).getAppointment();
                   } catch (e) {
                     CustomSnackbar.showError(
                         'Error', 'Failed to generate bill: $e');

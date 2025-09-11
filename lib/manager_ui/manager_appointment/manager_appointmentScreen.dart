@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/manager_appointment_screen/getappointmentManagerController.dart';
-import 'package:flutter_template/manager_ui/manager_appointment_screen/managerAppointmentSScreen.dart';
-import 'package:flutter_template/manager_ui/manager_appointment_screen/managerpayment_sheet.dart';
-
-import 'package:flutter_template/ui/drawer/appointment/payment_sheet.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentController.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manager_payment_sheet.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manageraddNewAppointment/manager_newAppointmentScreen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
-
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/loading.dart';
-import '../../ui/drawer/drawer_screen.dart';
-import '../drawer/drawerscreen.dart';
 
-class Getappointmentmanagerscreen extends StatelessWidget {
-  Getappointmentmanagerscreen({super.key});
-  final Getappointmentmanagercontroller getController =
-      Get.put(Getappointmentmanagercontroller());
+class ManagerAppointmentscreen extends StatelessWidget {
+  ManagerAppointmentscreen({super.key});
+  final ManagerAppointmentcontroller getController = Get.put(ManagerAppointmentcontroller());
 
   @override
   Widget build(BuildContext context) {
@@ -121,8 +116,9 @@ class Getappointmentmanagerscreen extends StatelessWidget {
           ],
         ),
       ),
-      drawer: ManagerDrawerScreen(),
+     drawer: ManagerDrawerScreen(),
       body: Container(
+        
         child: Obx(() {
           if (getController.isLoading.value) {
             return Center(child: CustomLoadingAvatar());
@@ -192,14 +188,8 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                           // ),
                           // SizedBox(width: 8),
                           Flexible(
-                              child: Tooltip(
-                            message: a.clientName,
-                            child: Text(
-                              a.clientName,
-                              style: TextStyle(color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )),
+                              child: Text(a.clientName,
+                                  style: TextStyle(color: Colors.black))),
                         ],
                       )),
                       DataCell(Text('₹ ${a.amount}',
@@ -218,38 +208,12 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                           // ),
                           // SizedBox(width: 8),
                           Flexible(
-                              child: Tooltip(
-                            message: a.staffName.isNotEmpty
-                                ? a.staffName
-                                : 'Not Assigned',
-                            child: Text(
-                              a.staffName.isNotEmpty
-                                  ? a.staffName
-                                  : 'Not Assigned',
-                              style: TextStyle(color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )),
+                              child: Text(a.staffName,
+                                  style: TextStyle(color: Colors.black))),
                         ],
                       )),
-                      DataCell(
-                        Tooltip(
-                          message: a.serviceName.isNotEmpty
-                              ? a.serviceName
-                              : 'Custom Service',
-                          child: Container(
-                            constraints: BoxConstraints(maxWidth: 200),
-                            child: Text(
-                              a.serviceName.isNotEmpty
-                                  ? a.serviceName
-                                  : 'Custom Service',
-                              style: TextStyle(color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                      ),
+                      DataCell(Text(a.serviceName,
+                          style: TextStyle(color: Colors.black))),
                       DataCell(a.membership == '-'
                           ? Text('-', style: TextStyle(color: Colors.black))
                           : Chip(
@@ -283,13 +247,7 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                                         ? 'Cancelled'
                                         : a.status.toLowerCase() == 'check in'
                                             ? 'Check In'
-                                            : a.status.toLowerCase() ==
-                                                    'check-out'
-                                                ? 'Check-out'
-                                                : a.status.toLowerCase() ==
-                                                        'check out'
-                                                    ? 'Check-out'
-                                                    : a.status,
+                                            : 'Check-out',
                                 style: TextStyle(color: Colors.black),
                               ),
                               backgroundColor: a.status.toLowerCase() ==
@@ -299,12 +257,7 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                                       ? const Color.fromARGB(255, 243, 88, 77)
                                       : a.status.toLowerCase() == 'check in'
                                           ? Colors.yellow
-                                          : a.status.toLowerCase() ==
-                                                      'check-out' ||
-                                                  a.status.toLowerCase() ==
-                                                      'check out'
-                                              ? Colors.green
-                                              : Colors.grey,
+                                          : Colors.green,
                             )),
                       ),
                       DataCell(
@@ -312,7 +265,6 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                           onTap: a.paymentStatus != 'Paid'
                               ? () {
                                   final controller = getController;
-                                  // Set initial values for the payment summary state
                                   controller.paymentSummaryState.tips.value =
                                       '0';
                                   controller.paymentSummaryState.paymentMethod
@@ -332,15 +284,22 @@ class Getappointmentmanagerscreen extends StatelessWidget {
                                       .value = 'percentage';
                                   controller.paymentSummaryState.discountValue
                                       .value = '0';
-                                  // Calculate initial grand total
+                                  // Calculate initial grand total (new signature)
                                   controller.calculateGrandTotal(
-                                    servicePrice: a.amount.toDouble(),
-                                    memberDiscount:
-                                        a.branchMembershipDiscount ?? 0.0,
-                                    taxValue: controller.taxes.isNotEmpty
-                                        ? controller.taxes.first.value *
-                                            a.amount /
-                                            100
+                                    serviceAmount: a.amount.toDouble(),
+                                    additionalCharges: 0,
+                                    productTotal: 0,
+                                    membershipDiscount:
+                                        (a.branchMembershipDiscount ?? 0.0)
+                                            .toDouble(),
+                                    membershipDiscountType:
+                                        a.branchMembershipDiscountType,
+                                    couponDiscount: 0,
+                                    hasAdditionalDiscount: false,
+                                    additionalDiscountValue: 0,
+                                    additionalDiscountType: 'percentage',
+                                    taxPercent: controller.taxes.isNotEmpty
+                                        ? controller.taxes.first.value
                                         : 0.0,
                                     tip: 0.0,
                                   );
@@ -407,8 +366,7 @@ class Getappointmentmanagerscreen extends StatelessWidget {
             color: white,
           ),
           onPressed: () {
-            print("===========> object");
-            Get.to(Managerappointmentsscreen());
+            Get.to(() => MaanagerNewappointmentscreen());
           }),
     );
   }
@@ -625,7 +583,7 @@ class Getappointmentmanagerscreen extends StatelessWidget {
   }
 
   void _showExportDialog(
-      BuildContext context, Getappointmentmanagercontroller controller) {
+      BuildContext context, ManagerAppointmentcontroller controller) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

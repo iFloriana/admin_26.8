@@ -1,6 +1,7 @@
 import 'package:flutter_template/manager_ui/ManagerProducts/allProducts/addProductsScreen.dart';
 import 'package:flutter_template/manager_ui/ManagerProducts/product_list/product_list_screen.dart';
 import 'package:flutter_template/manager_ui/ManagerProducts/variations/get/variationGetScreen.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentScreen.dart';
 import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
@@ -37,8 +38,6 @@ import '../manager_ui/customer/add/manager_post_customer_screen.dart';
 import '../manager_ui/customer/manager_get_customer_screen.dart';
 import '../manager_ui/dashboard/dashboardScreen.dart';
 import '../manager_ui/inhouse_manager/get/inhouseProduct_screen.dart';
-import '../manager_ui/manager_appointment_screen/getappointmentManagerScreen.dart';
-import '../manager_ui/manager_appointment_screen/managerAppointmentSScreen.dart';
 import '../manager_ui/manager_orders/order_report_screen.dart';
 import '../manager_ui/manager_packages/manager_packageScreen.dart';
 import '../manager_ui/manager_profile/managerProfilescreen.dart';
@@ -287,12 +286,12 @@ class AppPages {
         transition: Transition.rightToLeft),
     GetPage(
         name: Routes.Managerappointmentsscreen,
-        page: () => Managerappointmentsscreen(),
+        page: () => ManagerAppointmentscreen(),
         transition: Transition.rightToLeft),
-    GetPage(
-        name: Routes.Getappointmentmanagerscreen,
-        page: () => Getappointmentmanagerscreen(),
-        transition: Transition.rightToLeft),
+    // GetPage(
+    //     name: Routes.Getappointmentmanagerscreen,
+    //     page: () => Getappointmentmanagerscreen(),
+    //     transition: Transition.rightToLeft),
     GetPage(
         name: Routes.ManagerDashboardScreen,
         page: () => ManagerDashboardScreen(),

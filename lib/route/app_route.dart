@@ -71,7 +71,7 @@ static const CustomerMembershipReportScreen =
 
   static const Managerappointmentsscreen = "/Managerappointmentsscreen";
   static const ManagerDashboardScreen = "/ManagerDashboardScreen";
-  static const Getappointmentmanagerscreen = "/Getappointmentmanagerscreen";
+  // static const Getappointmentmanagerscreen = "/Getappointmentmanagerscreen";
   static const ManagerServicescreen = "/ManagerServicescreen";
   static const ManagerPackagescreen = "/ManagerPackagescreen";
   static const MenagerStaffScreen = "/MenagerStaffScreen";

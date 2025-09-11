@@ -1,8 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentController.dart';
 import 'package:get/get.dart';
 import '../../../../main.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
+class BranchModel {
+  final String id;
+  final String name;
+  final String category;
+  final int status;
+  final String contactEmail;
+  final String contactNumber;
+  final List<String> paymentMethod;
+  final List<ServiceModel> services;
+  final String address;
+  final String landmark;
+  final String country;
+  final String state;
+  final String city;
+  final String postalCode;
+  final String description;
+  final String? image;
+  final double ratingStar;
+  final int totalReview;
+
+  BranchModel({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.status,
+    required this.contactEmail,
+    required this.contactNumber,
+    required this.paymentMethod,
+    required this.services,
+    required this.address,
+    required this.landmark,
+    required this.country,
+    required this.state,
+    required this.city,
+    required this.postalCode,
+    required this.description,
+    required this.image,
+    required this.ratingStar,
+    required this.totalReview,
+  });
+
+  factory BranchModel.fromJson(Map<String, dynamic> json) {
+    String _toString(dynamic v) => v == null
+        ? ''
+        : (v is String)
+            ? v
+            : v.toString();
+    int _toInt(dynamic v) {
+      if (v == null) return 0;
+      if (v is int) return v;
+      if (v is double) return v.toInt();
+      if (v is String) return int.tryParse(v) ?? 0;
+      return 0;
+    }
+
+    double _toDouble(dynamic v) {
+      if (v == null) return 0;
+      if (v is num) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0;
+      return 0;
+    }
+
+    // Image may arrive as String or Map; extract a URL-like string if present
+    String? _parseImage(dynamic v) {
+      if (v == null) return null;
+      if (v is String && v.isNotEmpty) return v;
+      if (v is Map) {
+        final keys = ['url', 'path', 'file'];
+        for (final k in keys) {
+          final val = v[k];
+          if (val is String && val.isNotEmpty) return val;
+        }
+      }
+      return null;
+    }
+
+    // Services may be a list of service objects or a list of wrapper objects
+    final dynamicServices = (json['service_id'] as List?) ?? [];
+    final parsedServices = dynamicServices
+        .map((e) {
+          if (e is Map) {
+            final inner = e['service'] is Map ? e['service'] : e;
+            if (inner is Map<String, dynamic>) {
+              return ServiceModel.fromJson(inner);
+            }
+          }
+          return null;
+        })
+        .whereType<ServiceModel>()
+        .toList();
+
+    // Payment methods as strings regardless of underlying type
+    final methods = ((json['payment_method'] as List?) ?? [])
+        .map((m) => _toString(m))
+        .where((s) => s.isNotEmpty)
+        .toList();
+
+    return BranchModel(
+      id: _toString(json['_id']),
+      name: _toString(json['name']),
+      category: json['category'] is Map
+          ? _toString(json['category']['name'] ?? json['category']['_id'])
+          : _toString(json['category']),
+      status: _toInt(json['status']),
+      contactEmail: _toString(json['contact_email']),
+      contactNumber: _toString(json['contact_number']),
+      paymentMethod: methods,
+      services: parsedServices,
+      address: _toString(json['address']),
+      landmark: _toString(json['landmark']),
+      country: _toString(json['country']),
+      state: _toString(json['state']),
+      city: _toString(json['city']),
+      postalCode: _toString(json['postal_code']),
+      description: _toString(json['description']),
+      image: _parseImage(json['image_url']),
+      ratingStar: _toDouble(json['rating_star']),
+      totalReview: _toInt(json['total_review']),
+    );
+  }
+}
 
 class ServiceModel {
   final String id;
@@ -94,8 +216,11 @@ class StaffModel {
   }
 }
 
-class Managerappointmentcontroller extends GetxController {
+class ManagerNewappointmentcontroller extends GetxController {
   var currentStep = 0.obs;
+  
+  var branches = <BranchModel>[].obs;
+  var selectedBranch = Rxn<BranchModel>();
   var fullNameController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
@@ -112,10 +237,9 @@ class Managerappointmentcontroller extends GetxController {
 
   Future<void> fetchServicesForBranch() async {
     try {
-      // final loginUser = await prefs.getUser();
-            final manager = await prefs.getManagerUser();
+      final loginUser = await prefs.getManagerUser();
       var response = await dioClient.getData(
-        '${Apis.baseUrl}/services?salon_id=${manager!.manager!.salonId}',
+        '${Apis.baseUrl}/services?salon_id=${loginUser!.manager!.salonId}',
         (json) => json,
       );
       final serviceData = response['data'] as List;
@@ -128,11 +252,9 @@ class Managerappointmentcontroller extends GetxController {
 
   Future<void> fetchStaffsForBranch() async {
     try {
-      // final loginUser = await prefs.getUser();
-      final manager = await prefs.getManagerUser();
+      final loginUser = await prefs.getManagerUser();
       var response = await dioClient.getData(
-        // '${Apis.baseUrl}/staffs?salon_id=${manager!.manager!.salonId}',
-        '${Apis.baseUrl}/staffs/by-branch?salon_id=${manager?.manager?.salonId}&branch_id=${manager?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/staffs/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
         (json) => json,
       );
       final staffData = response['data'] as List;
@@ -142,6 +264,13 @@ class Managerappointmentcontroller extends GetxController {
     }
   }
 
+  void selectBranch(BranchModel branch) async {
+        final loginUser = await prefs.getManagerUser();
+     selectedBranch.value = branches.firstWhereOrNull((b) => b.id == loginUser?.manager?.branchId?.sId) ;
+    await fetchServicesForBranch(); // Changed to branch.id
+    nextStep(); // Move to next step after selection
+  }
+
   void goToStep(int step) {
     currentStep.value = step;
   }
@@ -149,9 +278,8 @@ class Managerappointmentcontroller extends GetxController {
   void nextStep() {
     if (currentStep.value < 4) {
       currentStep.value++;
-      // Auto-set date and fetch slots when reaching Date & Time step (index 2)
+
       if (currentStep.value == 2) {
-        // Set today's date as default and fetch slots
         selectedDate.value = DateTime.now();
         fetchAvailableSlots();
       }
@@ -167,20 +295,37 @@ class Managerappointmentcontroller extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getBranches();
+  }
+
+  Future<void> getBranches() async {
+    try {
+      final loginUser = await prefs.getManagerUser();
+      var response = await dioClient.getData(
+        '${Apis.baseUrl}/branches?salon_id=${loginUser!.manager!.salonId}',
+        (json) => json,
+      );
+      final branchData = response['data'] as List;
+      List<BranchModel> branchList =
+          branchData.map((e) => BranchModel.fromJson(e)).toList();
+      branches.value = branchList;
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get branches: $e');
+    }
   }
 
   Future<void> fetchAvailableSlots() async {
-    final manager = await prefs.getManagerUser();
-    final branch = manager!.manager!.branchId!.sId;
+     final loginUser = await prefs.getManagerUser();
+    final branch = loginUser?.manager?.branchId;
     final staff = selectedStaff.value;
     final date = selectedDate.value;
     if (branch == null || staff == null || date == null) return;
     try {
-      // final loginUser = await prefs.getUser();
+     
       final dateStr =
           "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       var response = await dioClient.getData(
-        '${Apis.baseUrl}/quick-booking/available-slots?salon_id=${manager!.manager!.salonId}&date=$dateStr&staff_id=${staff.id}',
+        '${Apis.baseUrl}/quick-booking/available-slots?salon_id=${loginUser!.manager!.salonId}&date=$dateStr&staff_id=${staff.id}',
         (json) => json,
       );
       availableSlots.value =
@@ -201,14 +346,13 @@ class Managerappointmentcontroller extends GetxController {
   }
 
   Future<void> addBooking() async {
-    // final loginUser = await prefs.getUser();
-    final manager = await prefs.getManagerUser();
-    final branch = manager!.manager!.branchId!.sId;
+    final loginUser = await prefs.getManagerUser();
+    final branch = loginUser?.manager?.branchId;
     final service = selectedService.value;
     final staff = selectedStaff.value;
     final date = selectedDate.value;
     final time = selectedSlot.value;
-    if (manager.manager == null ||
+    if (loginUser == null ||
         branch == null ||
         service == null ||
         staff == null ||
@@ -220,8 +364,8 @@ class Managerappointmentcontroller extends GetxController {
     isBookingLoading.value = true;
     try {
       final body = {
-        "salon_id": manager.manager!.salonId,
-        "branch_id": manager.manager!.branchId!.sId,
+        "salon_id": loginUser.manager!.salonId,
+        "branch_id": branch.sId,
         "service_id": [service.id],
         "staff_id": [staff.id],
         "date":
@@ -242,8 +386,9 @@ class Managerappointmentcontroller extends GetxController {
       );
       isBookingLoading.value = false;
       // Go to confirmation step
-      currentStep.value = 4;
+     currentStep.value = 4;
       Get.back();
+      Get.put(ManagerAppointmentcontroller()).getAppointment();
     } catch (e) {
       isBookingLoading.value = false;
       CustomSnackbar.showError('Error', 'Failed to add booking: $e');
@@ -272,6 +417,8 @@ class Managerappointmentcontroller extends GetxController {
 
   String getValidationMessage() {
     switch (currentStep.value) {
+      // case 0:
+      //   return "Please select a branch to continue";
       case 0:
         return "Please select a service to continue";
       case 1:
