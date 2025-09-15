@@ -87,7 +87,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
     };
@@ -114,7 +114,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getTags}${loginUser!.manager?.salonId}',
+        '${Apis.baseUrl}/tags/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
         (json) => json,
       );
       final data = response['data'] as List;
@@ -149,7 +149,7 @@ class ManagerTagcontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> tagData = {
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
     };

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+
 import '../../../../main.dart';
 import '../../../../network/model/postUnits.dart';
 import '../../../../network/network_const.dart';
@@ -47,7 +48,7 @@ class Branch1 {
   }
 }
 
-class managerUnitscontroller extends GetxController {
+class ManagerUnitscontroller extends GetxController {
   @override
   void onInit() {
     super.onInit();
@@ -67,7 +68,7 @@ class managerUnitscontroller extends GetxController {
     Map<String, dynamic> unitsData = {
       'name': nameController.text,
       'status': isActive.value ? 1 : 0,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'salon_id': loginUser!.manager?.salonId,
     };
 
@@ -105,7 +106,7 @@ class managerUnitscontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getUnits}${loginUser!.manager?.salonId}',
+        "${Apis.baseUrl}/units/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}",
         (json) => json,
       );
       final data = response['data'] as List;
@@ -134,7 +135,7 @@ class managerUnitscontroller extends GetxController {
     Map<String, dynamic> unitsData = {
       'name': nameController.text,
       'status': isActive.value ? 1 : 0,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': [loginUser?.manager?.branchId?.sId],
       'salon_id': loginUser!.manager?.salonId,
     };
 

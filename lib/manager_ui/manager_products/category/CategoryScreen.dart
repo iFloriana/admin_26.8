@@ -5,7 +5,6 @@ import 'package:flutter_template/manager_ui/manager_products/category/CategoryCo
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../../network/network_const.dart';
 import '../../../../utils/custom_text_styles.dart';
 import '../../../../utils/validation.dart';
@@ -15,7 +14,6 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/custome_text.dart';
 import '../../../../wiget/loading.dart';
 import '../../../../network/model/category_model.dart' as model;
-
 
 class ManagerCategoryscreen extends StatelessWidget {
   ManagerCategoryscreen({super.key});
@@ -33,7 +31,7 @@ class ManagerCategoryscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Product Categories',
       ),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: RefreshIndicator(
           color: primaryColor,
           onRefresh: () async {
@@ -232,7 +230,7 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -317,7 +315,7 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

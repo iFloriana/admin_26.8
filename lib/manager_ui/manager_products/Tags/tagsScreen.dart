@@ -19,7 +19,7 @@ class ManagerTagsscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Tags"),
+      appBar: CustomAppBar(title: "Product Tags"),
       drawer: ManagerDrawerScreen(),
       body: RefreshIndicator(
         color: primaryColor,
@@ -191,7 +191,7 @@ class ManagerTagsscreen extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   validator: (value) => Validation.validatename(value),
                 ),
-                branchDropdown(),
+                // branchDropdown(),
                 Obx(() => Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -256,7 +256,7 @@ class ManagerTagsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

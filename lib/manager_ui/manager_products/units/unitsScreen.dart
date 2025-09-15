@@ -15,7 +15,7 @@ import '../../../../wiget/custome_text.dart';
 
 class ManagerUnitsscreen extends StatelessWidget {
   ManagerUnitsscreen({super.key});
-  final getController = Get.put(managerUnitscontroller());
+  final getController = Get.put(ManagerUnitscontroller());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +123,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -182,7 +182,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/dashboard/dashboardScreen.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/manager_ui/manager_products/brand/getBrandsController.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -16,8 +15,8 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/loading.dart';
 import '../../../../network/model/brand.dart';
 
-class managerGetbrandsscreen extends StatelessWidget {
-  managerGetbrandsscreen({super.key});
+class ManagerGetbrandsscreen extends StatelessWidget {
+  ManagerGetbrandsscreen({super.key});
   final getController = Get.put(ManagerGetbrandscontroller());
 
   // Helper to check allowed image extensions
@@ -35,7 +34,6 @@ class managerGetbrandsscreen extends StatelessWidget {
         title: 'Brands',
       ),
       drawer: ManagerDrawerScreen(),
-
       body: RefreshIndicator(
           color: primaryColor,
           onRefresh: () async {
@@ -126,7 +124,6 @@ class managerGetbrandsscreen extends StatelessWidget {
                     );
                   },
                 ))),
-      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -175,7 +172,7 @@ class managerGetbrandsscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

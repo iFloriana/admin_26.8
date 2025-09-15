@@ -15,10 +15,9 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/loading.dart';
 import '../../../../network/model/productSubCategory.dart';
 
-
 class ManagerSubcategoryscreen extends StatelessWidget {
   ManagerSubcategoryscreen({super.key});
-  final  getController = Get.put(ManagerSubcategorycontroller());
+  final getController = Get.put(ManagerSubcategorycontroller());
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class ManagerSubcategoryscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Sub Categories',
       ),
-            drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Container(
           child: Obx(
         () => getController.isLoading.value
@@ -171,7 +170,7 @@ class ManagerSubcategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  branchDropdown(),
+                  // branchDropdown(),
                   brandDropdown(),
                   caregoryDropdown(),
                   Obx(() => Row(

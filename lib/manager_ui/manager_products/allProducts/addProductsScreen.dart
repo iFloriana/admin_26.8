@@ -73,7 +73,7 @@ class managerAddProductScreen extends StatelessWidget {
               // Removed _buildDiscountSection(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Status'),
-              _buildBranchDropdown(controller),
+              // _buildBranchDropdown(controller),
               _buildStatusSelector(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Branch *'),
@@ -374,50 +374,50 @@ class managerAddProductScreen extends StatelessWidget {
         ));
   }
 
-  Widget _buildBranchDropdown(ManagerAddProductController controller) {
-    return Obx(() {
-      return MultiDropdown<Branch>(
-        items: controller.branchList
-            .map((branch) => DropdownItem(
-                  label: branch.name ?? 'Unknown',
-                  value: branch,
-                ))
-            .toList(),
-        controller: controller.branchController,
-        enabled: true,
-        searchEnabled: true,
-        chipDecoration: const ChipDecoration(
-          backgroundColor: primaryColor,
-          wrap: true,
-          runSpacing: 2,
-          spacing: 10,
-        ),
-        fieldDecoration: const FieldDecoration(
-          hintText: 'Select Branches *',
-          showClearIcon: true,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            borderSide: BorderSide(color: Colors.grey, width: 1.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            borderSide: BorderSide(color: primaryColor, width: 2.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-            borderSide: BorderSide(color: Colors.red, width: 1.0),
-          ),
-        ),
-        dropdownItemDecoration: DropdownItemDecoration(
-          selectedIcon: const Icon(Icons.check_box, color: primaryColor),
-          disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-        ),
-        onSelectionChange: (selectedItems) {
-          controller.selectedBranches.value = selectedItems;
-        },
-      );
-    });
-  }
+  // Widget _buildBranchDropdown(ManagerAddProductController controller) {
+  //   return Obx(() {
+  //     return MultiDropdown<Branch>(
+  //       items: controller.branchList
+  //           .map((branch) => DropdownItem(
+  //                 label: branch.name ?? 'Unknown',
+  //                 value: branch,
+  //               ))
+  //           .toList(),
+  //       controller: controller.branchController,
+  //       enabled: true,
+  //       searchEnabled: true,
+  //       chipDecoration: const ChipDecoration(
+  //         backgroundColor: primaryColor,
+  //         wrap: true,
+  //         runSpacing: 2,
+  //         spacing: 10,
+  //       ),
+  //       fieldDecoration: const FieldDecoration(
+  //         hintText: 'Select Branches *',
+  //         showClearIcon: true,
+  //         border: OutlineInputBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //           borderSide: BorderSide(color: Colors.grey, width: 1.0),
+  //         ),
+  //         focusedBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //           borderSide: BorderSide(color: primaryColor, width: 2.0),
+  //         ),
+  //         errorBorder: OutlineInputBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(8.0)),
+  //           borderSide: BorderSide(color: Colors.red, width: 1.0),
+  //         ),
+  //       ),
+  //       dropdownItemDecoration: DropdownItemDecoration(
+  //         selectedIcon: const Icon(Icons.check_box, color: primaryColor),
+  //         disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+  //       ),
+  //       onSelectionChange: (selectedItems) {
+  //         controller.selectedBranches.value = selectedItems;
+  //       },
+  //     );
+  //   });
+  // }
 
   Widget _buildSectionTitle(TextTheme theme, String title) {
     return Padding(

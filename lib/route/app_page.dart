@@ -356,7 +356,7 @@ class AppPages {
 
     GetPage(
         name: Routes.managerGetbrandsscreen,  
-        page: () => managerGetbrandsscreen(),
+        page: () => ManagerGetbrandsscreen(),
         transition: Transition.rightToLeft),   
 
      GetPage(
@@ -378,5 +378,6 @@ class AppPages {
         name: Routes.ManagerTagsscreen,
         page: () => ManagerTagsscreen(),
         transition: Transition.rightToLeft),
+        
   ];
 }

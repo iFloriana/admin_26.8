@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -218,7 +219,7 @@ class ManagerAddProductController extends GetxController {
 
     await Future.wait([
       getBrands(salonId),
-      getBranches(salonId),
+      // getBranches(salonId),
       getCategories(salonId),
       getTags(salonId),
       getUnits(salonId),
@@ -234,40 +235,6 @@ class ManagerAddProductController extends GetxController {
       brandList.value = data.map((e) => Brand.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get brands: $e');
-    }
-  }
-
-  Future<void> getBranches(String salonId) async {
-    try {
-      print('Fetching branches for salon: $salonId');
-      final response = await dioClient.getData(
-          '${Apis.baseUrl}${Endpoints.getBranches}$salonId', (json) => json);
-      print('Branches response: $response');
-      final data = response['data'] as List;
-      print('Branches data: $data');
-      branchList.value = data.map((e) => Branch.fromJson(e)).toList();
-      print('Branch list length: ${branchList.length}');
-      print(
-          'First branch: ${branchList.isNotEmpty ? branchList.first.name : 'No branches'}');
-
-      // Debug controller state
-      print('Branch controller items count: ${branchController.items.length}');
-      print(
-          'Branch controller selected items: ${branchController.selectedItems.length}');
-
-      // Try to set items in controller
-      try {
-        branchController.setItems(branchList.value
-            .map((branch) =>
-                DropdownItem(label: branch.name ?? 'Unknown', value: branch))
-            .toList());
-        print('Successfully set items in branch controller');
-      } catch (e) {
-        print('Error setting items in branch controller: $e');
-      }
-    } catch (e) {
-      print('Error fetching branches: $e');
-      CustomSnackbar.showError('Error', 'Failed to get branches: $e');
     }
   }
 
@@ -576,7 +543,8 @@ class ManagerAddProductController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final Map<String, dynamic> fields = {
-        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+        // 'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+        'branch_id': jsonEncode([loginUser?.manager?.branchId]),
         'product_name': productNameController.text,
         'description': descriptionController.text,
         'brand_id': selectedBrand.value!.id,
@@ -635,10 +603,9 @@ class ManagerAddProductController extends GetxController {
           'Content-Type': 'multipart/form-data',
         }),
       );
-
+      Get.back();
       CustomSnackbar.showSuccess("Success", "Product updated successfully!");
       Get.find<ManagerProductListController>().fetchProducts(); // Refresh list
-      Get.back();
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to update product: $e");
     } finally {
@@ -658,8 +625,7 @@ class ManagerAddProductController extends GetxController {
       final loginUser = await prefs.getManagerUser();
 
       // Ensure all required fields are present
-      if (selectedBranches.isEmpty ||
-          selectedBrand.value == null ||
+      if (selectedBrand.value == null ||
           selectedCategory.value == null ||
           selectedUnit.value == null ||
           selectedTag.value == null ||
@@ -673,7 +639,8 @@ class ManagerAddProductController extends GetxController {
       }
 
       final Map<String, dynamic> fields = {
-        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+        // 'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+        'branch_id': jsonEncode([loginUser?.manager?.branchId]),
         'product_name': productNameController.text,
         'description': descriptionController.text,
         'brand_id': selectedBrand.value!.id,
@@ -684,17 +651,6 @@ class ManagerAddProductController extends GetxController {
         'has_variations': hasVariations.value ? 1 : 0,
         'salon_id': loginUser?.manager?.salonId,
       };
-
-      // Removed product_discount from payload
-      // if (discountAmountController.text.isNotEmpty) {
-      //   payload['product_discount'] = {
-      //     'type': discountType.value,
-      //     'start_date': startDate.value?.toIso8601String(),
-      //     'end_date': endDate.value?.toIso8601String(),
-      //     'discount_amount':
-      //         double.tryParse(discountAmountController.text) ?? 0,
-      //   };
-      // }
 
       if (hasVariations.value) {
         fields['variation_id'] = variationGroups
@@ -764,9 +720,8 @@ class ManagerAddProductController extends GetxController {
       variationGroups.clear();
       generatedVariants.clear();
       imageFile.value = null;
-
-      CustomSnackbar.showSuccess("Success", "Product added successfully!");
       Get.back();
+      CustomSnackbar.showSuccess("Success", "Product added successfully!");
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to add product: $e");
     } finally {
