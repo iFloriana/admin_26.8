@@ -1,185 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/category/CategoryController.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_products/subcategory/subcategoryController.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import '../../../../network/network_const.dart';
-import '../../../../utils/custom_text_styles.dart';
-import '../../../../utils/validation.dart';
-import '../../../../wiget/Custome_button.dart';
-import '../../../../wiget/Custome_textfield.dart';
+import '../../../../../utils/custom_text_styles.dart';
+import '../../../../../utils/validation.dart';
+import '../../../../../wiget/Custome_button.dart';
+import '../../../../../wiget/Custome_textfield.dart';
+import '../../../../../wiget/custome_text.dart';
 import '../../../../wiget/appbar/commen_appbar.dart';
-import '../../../../wiget/custome_text.dart';
 import '../../../../wiget/loading.dart';
-import '../../../../network/model/category_model.dart' as model;
+import '../../../../network/model/productSubCategory.dart';
 
-class ManagerCategoryscreen extends StatelessWidget {
-  ManagerCategoryscreen({super.key});
-  final getController = Get.put(ManagerCategorycontroller());
-  bool _isAllowedImageExtension(String path) {
-    final ext = path.toLowerCase();
-    return ext.endsWith('.jpg') ||
-        ext.endsWith('.jpeg') ||
-        ext.endsWith('.png');
-  }
+
+class ManagerSubcategoryscreen extends StatelessWidget {
+  ManagerSubcategoryscreen({super.key});
+  final  getController = Get.put(ManagerSubcategorycontroller());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Product Categories',
+        title: 'Sub Categories',
       ),
-      drawer: ManagerDrawerScreen(),
-      body: RefreshIndicator(
-          color: primaryColor,
-          onRefresh: () async {
-            getController.getCategories();
-          },
-          child: Obx(() {
-            if (getController.isLoading.value) {
-              return Center(child: CustomLoadingAvatar());
-            }
-
-            if (getController.categories.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.category_outlined,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'No categories found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: getController.categories.length,
-              itemBuilder: (context, index) {
-                final category = getController.categories[index];
-                return Card(
-                  margin: EdgeInsets.only(bottom: 12),
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    leading: category.image_url.isNotEmpty
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              '${Apis.pdfUrl}${category.image_url}?v=${DateTime.now().millisecondsSinceEpoch}',
+            drawer: ManagerDrawerScreen(),
+      body: Container(
+          child: Obx(
+        () => getController.isLoading.value
+            ? const Center(child: CustomLoadingAvatar())
+            : ListView.builder(
+                itemCount: getController.subCategories.length,
+                itemBuilder: (context, index) {
+                  final subCategory = getController.subCategories[index];
+                  return Card(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: ListTile(
+                      leading: subCategory.image.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                "${Apis.pdfUrl}${subCategory.image}?v=${DateTime.now().millisecondsSinceEpoch}",
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    color: Colors.grey[300],
+                                    child:
+                                        const Icon(Icons.image_not_supported),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
                               width: 50,
                               height: 50,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(Icons.image_not_supported),
-                                );
-                              },
-                            ),
-                          )
-                        : Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
                               color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8),
+                              child: const Icon(Icons.image_not_supported),
                             ),
-                            child: const Icon(Icons.image_not_supported),
+                      title: Text(
+                        subCategory.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Category: ${subCategory.productCategoryId.name}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
                           ),
-                    title: Text(
-                      category.name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                          // Text(
+                          //   'Branches: ${subCategory.branchId.length} • Brands: ${subCategory.brandId.length}',
+                          //   style: TextStyle(
+                          //     color: Colors.grey[600],
+                          //     fontSize: 12,
+                          //   ),
+                          // ),
+                          // Text(
+                          //   subCategory.status == 1 ? 'Active' : 'Inactive',
+                          //   style: TextStyle(
+                          //     fontSize: 12,
+                          //     color: subCategory.status == 1
+                          //         ? Colors.green
+                          //         : Colors.red,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              icon: const Icon(Icons.edit_outlined,
+                                  color: primaryColor),
+                              onPressed: () {
+                                showEditSubCategorySheet(context, subCategory);
+                              }),
+                          IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              color: primaryColor,
+                              onPressed: () => getController
+                                  .deleteSubCategory(subCategory.id)),
+                        ],
                       ),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 4),
-                        // Text(
-                        //   '${category.branchId.map((b) => b.name).join(', ')}',
-                        //   style: TextStyle(
-                        //     fontSize: 14,
-                        //     color: Colors.grey[600],
-                        //   ),
-                        // ),
-                        Text(
-                          '${category.brandId.firstOrNull?.name ?? 'None'}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        // Container(
-                        //   padding:
-                        //       EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        //   decoration: BoxDecoration(
-                        //     color: category.status == 1
-                        //         ? Colors.green[100]
-                        //         : Colors.red[100],
-                        //     borderRadius: BorderRadius.circular(12),
-                        //   ),
-                        //   child: Text(
-                        //     category.status == 1 ? 'Active' : 'Inactive',
-                        //     style: TextStyle(
-                        //       fontSize: 12,
-                        //       color: category.status == 1
-                        //           ? Colors.green[700]
-                        //           : Colors.red[700],
-                        //       fontWeight: FontWeight.w500,
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit_outlined, color: primaryColor),
-                          onPressed: () {
-                            showEditCategorySheet(context, category);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete_outline, color: primaryColor),
-                          onPressed: () {
-                            getController.showDeleteConfirmation(
-                                category.id, category.name);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          })),
+                  );
+                },
+              ),
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -195,9 +135,10 @@ class ManagerCategoryscreen extends StatelessWidget {
     getController.isActive.value = true;
     getController.selectedBranches.clear();
     getController.selectedBrand.clear();
+    getController.selectedCategory.value = null;
     getController.branchController.clearAll();
     getController.brandController.clearAll();
-    getController.singleImage.value = null; // Clear picked image for add
+    getController.singleImage.value = null;
     getController.editImageUrl.value = '';
     showModalBottomSheet(
         context: context,
@@ -230,8 +171,9 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  // branchDropdown(),
+                  branchDropdown(),
                   brandDropdown(),
+                  caregoryDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -258,26 +200,25 @@ class ManagerCategoryscreen extends StatelessWidget {
         });
   }
 
-  void showEditCategorySheet(
-      BuildContext context, model.Category category) async {
-    getController.nameController.text = category.name;
-    getController.isActive.value = category.status == 1;
-
-    // Reset image selection for editing
-    getController.singleImage.value = null;
-    getController.editImageUrl.value =
-        category.image_url; // Set network image for edit
-
+  void showEditSubCategorySheet(
+      BuildContext context, ProductSubCategory subCategory) async {
+    getController.nameController.text = subCategory.name;
+    getController.isActive.value = subCategory.status == 1;
     final selectedBranches = getController.branchList
-        .where((b) => category.branchId.any((cb) => cb.id == b.id))
+        .where((b) => subCategory.branchId.any((cb) => cb.id == b.id))
         .toList();
     final selectedBrands = getController.brandList
-        .where((b) => category.brandId.any((cb) => cb.id == b.id))
+        .where((b) => subCategory.brandId.any((cb) => cb.id == b.id))
         .toList();
+    final selectedCategory = getController.categoryList
+        .firstWhereOrNull((c) => c.id == subCategory.productCategoryId.id);
     getController.selectedBranches.value = selectedBranches;
     getController.selectedBrand.value = selectedBrands;
+    getController.selectedCategory.value = selectedCategory;
     getController.branchController.clearAll();
     getController.brandController.clearAll();
+    getController.singleImage.value = null;
+    getController.editImageUrl.value = subCategory.image;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getController.branchController
           .selectWhere((item) => selectedBranches.contains(item.value));
@@ -315,8 +256,9 @@ class ManagerCategoryscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  // branchDropdown(),
+                  branchDropdown(),
                   brandDropdown(),
+                  caregoryDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -335,9 +277,9 @@ class ManagerCategoryscreen extends StatelessWidget {
                         ],
                       )),
                   ElevatedButtonExample(
-                    text: "Update Category",
+                    text: "Update SubCategory",
                     onPressed: () {
-                      getController.updateCategory(category.id);
+                      getController.updateSubCategory(subCategory.id);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -357,7 +299,7 @@ class ManagerCategoryscreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: white,
+                color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Column(
@@ -404,15 +346,16 @@ class ManagerCategoryscreen extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 )
-              : getController.editImageUrl.value.isNotEmpty
+              : (getController.editImageUrl.value.isNotEmpty
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10.r),
                       child: Image.network(
-                        '${Apis.pdfUrl}${getController.editImageUrl.value}?v=${DateTime.now().millisecondsSinceEpoch}',
+                        "${Apis.pdfUrl}${getController.editImageUrl.value}?v=${DateTime.now().millisecondsSinceEpoch}",
                         fit: BoxFit.cover,
                       ),
                     )
-                  : Icon(Icons.image_rounded, color: primaryColor, size: 30.sp),
+                  : Icon(Icons.image_rounded,
+                      color: primaryColor, size: 30.sp)),
         ),
       );
     });
@@ -420,9 +363,9 @@ class ManagerCategoryscreen extends StatelessWidget {
 
   Widget branchDropdown() {
     return Obx(() {
-      return MultiDropdown<model.Branch>(
+      return MultiDropdown<Branch1>(
         items: getController.branchList
-            .map((branch) => DropdownItem<model.Branch>(
+            .map((branch) => DropdownItem(
                   label: branch.name ?? '',
                   value: branch,
                 ))
@@ -447,7 +390,7 @@ class ManagerCategoryscreen extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(
-              color: secondaryColor,
+              color: primaryColor,
             ),
           ),
         ),
@@ -462,20 +405,11 @@ class ManagerCategoryscreen extends StatelessWidget {
     });
   }
 
-  Widget Btn_SubCategoryAdd() {
-    return ElevatedButtonExample(
-      text: "Add Category",
-      onPressed: () {
-        getController.onAddSubCategory();
-      },
-    );
-  }
-
   Widget brandDropdown() {
     return Obx(() {
-      return MultiDropdown<model.Brand>(
+      return MultiDropdown<Subcategorys>(
         items: getController.brandList
-            .map((brand) => DropdownItem<model.Brand>(
+            .map((brand) => DropdownItem(
                   label: brand.name ?? '',
                   value: brand,
                 ))
@@ -513,5 +447,59 @@ class ManagerCategoryscreen extends StatelessWidget {
         },
       );
     });
+  }
+
+  Widget caregoryDropdown() {
+    return Obx(() {
+      return DropdownButtonFormField<Category>(
+        value: getController.selectedCategory.value,
+        decoration: InputDecoration(
+          labelText: "Select Category",
+          labelStyle: CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            borderSide: BorderSide(
+              color: grey,
+              width: 1.0,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            borderSide: BorderSide(
+              color: primaryColor,
+              width: 2.0,
+            ),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            borderSide: BorderSide(
+              color: red,
+              width: 1.0,
+            ),
+          ),
+        ),
+        items: getController.categoryList.map((Category category) {
+          return DropdownMenuItem<Category>(
+            value: category,
+            child: Text(category.name ?? ''),
+          );
+        }).toList(),
+        onChanged: (Category? newValue) {
+          print('Category dropdown onChanged called with: ${newValue?.name}');
+          if (newValue != null) {
+            getController.selectedCategory.value = newValue;
+          }
+        },
+      );
+    });
+  }
+
+  Widget Btn_SubCategoryAdd() {
+    return ElevatedButtonExample(
+      text: "Add SubCategory",
+      onPressed: () {
+        getController.onAddSubCategory();
+      },
+    );
   }
 }

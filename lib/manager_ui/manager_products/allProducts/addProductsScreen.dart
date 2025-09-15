@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/allProducts/addProductsController.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_products/allProducts/addProductsController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import '../../../../wiget/Custome_button.dart';
 import '../../../../wiget/appbar/commen_appbar.dart';
-import '../../../../wiget/custome_snackbar.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/Custome_textfield.dart';
 import '../../../../wiget/custome_text.dart';
 import '../../../../utils/custom_text_styles.dart';
 
-class ManagerAddProductScreen extends StatelessWidget {
-  ManagerAddProductScreen({super.key});
-  final controller = Get.put(ManagerAddProductController());
+class managerAddProductScreen extends StatelessWidget {
+  const managerAddProductScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ManagerAddProductController());
     final textTheme = Theme.of(context).textTheme;
     final isEditMode = controller.isEditMode.value;
 
@@ -73,7 +73,7 @@ class ManagerAddProductScreen extends StatelessWidget {
               // Removed _buildDiscountSection(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Status'),
-              // _buildBranchDropdown(controller),
+              _buildBranchDropdown(controller),
               _buildStatusSelector(controller),
               // const SizedBox(height: 24),
               // _buildSectionTitle(textTheme, 'Branch *'),
@@ -547,118 +547,118 @@ class ManagerAddProductScreen extends StatelessWidget {
       ManagerAddProductController controller, VariationGroup group, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Column(
+        spacing: 10,
         children: [
-          Expanded(
-            flex: 2,
-            child: Obx(() => DropdownButtonFormField<Variation>(
-                  value: group.selectedType.value,
-                  decoration: InputDecoration(
-                    labelText: 'Variation Type',
-                    labelStyle: CustomTextStyles.textFontMedium(
-                        size: 14.sp, color: grey),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(
-                        color: grey,
-                        width: 1.0,
-                      ),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(
-                        color: primaryColor,
-                        width: 2.0,
-                      ),
-                    ),
-                    errorBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(
-                        color: red,
-                        width: 1.0,
-                      ),
+          Obx(() => DropdownButtonFormField<Variation>(
+                value: group.selectedType.value,
+                decoration: InputDecoration(
+                  labelText: 'Variation Type',
+                  labelStyle:
+                      CustomTextStyles.textFontMedium(size: 14.sp, color: grey),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    borderSide: BorderSide(
+                      color: grey,
+                      width: 1.0,
                     ),
                   ),
-                  items: controller.variationList
-                      .map((item) =>
-                          DropdownMenuItem(value: item, child: Text(item.name)))
-                      .toList(),
-                  onChanged: (v) {
-                    group.selectedType.value = v;
-                    group.selectedValues.clear();
-                    controller.update(); // Re-triggers UI build
-                  },
-                  validator: (v) => v == null ? 'Required' : null,
-                )),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-              flex: 3,
-              child: Obx(() {
-                final variationType = group.selectedType.value;
-                if (variationType?.values == null ||
-                    variationType!.values.isEmpty) {
-                  return InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Variation Value',
-                      labelStyle: TextStyle(color: grey),
-                      border: OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                      width: 2.0,
+                    ),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    borderSide: BorderSide(
+                      color: red,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                items: controller.variationList
+                    .map((item) =>
+                        DropdownMenuItem(value: item, child: Text(item.name)))
+                    .toList(),
+                onChanged: (v) {
+                  group.selectedType.value = v;
+                  group.selectedValues.clear();
+                  controller.update(); // Re-triggers UI build
+                },
+                validator: (v) => v == null ? 'Required' : null,
+              )),
+          Row(
+            children: [
+              Expanded(
+                child: Obx(() {
+                  final variationType = group.selectedType.value;
+                  if (variationType?.values == null ||
+                      variationType!.values.isEmpty) {
+                    return InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: 'Variation Value',
+                        labelStyle: TextStyle(color: grey),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          borderSide:
+                              BorderSide(color: primaryColor, width: 2.0),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return MultiDropdown<String>(
+                    items: variationType.values
+                        .map((value) => DropdownItem(
+                              label: value,
+                              value: value,
+                            ))
+                        .toList(),
+                    controller: group.valuesController,
+                    enabled: true,
+                    searchEnabled: true,
+                    chipDecoration: const ChipDecoration(
+                      backgroundColor: primaryColor,
+                      wrap: true,
+                      runSpacing: 2,
+                      spacing: 10,
+                    ),
+                    fieldDecoration: const FieldDecoration(
+                      hintText: 'Select Values',
+                      showClearIcon: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         borderSide: BorderSide(color: primaryColor, width: 2.0),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        borderSide: BorderSide(color: Colors.red, width: 1.0),
+                      ),
                     ),
-                    child: const Text('Select variation type ',
-                        style: TextStyle(color: Colors.black54)),
+                    dropdownItemDecoration: DropdownItemDecoration(
+                      selectedIcon:
+                          const Icon(Icons.check_box, color: primaryColor),
+                      disabledIcon:
+                          Icon(Icons.lock, color: Colors.grey.shade300),
+                    ),
+                    onSelectionChange: (selectedItems) {
+                      controller.onVariationValuesChanged(index, selectedItems);
+                    },
                   );
-                }
-
-                return MultiDropdown<String>(
-                  items: variationType.values
-                      .map((value) => DropdownItem(
-                            label: value,
-                            value: value,
-                          ))
-                      .toList(),
-                  controller: group.valuesController,
-                  enabled: true,
-                  searchEnabled: true,
-                  chipDecoration: const ChipDecoration(
-                    backgroundColor: primaryColor,
-                    wrap: true,
-                    runSpacing: 2,
-                    spacing: 10,
-                  ),
-                  fieldDecoration: const FieldDecoration(
-                    hintText: 'Select Values',
-                    showClearIcon: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: primaryColor, width: 2.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: Colors.red, width: 1.0),
-                    ),
-                  ),
-                  dropdownItemDecoration: DropdownItemDecoration(
-                    selectedIcon:
-                        const Icon(Icons.check_box, color: primaryColor),
-                    disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
-                  ),
-                  onSelectionChange: (selectedItems) {
-                    controller.onVariationValuesChanged(index, selectedItems);
-                  },
-                );
-              })),
-          IconButton(
-              onPressed: () => controller.removeVariationGroup(index),
-              icon: const Icon(Icons.delete_outline, color: primaryColor)),
+                }),
+              ),
+              IconButton(
+                  onPressed: () => controller.removeVariationGroup(index),
+                  icon: const Icon(Icons.delete_outline, color: primaryColor)),
+            ],
+          )
         ],
       ),
     );

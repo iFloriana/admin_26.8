@@ -88,14 +88,14 @@ class ManagerDrawerScreen extends StatelessWidget {
             DrawerItem(
                 title: 'Brands',
                 icon: Icons.business_outlined,
-                route: Routes.ManagerGetbrandsscreen),
+                route: Routes.managerGetbrandsscreen),
             DrawerItem(
                 title: 'Category',
                 icon: Icons.list_alt_rounded,
                 route: Routes.ManagerCategoryscreen),
             DrawerItem(
                 title: 'Sub Category',
-                icon: Icons.category_outlined,
+                icon: Icons.category_outlined, 
                 route: Routes.ManagerSubcategoryscreen),
             DrawerItem(
                 title: 'Units',
@@ -105,10 +105,10 @@ class ManagerDrawerScreen extends StatelessWidget {
                 title: 'Tags',
                 icon: Icons.list,
                 route: Routes.ManagerTagsscreen),
-            DrawerItem(
-                title: 'Product Variation',
-                icon: Icons.line_style_sharp,
-                route: Routes.ManagerVariationGetscreen),
+            // DrawerItem(
+            //     title: 'Product Variation',
+            //     icon: Icons.line_style_sharp,
+            //     route: Routes.ManagerVariationGetscreen),
           ]),
       DrawerItem(
           title: 'orders',

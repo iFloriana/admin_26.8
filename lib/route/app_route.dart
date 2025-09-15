@@ -44,7 +44,7 @@ abstract class Routes {
   static const CustomerPackageReportScreen = "/CustomerPackageReportScreen";
   static const ManagerCustomerMembershipReportScreen =
       "/ManagerCustomerMembershipReportScreen";
-static const CustomerMembershipReportScreen =
+  static const CustomerMembershipReportScreen =
       "/CustomerMembershipReportScreen";
   static const DailybookingScreen = "/DailybookingScreen";
   static const OrderReportScreen = "/OrderReportScreen";
@@ -71,7 +71,6 @@ static const CustomerMembershipReportScreen =
 
   static const Managerappointmentsscreen = "/Managerappointmentsscreen";
   static const ManagerDashboardScreen = "/ManagerDashboardScreen";
-  // static const Getappointmentmanagerscreen = "/Getappointmentmanagerscreen";
   static const ManagerServicescreen = "/ManagerServicescreen";
   static const ManagerPackagescreen = "/ManagerPackagescreen";
   static const MenagerStaffScreen = "/MenagerStaffScreen";
@@ -86,16 +85,14 @@ static const CustomerMembershipReportScreen =
 
   static const ManagerINhouseScreen = "/ManagerINhouseScreen";
   static const ManagerOrderReportScreen = "/ManagerOrderReportScreen";
-
-  static const ManagerAddProductScreen = "/ManagerAddProductScreen";
-    static const ManagerProductListScreen = "/ManagerProductListScreen";
-    static const ManagerGetbrandsscreen = "/ManagerGetbrandsscreen";
-    static const ManagerCategoryscreen = "/ManagerCategoryscreen";
-    static const ManagerSubcategoryscreen = "/ManagerSubcategoryscreen";
-    static const ManagerTagsscreen = "/ManagerTagsscreen";
-    static const ManagerUnitsscreen = "/ManagerUnitsscreen";
-    static const ManagerVariationGetscreen = "/ManagerVariationGetscreen";
-
   static const Managerprofilescreen = "/Managerprofilescreen";
 
+  static const ManagerProductListScreen = "/ManagerProductListScreen";
+  static const ManageraddProductScreen = "/ManageraddProductScreen";
+
+  static const managerGetbrandsscreen = "/managerGetbrandsscreen";
+  static const ManagerCategoryscreen = "/ManagerCategoryscreen";
+  static const ManagerSubcategoryscreen = "/ManagerSubcategoryscreen";
+  static const ManagerUnitsscreen = "/ManagerUnitsscreen";
+  static const ManagerTagsscreen = "/ManagerTagsscreen";
 }

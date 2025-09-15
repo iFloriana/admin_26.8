@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/product_list/product_list_controller.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
+import 'product_list_controller.dart';
 import 'product_list_model.dart';
 
 class ManagerUpdateStockSheet extends StatefulWidget {
@@ -9,10 +9,10 @@ class ManagerUpdateStockSheet extends StatefulWidget {
   const ManagerUpdateStockSheet({Key? key, required this.product}) : super(key: key);
 
   @override
-  _UpdateStockSheetState createState() => _UpdateStockSheetState();
+  _ManagerUpdateStockSheetState createState() => _ManagerUpdateStockSheetState();
 }
 
-class _UpdateStockSheetState extends State<ManagerUpdateStockSheet> {
+class _ManagerUpdateStockSheetState extends State<ManagerUpdateStockSheet> {
   late List<TextEditingController> _stockControllers;
   final ManagerProductListController controller = Get.find();
 

@@ -1,18 +1,18 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/product_list/product_list_controller.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/product_list/product_list_model.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/product_list/update_stock_sheet.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_controller.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_model.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/update_stock_sheet.dart';
+import 'package:flutter_template/route/app_route.dart';
+import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
-import '../../../network/network_const.dart';
-import '../../../route/app_route.dart';
-import '../../../utils/colors.dart';
-import '../../../wiget/appbar/commen_appbar.dart';
-import '../../../wiget/loading.dart';
+import 'dart:math';
+import '../../../../wiget/appbar/commen_appbar.dart';
+import '../../../../wiget/loading.dart';
+import '../../../../network/network_const.dart';
 
 class ManagerProductListScreen extends StatelessWidget {
-  final controller = Get.put(ManagerProductListController());
+  final ManagerProductListController controller = Get.put(ManagerProductListController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class ManagerProductListScreen extends StatelessWidget {
                   )),
             ],
           ),
-        ], 
+        ],
       ),
       drawer: ManagerDrawerScreen(),
       body: Obx(() {
@@ -76,7 +76,7 @@ class ManagerProductListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () {
-          Get.toNamed(Routes.ManagerAddProductScreen);
+          Get.toNamed(Routes.ManageraddProductScreen);
         },
         child: Icon(
           Icons.add,
@@ -162,7 +162,7 @@ class ManagerProductListScreen extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.edit_outlined, color: primaryColor),
           onPressed: () {
-            Get.toNamed(Routes.ManagerAddProductScreen, arguments: product);
+            Get.toNamed(Routes.ManageraddProductScreen, arguments: product);
           },
         ),
         IconButton(

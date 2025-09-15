@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/units/unitsController.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_products/units/unitsController.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -15,7 +15,7 @@ import '../../../../wiget/custome_text.dart';
 
 class ManagerUnitsscreen extends StatelessWidget {
   ManagerUnitsscreen({super.key});
-  final getController = Get.put(ManagerUnitscontroller());
+  final getController = Get.put(managerUnitscontroller());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +123,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  // branchDropdown(),
+                  branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -182,7 +182,7 @@ class ManagerUnitsscreen extends StatelessWidget {
                     keyboardType: TextInputType.text,
                     validator: (value) => Validation.validatename(value),
                   ),
-                  // branchDropdown(),
+                  branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

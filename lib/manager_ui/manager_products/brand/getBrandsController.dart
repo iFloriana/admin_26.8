@@ -56,13 +56,11 @@ class ManagerGetbrandscontroller extends GetxController {
     try {
       isLoading.value = true;
       final response = await dioClient.getData(
-        // '${Apis.baseUrl}${Endpoints.getBrands}${loginUser!.manager?.salonId}',
-        '${Apis.baseUrl}/brands/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser.manager?.branchId?.sId}',
-
+        '${Apis.baseUrl}${Endpoints.getBrands}${loginUser?.manager?.salonId}',
         (json) => json,
       );
       print(
-          '==> here response: ${Apis.baseUrl}${Endpoints.getBrands}${loginUser!.manager?.salonId}');
+          '==> here response: ${Apis.baseUrl}${Endpoints.getBrands}${loginUser?.manager?.salonId}');
       if (response != null && response['data'] != null) {
         final List<dynamic> data = response['data'];
         brands.value = data.map((json) => Brand.fromJson(json)).toList();
@@ -129,10 +127,10 @@ class ManagerGetbrandscontroller extends GetxController {
       return;
     }
 
-    // if (selectedBranches.isEmpty) {
-    //   CustomSnackbar.showError('Error', 'Please select at least one branch');
-    //   return;
-    // }
+    if (selectedBranches.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select at least one branch');
+      return;
+    }
 
     try {
       final loginUser = await prefs.getManagerUser();
@@ -141,7 +139,7 @@ class ManagerGetbrandscontroller extends GetxController {
       // Prepare form data for multipart request
       Map<String, dynamic> brandData = {
         'name': nameController.text,
-        'branch_id': loginUser!.manager?.branchId?.sId,
+        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
         'status': isActive.value ? 1 : 0,
         'salon_id': loginUser!.manager?.salonId
       };

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_model.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 
 import 'package:barcode_scan2/barcode_scan2.dart';
-import '../../../wiget/custome_snackbar.dart';
-import 'product_list_model.dart';
 
 class ManagerProductListController extends GetxController {
   var isLoading = true.obs;
@@ -23,19 +23,22 @@ class ManagerProductListController extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       isLoading(true);
-      var response = await dioClient.dio.get(
-          '${Apis.baseUrl}/products/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser.manager?.branchId?.sId}');
-      var responseData = response.data;
-      if (responseData is Map && responseData.containsKey('data')) {
-        var products = productFromJson(jsonEncode(responseData['data']));
-        productList.assignAll(products);
-        _allProducts = products;
-      } else {
-        var products = productFromJson(jsonEncode(responseData));
-        productList.assignAll(products);
-        _allProducts = products;
+      var response = await dioClient.dio
+          .get('${Apis.baseUrl}/products?salon_id=${loginUser!.manager?.salonId}');
+      if (response.statusCode == 200) {
+        // The response has structure: {"message": "...", "data": [...]}
+        var responseData = response.data;
+        if (responseData is Map && responseData.containsKey('data')) {
+          var products = productFromJson(jsonEncode(responseData['data']));
+          productList.assignAll(products);
+          _allProducts = products;
+        } else {
+          // Fallback: try to parse as direct array
+          var products = productFromJson(jsonEncode(responseData));
+          productList.assignAll(products);
+          _allProducts = products;
+        }
       }
-      // }
     } finally {
       isLoading(false);
     }
@@ -80,7 +83,7 @@ class ManagerProductListController extends GetxController {
         );
       }
 
-      Get.back(); 
+      Get.back(); // Close bottom sheet
       CustomSnackbar.showSuccess('Success', 'Stock updated successfully');
       fetchProducts(); // Refresh the list
     } catch (e) {

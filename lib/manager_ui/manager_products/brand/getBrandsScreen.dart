@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/manager_ui/ManagerProducts/brand/getBrandsController.dart';
+import 'package:flutter_template/manager_ui/dashboard/dashboardScreen.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
+import 'package:flutter_template/manager_ui/manager_products/brand/getBrandsController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -15,8 +16,8 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/loading.dart';
 import '../../../../network/model/brand.dart';
 
-class ManagerGetbrandsscreen extends StatelessWidget {
-  ManagerGetbrandsscreen({super.key});
+class managerGetbrandsscreen extends StatelessWidget {
+  managerGetbrandsscreen({super.key});
   final getController = Get.put(ManagerGetbrandscontroller());
 
   // Helper to check allowed image extensions
@@ -34,6 +35,7 @@ class ManagerGetbrandsscreen extends StatelessWidget {
         title: 'Brands',
       ),
       drawer: ManagerDrawerScreen(),
+
       body: RefreshIndicator(
           color: primaryColor,
           onRefresh: () async {
@@ -124,6 +126,7 @@ class ManagerGetbrandsscreen extends StatelessWidget {
                     );
                   },
                 ))),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -172,7 +175,7 @@ class ManagerGetbrandsscreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  // branchDropdown(),
+                  branchDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

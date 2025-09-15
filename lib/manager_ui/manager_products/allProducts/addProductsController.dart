@@ -1,22 +1,18 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
-import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_controller.dart';
+import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../main.dart';
+import '../../../network/network_const.dart';
+import '../../../wiget/custome_snackbar.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
-
-import 'package:flutter_template/ui/drawer/products/product_list/product_list_controller.dart';
-import 'package:flutter_template/ui/drawer/products/product_list/product_list_model.dart';
-
-import '../../../../network/network_const.dart';
-import '../../../../wiget/custome_snackbar.dart';
-import '../product_list/product_list_controller.dart';
 
 class Branch {
   final String? id;
@@ -243,19 +239,34 @@ class ManagerAddProductController extends GetxController {
 
   Future<void> getBranches(String salonId) async {
     try {
+      print('Fetching branches for salon: $salonId');
       final response = await dioClient.getData(
           '${Apis.baseUrl}${Endpoints.getBranches}$salonId', (json) => json);
+      print('Branches response: $response');
       final data = response['data'] as List;
+      print('Branches data: $data');
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+      print('Branch list length: ${branchList.length}');
+      print(
+          'First branch: ${branchList.isNotEmpty ? branchList.first.name : 'No branches'}');
+
+      // Debug controller state
+      print('Branch controller items count: ${branchController.items.length}');
+      print(
+          'Branch controller selected items: ${branchController.selectedItems.length}');
+
+      // Try to set items in controller
       try {
         branchController.setItems(branchList.value
             .map((branch) =>
                 DropdownItem(label: branch.name ?? 'Unknown', value: branch))
             .toList());
+        print('Successfully set items in branch controller');
       } catch (e) {
-        CustomSnackbar.showError('Error', '$e');
+        print('Error setting items in branch controller: $e');
       }
     } catch (e) {
+      print('Error fetching branches: $e');
       CustomSnackbar.showError('Error', 'Failed to get branches: $e');
     }
   }
@@ -565,7 +576,7 @@ class ManagerAddProductController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final Map<String, dynamic> fields = {
-        'branch_id': jsonEncode(loginUser?.manager?.branchId?.sId),
+        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
         'product_name': productNameController.text,
         'description': descriptionController.text,
         'brand_id': selectedBrand.value!.id,
@@ -574,7 +585,7 @@ class ManagerAddProductController extends GetxController {
         'tag_id': selectedTag.value!.id,
         'status': status.value == 'active' ? 1 : 0,
         'has_variations': hasVariations.value ? 1 : 0,
-        'salon_id': loginUser!.manager?.salonId,
+        'salon_id': loginUser?.manager?.salonId,
       };
 
       if (hasVariations.value) {
@@ -624,8 +635,10 @@ class ManagerAddProductController extends GetxController {
           'Content-Type': 'multipart/form-data',
         }),
       );
+
+      CustomSnackbar.showSuccess("Success", "Product updated successfully!");
+      Get.find<ManagerProductListController>().fetchProducts(); // Refresh list
       Get.back();
-      Get.find<ManagerProductListController>().fetchProducts();
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to update product: $e");
     } finally {
@@ -643,7 +656,10 @@ class ManagerAddProductController extends GetxController {
     isLoading.value = true;
     try {
       final loginUser = await prefs.getManagerUser();
-      if (selectedBrand.value == null ||
+
+      // Ensure all required fields are present
+      if (selectedBranches.isEmpty ||
+          selectedBrand.value == null ||
           selectedCategory.value == null ||
           selectedUnit.value == null ||
           selectedTag.value == null ||
@@ -655,8 +671,9 @@ class ManagerAddProductController extends GetxController {
         isLoading.value = false;
         return;
       }
+
       final Map<String, dynamic> fields = {
-        'branch_id': jsonEncode(loginUser.manager?.branchId?.sId),
+        'branch_id': selectedBranches.map((branch) => branch.id).toList(),
         'product_name': productNameController.text,
         'description': descriptionController.text,
         'brand_id': selectedBrand.value!.id,
@@ -665,8 +682,20 @@ class ManagerAddProductController extends GetxController {
         'tag_id': selectedTag.value!.id,
         'status': status.value == 'active' ? 1 : 0,
         'has_variations': hasVariations.value ? 1 : 0,
-        'salon_id': loginUser.manager?.salonId,
+        'salon_id': loginUser?.manager?.salonId,
       };
+
+      // Removed product_discount from payload
+      // if (discountAmountController.text.isNotEmpty) {
+      //   payload['product_discount'] = {
+      //     'type': discountType.value,
+      //     'start_date': startDate.value?.toIso8601String(),
+      //     'end_date': endDate.value?.toIso8601String(),
+      //     'discount_amount':
+      //         double.tryParse(discountAmountController.text) ?? 0,
+      //   };
+      // }
+
       if (hasVariations.value) {
         fields['variation_id'] = variationGroups
             .where((g) => g.selectedType.value != null)
@@ -723,6 +752,7 @@ class ManagerAddProductController extends GetxController {
       stockController.clear();
       skuController.clear();
       codeController.clear();
+      // Removed discountAmountController.clear(), startDate.value = null, endDate.value = null
       selectedBrand.value = null;
       selectedCategory.value = null;
       selectedUnit.value = null;
@@ -734,7 +764,8 @@ class ManagerAddProductController extends GetxController {
       variationGroups.clear();
       generatedVariants.clear();
       imageFile.value = null;
-    Get.find<ManagerProductListController>().fetchProducts();
+
+      CustomSnackbar.showSuccess("Success", "Product added successfully!");
       Get.back();
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to add product: $e");

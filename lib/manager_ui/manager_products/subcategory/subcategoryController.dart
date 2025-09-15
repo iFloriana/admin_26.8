@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/network/model/productSubCategory.dart';
 import 'package:get/get.dart';
@@ -96,7 +94,7 @@ class ManagerSubcategorycontroller extends GetxController {
     try {
       isLoading.value = true;
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/productSubCategories/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}${Endpoints.getProductSubCategories}${loginUser!.manager?.salonId}',
         (json) => json,
       );
 
@@ -155,10 +153,10 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/brands/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
+        '${Apis.baseUrl}${Endpoints.getBrandName}${loginUser!.manager?.salonId}',
         (json) => json,
       );
-// /in-house-product/by-branch?salon_id=${salonId}&branch_id=${branchId}
+
       final data = response['data'] as List;
       brandList.value = data.map((e) => Subcategorys.fromJson(e)).toList();
     } catch (e) {
@@ -170,7 +168,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/productCategories/by-branch?salon_id=${loginUser!.manager?.salonId}&branch_id=${loginUser!.manager?.branchId?.sId}',
+        '${Apis.baseUrl}${Endpoints.getproductName}${loginUser!.manager?.salonId}',
         (json) => json,
       );
 
@@ -227,7 +225,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': jsonEncode(loginUser?.manager?.branchId?.sId),
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
       'product_category_id': selectedCategory.value!.id,
@@ -270,6 +268,7 @@ class ManagerSubcategorycontroller extends GetxController {
       resetForm();
       CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
     } catch (e) {
+      print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
     }
   }
@@ -278,7 +277,7 @@ class ManagerSubcategorycontroller extends GetxController {
     final loginUser = await prefs.getManagerUser();
     Map<String, dynamic> subCategoryData = {
       "name": nameController.text,
-      'branch_id': jsonEncode(loginUser?.manager?.branchId?.sId),
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.manager?.salonId,
       'product_category_id': selectedCategory.value!.id,
