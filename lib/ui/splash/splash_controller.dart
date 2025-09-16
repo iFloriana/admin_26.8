@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/ui/drawer/expence.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -168,11 +169,14 @@ class SplashController extends GetxController {
       String? managerAccessToken = managerUser?.token;
 
       if (accessToken != null && accessToken.isNotEmpty) {
-        Get.offNamed(Routes.dashboardScreen);
+        // Get.offNamed(Routes.dashboardScreen);
+        Get.to(FinancePage());
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
-        Get.offNamed(Routes.managerDashboard);
+        // Get.offNamed(Routes.managerDashboard);
+        Get.to(FinancePage());
       } else {
-        Get.offNamed(Routes.loginScreen);
+        // Get.offNamed(Routes.loginScreen);
+        Get.to(FinancePage());
       }
     } catch (e) {
       CustomSnackbar.showError('Error', '$e');

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/ui/drawer/products/variations/variationController.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../../utils/colors.dart';
 import '../../../../utils/custom_text_styles.dart';
 import '../../../../utils/validation.dart';
@@ -13,7 +13,6 @@ import '../../../../wiget/appbar/commen_appbar.dart';
 import '../../../../wiget/custome_dropdown.dart';
 import '../../../../wiget/custome_text.dart';
 import '../../../../wiget/loading.dart';
-import '../../drawer_screen.dart';
 
 class Variationscreen extends StatelessWidget {
   Variationscreen({super.key});
@@ -25,7 +24,7 @@ class Variationscreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Variations',
       ),
-      drawer: DrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(

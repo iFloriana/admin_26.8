@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_template/commen_items/sharePrafrence.dart';
 import 'package:flutter_template/route/app_page.dart';
-import 'package:flutter_template/route/app_route.dart'; 
+import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'network/dio.dart';
@@ -20,7 +20,6 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: primaryColor,
     statusBarColor: primaryColor,
-    
   ));
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -54,4 +53,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-  
