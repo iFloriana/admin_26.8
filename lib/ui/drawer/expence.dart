@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:http_parser/http_parser.dart';
 import '../../wiget/custome_snackbar.dart';
 
 // 🎯 Controller
@@ -31,10 +31,36 @@ class FinanceController extends GetxController {
     "Others"
   ];
 
-  Future<void> postVendorPayment() async {
+  Future<void> postVendorPayment(File? imageFile) async {
     var getdata = await prefs.getManagerUser();
+
     try {
-      var data = {
+      MultipartFile? imageMultipart;
+
+      if (imageFile != null) {
+        final fileName = imageFile.path.split('/').last;
+        final ext = fileName.split('.').last.toLowerCase();
+
+        // ✅ Allow only jpg, jpeg, png
+        if (["jpg", "jpeg", "png"].contains(ext)) {
+          String mimeType = ext == "png" ? "png" : "jpeg";
+
+          imageMultipart = await MultipartFile.fromFile(
+            imageFile.path,
+            filename: fileName,
+            contentType: MediaType("image", mimeType),
+          );
+        } else {
+          // ❌ Invalid format, show error and stop request
+          CustomSnackbar.showError(
+            "Invalid File",
+            "Only .jpg, .jpeg, .png formats are allowed",
+          );
+          return;
+        }
+      }
+
+      FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
         "branch_id": getdata?.manager?.branchId?.sId,
         "type": "vendor_pay",
@@ -42,27 +68,28 @@ class FinanceController extends GetxController {
         "amount": vendoramountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
         "note": vendornoteCtrl.text.trim(),
-      };
+        if (imageMultipart != null) "image": imageMultipart,
+      });
 
       var response = await dioClient.dio.post(
         "${Apis.baseUrl}/expenses",
-        data: data,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
+        data: formData,
+        options: Options(contentType: "multipart/form-data"),
       );
 
       if (response.statusCode == 200 && response.data["success"] == true) {
-        print("Success Response: ${response.data}");
+        print("✅ Success Response: ${response.data}");
         Get.back();
         CustomSnackbar.showSuccess("Success", "Payment added successfully");
       } else {
-        print("Error: ${response.data}");
+        print("❌ Error: ${response.data}");
         CustomSnackbar.showError(
-            "Error", response.data["message"] ?? "Failed to add payment");
+          "Error",
+          response.data["message"] ?? "Failed to add payment",
+        );
       }
     } catch (e) {
-      print("Exception: $e");
+      print("⚠️ Exception: $e");
       Get.snackbar("Exception", e.toString());
     }
   }
@@ -576,8 +603,8 @@ class FinancePage extends StatelessWidget {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    controller.postVendorPayment();
-                    Get.back();
+                    final file = controller.selectedImage.value;
+                    controller.postVendorPayment(file);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color,
