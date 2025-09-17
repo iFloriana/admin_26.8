@@ -22,6 +22,10 @@ class FinanceController extends GetxController {
   final vendorNameCtrl = TextEditingController();
   final vendoramountCtrl = TextEditingController();
   final vendornoteCtrl = TextEditingController();
+  final receivce_from_owner_amountCtrl = TextEditingController();
+  final receivce_from_owner_noteCtrl = TextEditingController();
+  final owner_deposit_amountCtrl = TextEditingController();
+  final owner_deposit_noteCtrl = TextEditingController();
 
   final categories = [
     "Food & Drinks",
@@ -79,6 +83,142 @@ class FinanceController extends GetxController {
 
       if (response.statusCode == 200 && response.data["success"] == true) {
         print("✅ Success Response: ${response.data}");
+        vendorNameCtrl.clear();
+        vendoramountCtrl.clear();
+        vendornoteCtrl.clear();
+
+        // 🔹 Clear image from controller
+        clearImage();
+        Get.back();
+        CustomSnackbar.showSuccess("Success", "Payment added successfully");
+      } else {
+        print("❌ Error: ${response.data}");
+        CustomSnackbar.showError(
+          "Error",
+          response.data["message"] ?? "Failed to add payment",
+        );
+      }
+    } catch (e) {
+      print("⚠️ Exception: $e");
+      Get.snackbar("Exception", e.toString());
+    }
+  }
+
+  Future<void> recivefromOwner(File? imageFile) async {
+    var getdata = await prefs.getManagerUser();
+
+    try {
+      MultipartFile? imageMultipart;
+
+      if (imageFile != null) {
+        final fileName = imageFile.path.split('/').last;
+        final ext = fileName.split('.').last.toLowerCase();
+
+        // ✅ Allow only jpg, jpeg, png
+        if (["jpg", "jpeg", "png"].contains(ext)) {
+          String mimeType = ext == "png" ? "png" : "jpeg";
+
+          imageMultipart = await MultipartFile.fromFile(
+            imageFile.path,
+            filename: fileName,
+            contentType: MediaType("image", mimeType),
+          );
+        } else {
+          // ❌ Invalid format, show error and stop request
+          CustomSnackbar.showError(
+            "Invalid File",
+            "Only .jpg, .jpeg, .png formats are allowed",
+          );
+          return;
+        }
+      }
+
+      FormData formData = FormData.fromMap({
+        "salon_id": getdata?.manager?.salonId,
+        "branch_id": getdata?.manager?.branchId?.sId,
+        "type": "receive_from_owner_account",
+        "amount": receivce_from_owner_amountCtrl.text.trim(),
+        "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        "note": receivce_from_owner_noteCtrl.text.trim(),
+        if (imageMultipart != null) "image": imageMultipart,
+      });
+
+      var response = await dioClient.dio.post(
+        "${Apis.baseUrl}/expenses",
+        data: formData,
+        options: Options(contentType: "multipart/form-data"),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        print("✅ Success Response: ${response.data}");
+        receivce_from_owner_amountCtrl.clear();
+        receivce_from_owner_noteCtrl.clear();
+        clearImage();
+        Get.back();
+        CustomSnackbar.showSuccess("Success", "Payment added successfully");
+      } else {
+        print("❌ Error: ${response.data}");
+        CustomSnackbar.showError(
+          "Error",
+          response.data["message"] ?? "Failed to add payment",
+        );
+      }
+    } catch (e) {
+      print("⚠️ Exception: $e");
+      Get.snackbar("Exception", e.toString());
+    }
+  }
+
+  Future<void> owenerDeposit(File? imageFile) async {
+    var getdata = await prefs.getManagerUser();
+
+    try {
+      MultipartFile? imageMultipart;
+
+      if (imageFile != null) {
+        final fileName = imageFile.path.split('/').last;
+        final ext = fileName.split('.').last.toLowerCase();
+
+        // ✅ Allow only jpg, jpeg, png
+        if (["jpg", "jpeg", "png"].contains(ext)) {
+          String mimeType = ext == "png" ? "png" : "jpeg";
+
+          imageMultipart = await MultipartFile.fromFile(
+            imageFile.path,
+            filename: fileName,
+            contentType: MediaType("image", mimeType),
+          );
+        } else {
+          // ❌ Invalid format, show error and stop request
+          CustomSnackbar.showError(
+            "Invalid File",
+            "Only .jpg, .jpeg, .png formats are allowed",
+          );
+          return;
+        }
+      }
+
+      FormData formData = FormData.fromMap({
+        "salon_id": getdata?.manager?.salonId,
+        "branch_id": getdata?.manager?.branchId?.sId,
+        "type": "deposit_to_owner_account",
+        "amount": owner_deposit_amountCtrl.text.trim(),
+        "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        "note": owner_deposit_noteCtrl.text.trim(),
+        if (imageMultipart != null) "image": imageMultipart,
+      });
+
+      var response = await dioClient.dio.post(
+        "${Apis.baseUrl}/expenses",
+        data: formData,
+        options: Options(contentType: "multipart/form-data"),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        print("✅ Success Response: ${response.data}");
+        owner_deposit_amountCtrl.clear();
+        owner_deposit_noteCtrl.clear();
+        clearImage();
         Get.back();
         CustomSnackbar.showSuccess("Success", "Payment added successfully");
       } else {
@@ -402,9 +542,6 @@ class FinancePage extends StatelessWidget {
 
   // 2. Deposit to Owner Dialog
   void _showDepositDialog(Color color) {
-    final TextEditingController amountCtrl = TextEditingController();
-    final TextEditingController noteCtrl = TextEditingController();
-
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -421,13 +558,13 @@ class FinancePage extends StatelessWidget {
                         color: color)),
                 const SizedBox(height: 15),
                 CustomTextFormField(
-                  controller: amountCtrl,
+                  controller: controller.owner_deposit_amountCtrl,
                   keyboardType: TextInputType.number,
                   labelText: "Amount",
                 ),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: noteCtrl,
+                  controller: controller.owner_deposit_noteCtrl,
                   labelText: "Note",
                   maxLines: 2,
                 ),
@@ -490,7 +627,10 @@ class FinancePage extends StatelessWidget {
                 }),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    final file = controller.selectedImage.value;
+                    controller.owenerDeposit(file);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color,
                     shape: RoundedRectangleBorder(
@@ -627,9 +767,6 @@ class FinancePage extends StatelessWidget {
 
 // 4. Receive from Owner Dialog
   void _showReceiveDialog(Color color) {
-    final TextEditingController amountCtrl = TextEditingController();
-    final TextEditingController noteCtrl = TextEditingController();
-
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -646,13 +783,13 @@ class FinancePage extends StatelessWidget {
                         color: color)),
                 const SizedBox(height: 15),
                 CustomTextFormField(
-                  controller: amountCtrl,
+                  controller: controller.receivce_from_owner_amountCtrl,
                   keyboardType: TextInputType.number,
                   labelText: "Amount",
                 ),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: noteCtrl,
+                  controller: controller.receivce_from_owner_noteCtrl,
                   labelText: "Note",
                   maxLines: 2,
                 ),
@@ -715,7 +852,10 @@ class FinancePage extends StatelessWidget {
                 }),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    final file = controller.selectedImage.value;
+                    controller.recivefromOwner(file);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color,
                     shape: RoundedRectangleBorder(
