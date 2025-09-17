@@ -36,7 +36,12 @@ class FinanceController extends GetxController {
     "Salon equipments",
     "Others"
   ];
+  var financeData = <String, dynamic>{}.obs; // whole API response
+  var isLoading = false.obs;
 
+  // Totals
+  var totalCredit = 0.0.obs;
+  var totalDebit = 0.0.obs;
   // // For backend mapping
   // final categoryMap = {
   //   "Food & Drinks": "food_drinks",
@@ -45,6 +50,47 @@ class FinanceController extends GetxController {
   //   "Salon equipments": "salon_equipments",
   //   "Others": "other",
   // };
+  @override
+  void onInit() {
+    super.onInit();
+    fetchFinanceData(); // 👈 call automatically when controller starts
+  }
+
+  Future<void> fetchFinanceData() async {
+    try {
+      isLoading.value = true;
+
+      var response = await dioClient.dio.get(
+          "${Apis.baseUrl}/expenses?salon_id=${(await prefs.getManagerUser())?.manager?.salonId}");
+      // 👆 replace with your correct endpoint
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        financeData.value = response.data["data"];
+
+        // calculate totals
+        double credit = 0;
+        double debit = 0;
+
+        response.data["data"].forEach((date, transactions) {
+          for (var t in transactions) {
+            if (t["type"] == "receive_from_owner_account") {
+              credit += (t["amount"] ?? 0).toDouble();
+            } else if (t["type"] == "vendor_pay" ||
+                t["type"] == "deposit_to_owner_account") {
+              debit += (t["amount"] ?? 0).toDouble();
+            }
+          }
+        });
+
+        totalCredit.value = credit;
+        totalDebit.value = debit;
+      }
+    } catch (e) {
+      print("⚠️ Finance fetch error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   Future<void> postVendorPayment(File? imageFile) async {
     var getdata = await prefs.getManagerUser();
@@ -390,7 +436,154 @@ class FinancePage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Finance Dashboard",
       ),
-      body: const Center(child: Text("Main Content Here")),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.financeData.isEmpty) {
+          return const Center(child: Text("No finance data found"));
+        }
+
+        return Column(
+          children: [
+            // 🔹 Totals Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      color: Colors.green.shade50,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.arrow_downward,
+                                color: Colors.green, size: 32),
+                            const SizedBox(height: 8),
+                            const Text("Total Credit",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              "₹ ${controller.totalCredit.value.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Card(
+                      color: Colors.red.shade50,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.arrow_upward,
+                                color: Colors.red, size: 32),
+                            const SizedBox(height: 8),
+                            const Text("Total Debit",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              "₹ ${controller.totalDebit.value.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 🔹 Transactions List by Date
+            Expanded(
+              child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                children: controller.financeData.entries.map((entry) {
+                  final date = entry.key;
+                  final transactions = entry.value;
+
+                  return Card(
+                    elevation: 2,
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                          dividerColor: transparent, focusColor: primaryColor),
+                      child: ExpansionTile(
+                        leading: const Icon(Icons.calendar_today,
+                            color: primaryColor),
+                        title: Text(
+                          date,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        children: List.generate(transactions.length, (index) {
+                          final txn = transactions[index];
+                          bool isCredit =
+                              txn["type"] == "receive_from_owner_account";
+                          bool isDebit = txn["type"] == "vendor_pay" ||
+                              txn["type"] == "deposit_to_owner_account";
+
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: isCredit
+                                  ? Colors.green.shade100
+                                  : Colors.red.shade100,
+                              child: Icon(
+                                isCredit
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
+                                color: isCredit ? Colors.green : Colors.red,
+                              ),
+                            ),
+                            title: Text(
+                              txn["vendor_name"] ?? txn["type"],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            subtitle: Text(
+                              txn["notes"] ?? "No notes",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: Text(
+                              "₹ ${txn["amount"]}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: isCredit ? Colors.green : Colors.red,
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () {
