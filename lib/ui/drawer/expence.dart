@@ -542,7 +542,6 @@ class FinancePage extends StatelessWidget {
                               txn["type"] == "receive_from_owner_account";
                           bool isDebit = txn["type"] == "vendor_pay" ||
                               txn["type"] == "deposit_to_owner_account";
-
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: isCredit
@@ -565,13 +564,80 @@ class FinancePage extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            trailing: Text(
-                              "₹ ${txn["amount"]}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: isCredit ? Colors.green : Colors.red,
-                              ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Amount
+                                Text(
+                                  "₹ ${txn["amount"]}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: isCredit ? Colors.green : Colors.red,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+
+                                // 🔹 Show invoice icon if image_url exists
+                                if (txn["image_url"] != null &&
+                                    txn["image_url"].toString().isNotEmpty)
+                                  GestureDetector(
+                                    onTap: () {
+                                      showGeneralDialog(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        barrierLabel: '',
+                                        barrierColor:
+                                            Colors.black.withOpacity(0.85),
+                                        pageBuilder: (context, anim1, anim2) {
+                                          return Center(
+                                            child: Stack(
+                                              children: [
+                                                InteractiveViewer(
+                                                  child: Image.network(
+                                                    "${Apis.pdfUrl}${txn["image_url"]}",
+                                                    fit: BoxFit.contain,
+                                                    width: double.infinity,
+                                                    errorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        const Icon(
+                                                            Icons.broken_image,
+                                                            size: 100,
+                                                            color:
+                                                                Colors.white70),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 40,
+                                                  right: 20,
+                                                  child: IconButton(
+                                                    icon: const Icon(
+                                                        Icons.cancel,
+                                                        color: Colors.white,
+                                                        size: 35),
+                                                    onPressed: () =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        transitionBuilder:
+                                            (context, anim1, anim2, child) =>
+                                                FadeTransition(
+                                                    opacity: anim1,
+                                                    child: child),
+                                        transitionDuration:
+                                            const Duration(milliseconds: 300),
+                                      );
+                                    },
+                                    child: const Icon(Icons.receipt_long,
+                                        color: primaryColor),
+                                  ),
+                              ],
                             ),
                           );
                         }),
