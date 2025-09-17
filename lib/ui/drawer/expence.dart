@@ -1,16 +1,71 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../wiget/custome_snackbar.dart';
 
 // 🎯 Controller
 class FinanceController extends GetxController {
   var selectedImage = Rx<File?>(null);
+  var selectedCategory = "".obs;
   final ImagePicker _picker = ImagePicker();
+  final vendorNameCtrl = TextEditingController();
+  final vendoramountCtrl = TextEditingController();
+  final vendornoteCtrl = TextEditingController();
+
+  final categories = [
+    "Food & Drinks",
+    "Maintenance",
+    "Cleaning",
+    "Salon equipments",
+    "Others"
+  ];
+
+  Future<void> postVendorPayment() async {
+    var getdata = await prefs.getManagerUser();
+    try {
+      var data = {
+        "salon_id": getdata?.manager?.salonId,
+        "branch_id": getdata?.manager?.branchId?.sId,
+        "type": "vendor_pay",
+        "vendor_name": vendorNameCtrl.text.trim(),
+        "amount": vendoramountCtrl.text.trim(),
+        "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        "note": vendornoteCtrl.text.trim(),
+      };
+
+      var response = await dioClient.dio.post(
+        "${Apis.baseUrl}/expenses",
+        data: data,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        print("Success Response: ${response.data}");
+        Get.back();
+        CustomSnackbar.showSuccess("Success", "Payment added successfully");
+      } else {
+        print("Error: ${response.data}");
+        CustomSnackbar.showError(
+            "Error", response.data["message"] ?? "Failed to add payment");
+      }
+    } catch (e) {
+      print("Exception: $e");
+      Get.snackbar("Exception", e.toString());
+    }
+  }
 
   Future<void> pickImage(ImageSource source) async {
     if (source == ImageSource.camera) {
@@ -205,8 +260,28 @@ class FinancePage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: color)),
                 const SizedBox(height: 15),
-                CustomTextFormField(
-                    controller: nameCtrl, labelText: "Expense Name"),
+                Obx(() {
+                  return Wrap(
+                    spacing: 5,
+                    children: controller.categories.map((cat) {
+                      final isSelected =
+                          controller.selectedCategory.value == cat;
+                      return ChoiceChip(
+                        label: Text(cat),
+                        selected: isSelected,
+                        selectedColor: color.withOpacity(0.2),
+                        backgroundColor: Colors.grey.shade200,
+                        labelStyle: TextStyle(
+                          color: isSelected ? color : Colors.black,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                        onSelected: (_) =>
+                            controller.selectedCategory.value = cat,
+                      );
+                    }).toList(),
+                  );
+                }),
                 const SizedBox(height: 10),
                 CustomTextFormField(
                   controller: amountCtrl,
@@ -223,18 +298,36 @@ class FinancePage extends StatelessWidget {
                 Obx(() {
                   final file = controller.selectedImage.value;
                   return file != null
-                      ? Column(
+                      ? Stack(
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.file(file,
-                                  height: 120,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover),
+                              child: Image.file(
+                                file,
+                                height: 160,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            TextButton(
-                                onPressed: controller.clearImage,
-                                child: const Text("Remove Image")),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: GestureDetector(
+                                onTap: controller.clearImage,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black54,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(6),
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         )
                       : OutlinedButton.icon(
@@ -243,14 +336,19 @@ class FinancePage extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: color, width: 1.5),
                             shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(12), // corner radius
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 20),
                           ),
-                          icon: const Icon(Icons.image),
-                          label: const Text("Upload Bill"),
+                          icon: const Icon(
+                            Icons.image,
+                            color: black,
+                          ),
+                          label: const Text(
+                            "Upload Proof",
+                            style: TextStyle(color: black),
+                          ),
                         );
                 }),
                 const SizedBox(height: 20),
@@ -387,10 +485,6 @@ class FinancePage extends StatelessWidget {
 
 // 3. Vendor Pay Dialog
   void _showVendorPayDialog(Color color) {
-    final TextEditingController vendorNameCtrl = TextEditingController();
-    final TextEditingController amountCtrl = TextEditingController();
-    final TextEditingController noteCtrl = TextEditingController();
-
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -407,18 +501,18 @@ class FinancePage extends StatelessWidget {
                         color: color)),
                 const SizedBox(height: 15),
                 CustomTextFormField(
-                  controller: vendorNameCtrl,
+                  controller: controller.vendorNameCtrl,
                   labelText: "Vendor Name",
                 ),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: amountCtrl,
+                  controller: controller.vendoramountCtrl,
                   labelText: "Amount",
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: noteCtrl,
+                  controller: controller.vendornoteCtrl,
                   labelText: "Note",
                   maxLines: 2,
                 ),
@@ -481,7 +575,10 @@ class FinancePage extends StatelessWidget {
                 }),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    controller.postVendorPayment();
+                    Get.back();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color,
                     shape: RoundedRectangleBorder(
