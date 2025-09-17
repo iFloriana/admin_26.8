@@ -26,7 +26,9 @@ class FinanceController extends GetxController {
   final receivce_from_owner_noteCtrl = TextEditingController();
   final owner_deposit_amountCtrl = TextEditingController();
   final owner_deposit_noteCtrl = TextEditingController();
-
+  final addExpenceamountCtrl = TextEditingController();
+  final addExpencenoteCtrl = TextEditingController();
+  // String? get selectedCategoryForApi => categoryMap[selectedCategory.value];
   final categories = [
     "Food & Drinks",
     "Maintenance",
@@ -34,6 +36,15 @@ class FinanceController extends GetxController {
     "Salon equipments",
     "Others"
   ];
+
+  // // For backend mapping
+  // final categoryMap = {
+  //   "Food & Drinks": "food_drinks",
+  //   "Maintenance": "maintenance",
+  //   "Cleaning": "cleaning",
+  //   "Salon equipments": "salon_equipments",
+  //   "Others": "other",
+  // };
 
   Future<void> postVendorPayment(File? imageFile) async {
     var getdata = await prefs.getManagerUser();
@@ -234,6 +245,72 @@ class FinanceController extends GetxController {
     }
   }
 
+  Future<void> add_expance(File? imageFile) async {
+    var getdata = await prefs.getManagerUser();
+
+    try {
+      MultipartFile? imageMultipart;
+
+      if (imageFile != null) {
+        final fileName = imageFile.path.split('/').last;
+        final ext = fileName.split('.').last.toLowerCase();
+
+        // ✅ Allow only jpg, jpeg, png
+        if (["jpg", "jpeg", "png"].contains(ext)) {
+          String mimeType = ext == "png" ? "png" : "jpeg";
+
+          imageMultipart = await MultipartFile.fromFile(
+            imageFile.path,
+            filename: fileName,
+            contentType: MediaType("image", mimeType),
+          );
+        } else {
+          // ❌ Invalid format, show error and stop request
+          CustomSnackbar.showError(
+            "Invalid File",
+            "Only .jpg, .jpeg, .png formats are allowed",
+          );
+          return;
+        }
+      }
+
+      FormData formData = FormData.fromMap({
+        "category": selectedCategory.value,
+        "salon_id": getdata?.manager?.salonId,
+        "branch_id": getdata?.manager?.branchId?.sId,
+        "type": 'add_expense',
+        "amount": addExpenceamountCtrl.text.trim(),
+        "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        "note": addExpencenoteCtrl.text.trim(),
+        if (imageMultipart != null) "image": imageMultipart,
+      });
+
+      var response = await dioClient.dio.post(
+        "${Apis.baseUrl}/expenses",
+        data: formData,
+        options: Options(contentType: "multipart/form-data"),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        print("✅ Success Response: ${response.data}");
+        addExpencenoteCtrl.clear();
+        addExpenceamountCtrl.clear();
+        clearImage();
+        Get.back();
+        CustomSnackbar.showSuccess("Success", "Payment added successfully");
+      } else {
+        print("❌ Error: ${response.data}");
+        CustomSnackbar.showError(
+          "Error",
+          response.data["message"] ?? "Failed to add payment",
+        );
+      }
+    } catch (e) {
+      print("⚠️ Exception: $e");
+      Get.snackbar("Exception", e.toString());
+    }
+  }
+
   Future<void> pickImage(ImageSource source) async {
     if (source == ImageSource.camera) {
       if (await Permission.camera.request().isDenied) {
@@ -408,10 +485,6 @@ class FinancePage extends StatelessWidget {
 
   // 1. Add Expense Dialog
   void _showAddExpenseDialog(Color color) {
-    final TextEditingController nameCtrl = TextEditingController();
-    final TextEditingController amountCtrl = TextEditingController();
-    final TextEditingController noteCtrl = TextEditingController();
-
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -443,21 +516,22 @@ class FinancePage extends StatelessWidget {
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
-                        onSelected: (_) =>
-                            controller.selectedCategory.value = cat,
+                        onSelected: (_) {
+                          controller.selectedCategory.value = cat;
+                        },
                       );
                     }).toList(),
                   );
                 }),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: amountCtrl,
+                  controller: controller.addExpenceamountCtrl,
                   labelText: "Amount",
                   keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 10),
                 CustomTextFormField(
-                  controller: noteCtrl,
+                  controller: controller.addExpencenoteCtrl,
                   maxLines: 2,
                   labelText: "Note",
                 ),
@@ -520,7 +594,10 @@ class FinancePage extends StatelessWidget {
                 }),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    final file = controller.selectedImage.value;
+                    controller.add_expance(file);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color,
                     shape: RoundedRectangleBorder(
