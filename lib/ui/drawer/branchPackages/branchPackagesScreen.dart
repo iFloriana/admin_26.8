@@ -10,7 +10,6 @@ import '../../../utils/validation.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
-import '../../../wiget/custome_snackbar.dart';
 import '../../../wiget/custome_text.dart';
 
 class DynamicInputScreen extends StatelessWidget {

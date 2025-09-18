@@ -20,6 +20,7 @@ import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
 import 'package:flutter_template/ui/drawer/customers/addCustomer/addCustomerScreen.dart';
 import 'package:flutter_template/ui/drawer/customers/customersScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
+import 'package:flutter_template/manager_ui/manager_expence.dart';
 import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart';
 import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerScreen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
@@ -355,29 +356,33 @@ class AppPages {
         transition: Transition.rightToLeft),
 
     GetPage(
-        name: Routes.managerGetbrandsscreen,  
+        name: Routes.managerGetbrandsscreen,
         page: () => ManagerGetbrandsscreen(),
-        transition: Transition.rightToLeft),   
+        transition: Transition.rightToLeft),
 
-     GetPage(
-        name: Routes.ManagerCategoryscreen,  
+    GetPage(
+        name: Routes.ManagerCategoryscreen,
         page: () => ManagerCategoryscreen(),
-        transition: Transition.rightToLeft),   
+        transition: Transition.rightToLeft),
 
-        GetPage(
-        name: Routes.ManagerSubcategoryscreen,  
+    GetPage(
+        name: Routes.ManagerSubcategoryscreen,
         page: () => ManagerSubcategoryscreen(),
-        transition: Transition.rightToLeft),  
+        transition: Transition.rightToLeft),
 
-        GetPage(
-        name: Routes.ManagerUnitsscreen,  
+    GetPage(
+        name: Routes.ManagerUnitsscreen,
         page: () => ManagerUnitsscreen(),
-        transition: Transition.rightToLeft), 
+        transition: Transition.rightToLeft),
 
-        GetPage(
+    GetPage(
         name: Routes.ManagerTagsscreen,
         page: () => ManagerTagsscreen(),
         transition: Transition.rightToLeft),
-        
+    GetPage(
+        name: Routes.managerFinancePage,
+        page: () => managerFinancePage(),
+        transition: Transition.rightToLeft),
+  
   ];
 }

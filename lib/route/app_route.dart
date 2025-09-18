@@ -95,5 +95,6 @@ abstract class Routes {
   static const ManagerSubcategoryscreen = "/ManagerSubcategoryscreen";
   static const ManagerUnitsscreen = "/ManagerUnitsscreen";
   static const ManagerTagsscreen = "/ManagerTagsscreen";
+  static const managerFinancePage = "/managerFinancePage";
   
 }

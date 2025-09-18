@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/summry.dart';
 import 'package:flutter_template/network/network_const.dart';
-import 'package:flutter_template/ui/drawer/expence.dart';
+import 'package:flutter_template/manager_ui/manager_expence.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -156,10 +157,8 @@ class SplashController extends GetxController {
     );
   }
 
-  /// Navigate to appropriate screen if update is not forced
   void navigateToNextScreen() async {
     try {
-      // ❌ Do NOT navigate if forced update is required
       if (isUpdateRequired.value && isForceUpdate.value) return;
 
       final user = await prefs.getUser();
@@ -169,14 +168,12 @@ class SplashController extends GetxController {
       String? managerAccessToken = managerUser?.token;
 
       if (accessToken != null && accessToken.isNotEmpty) {
-        // Get.offNamed(Routes.dashboardScreen);
-        Get.to(FinancePage());
+        Get.offNamed(Routes.dashboardScreen);
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
         // Get.offNamed(Routes.managerDashboard);
-        Get.to(FinancePage());
+        Get.to(ManagerFinancePage());
       } else {
-        // Get.offNamed(Routes.loginScreen);
-        Get.to(FinancePage());
+        Get.offNamed(Routes.loginScreen);
       }
     } catch (e) {
       CustomSnackbar.showError('Error', '$e');

@@ -2,20 +2,22 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http_parser/http_parser.dart';
-import '../../wiget/custome_snackbar.dart';
+import '../wiget/custome_snackbar.dart';
 
 // 🎯 Controller
-class FinanceController extends GetxController {
+class managerFinanceController extends GetxController {
   var selectedImage = Rx<File?>(null);
   var selectedCategory = "".obs;
   final ImagePicker _picker = ImagePicker();
@@ -28,6 +30,7 @@ class FinanceController extends GetxController {
   final owner_deposit_noteCtrl = TextEditingController();
   final addExpenceamountCtrl = TextEditingController();
   final addExpencenoteCtrl = TextEditingController();
+
   // String? get selectedCategoryForApi => categoryMap[selectedCategory.value];
   final categories = [
     "Food & Drinks",
@@ -38,7 +41,11 @@ class FinanceController extends GetxController {
   ];
   var financeData = <String, dynamic>{}.obs; // whole API response
   var isLoading = false.obs;
+var selectedDateRange = Rxn<DateTimeRange>();
 
+// branch filter (if not already present)
+var branches = <Map<String, dynamic>>[].obs;
+var selectedBranch = "".obs;
   // Totals
   var totalCredit = 0.0.obs;
   var totalDebit = 0.0.obs;
@@ -55,23 +62,61 @@ class FinanceController extends GetxController {
     super.onInit();
     fetchFinanceData(); // 👈 call automatically when controller starts
   }
-
-  Future<void> fetchFinanceData() async {
+Future<void> fetchFinanceData() async {
     try {
       isLoading.value = true;
+      final getdata = await prefs.getManagerUser();
 
-      var response = await dioClient.dio.get(
-          "${Apis.baseUrl}/expenses?salon_id=${(await prefs.getManagerUser())?.manager?.salonId}");
-      // 👆 replace with your correct endpoint
+      Map<String, dynamic> query = {
+        "salon_id": getdata?.manager?.salonId,
+      };
+      if (selectedBranch.value.isNotEmpty) {
+        query["branch_id"] = selectedBranch.value;
+      }
+
+      final response = await dioClient.dio.get(
+        "${Apis.baseUrl}/expenses",
+        queryParameters: query,
+      );
 
       if (response.statusCode == 200 && response.data["success"] == true) {
-        financeData.value = response.data["data"];
+        final Map<String, dynamic> raw =
+            Map<String, dynamic>.from(response.data["data"] ?? {});
+        final Map<String, dynamic> filteredMap = {};
+        final DateTimeRange? range = selectedDateRange.value;
 
-        // calculate totals
+        // Precompute inclusive start/end (local dates)
+        DateTime? start;
+        DateTime? end;
+        if (range != null) {
+          start = DateTime(range.start.year, range.start.month,
+              range.start.day); // 00:00 start
+          end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59,
+              59, 999); // end of day
+        }
+
+        raw.forEach((dateKey, items) {
+          List<dynamic> itemsList = List<dynamic>.from(items ?? []);
+          if (range != null) {
+            itemsList = itemsList.where((item) {
+              try {
+                final created = DateTime.parse(item["created_at"]).toLocal();
+                // include items where created is between start..end (inclusive)
+                return !(created.isBefore(start!) || created.isAfter(end!));
+              } catch (e) {
+                return false;
+              }
+            }).toList();
+          }
+          if (itemsList.isNotEmpty) filteredMap[dateKey] = itemsList;
+        });
+
+        financeData.value = filteredMap;
+
+        // recalc totals from the filteredMap
         double credit = 0;
         double debit = 0;
-
-        response.data["data"].forEach((date, transactions) {
+        filteredMap.forEach((date, transactions) {
           for (var t in transactions) {
             if (t["type"] == "receive_from_owner_account") {
               credit += (t["amount"] ?? 0).toDouble();
@@ -81,7 +126,6 @@ class FinanceController extends GetxController {
             }
           }
         });
-
         totalCredit.value = credit;
         totalDebit.value = debit;
       }
@@ -427,18 +471,67 @@ class FinanceController extends GetxController {
 }
 
 // 🎯 Main Page
-class FinancePage extends StatelessWidget {
-  final FinanceController controller = Get.put(FinanceController());
+class managerFinancePage extends StatelessWidget {
+  final managerFinanceController controller =
+      Get.put(managerFinanceController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: "Finance Dashboard",
+        actions: [
+           Obx(() {
+            return DropdownButton<String>(
+              value: controller.selectedBranch.value.isEmpty
+                  ? null
+                  : controller.selectedBranch.value,
+              hint: const Text("All Branches"),
+              underline: const SizedBox(),
+              items: [
+                const DropdownMenuItem(value: "", child: Text("All Branches")),
+                ...controller.branches.map((b) {
+                  return DropdownMenuItem<String>(
+                      value: b["_id"]?.toString() ?? "",
+                      child: Text(b["name"]?.toString() ?? "Branch"));
+                }).toList(),
+              ],
+              onChanged: (value) {
+                controller.selectedBranch.value = value ?? "";
+                controller.fetchFinanceData();
+              },
+            );
+          }),
+
+          // Date range picker + selected range display + clear button
+          Obx(() {
+            final range = controller.selectedDateRange.value;
+            return Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.date_range),
+                  onPressed: () async {
+                    final picked = await showDateRangePicker(
+                      context: Get.context!,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                      initialDateRange: range,
+                    );
+                    if (picked != null) {
+                      controller.selectedDateRange.value = picked;
+                      controller.fetchFinanceData();
+                    }
+                  },
+                ),
+              ],
+            );
+          }),
+        ],
       ),
+      drawer: ManagerDrawerScreen(),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingAvatar());
         }
 
         if (controller.financeData.isEmpty) {

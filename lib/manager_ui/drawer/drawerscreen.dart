@@ -49,6 +49,10 @@ class ManagerDrawerScreen extends StatelessWidget {
                 route: Routes.ManagerGetStaffScreen),
           ]),
       DrawerItem(
+          title: 'Expence',
+          icon: Icons.money_off_csred_outlined,
+          route: Routes.managerFinancePage),
+      DrawerItem(
           title: 'Reports',
           icon: Icons.receipt_outlined,
           route: '', // parent doesn’t navigate
@@ -95,7 +99,7 @@ class ManagerDrawerScreen extends StatelessWidget {
                 route: Routes.ManagerCategoryscreen),
             DrawerItem(
                 title: 'Sub Category',
-                icon: Icons.category_outlined, 
+                icon: Icons.category_outlined,
                 route: Routes.ManagerSubcategoryscreen),
             DrawerItem(
                 title: 'Units',

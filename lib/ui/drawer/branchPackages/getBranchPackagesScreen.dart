@@ -37,7 +37,7 @@ class GetBranchPackagesScreen extends StatelessWidget {
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(16.r),
+            padding: EdgeInsets.all(0.r),
             itemCount: controller.packages.length,
             itemBuilder: (context, index) {
               final package = controller.packages[index];
