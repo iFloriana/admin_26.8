@@ -26,7 +26,7 @@ class ForgotScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: CustomTextWidget(
-          text: 'Forgot Password',
+          text: '',
           textStyle:
               CustomTextStyles.textFontSemiBold(size: 16.sp, color: white),
         ),

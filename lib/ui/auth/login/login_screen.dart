@@ -279,6 +279,7 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         spacing: 10.h,
         children: [
+          SizedBox(height: 5),
           Image.asset(
             "${AppImages.happlogo}",
             height: 100,
@@ -295,6 +296,7 @@ class LoginScreen extends StatelessWidget {
             textStyle:
                 CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
           ),
+          SizedBox(height: 5),
           Role(),
           SizedBox(height: 5),
           InputTxtfield_Email(),
@@ -313,7 +315,7 @@ class LoginScreen extends StatelessWidget {
                               color: primaryColor,
                               textOverflow: TextOverflow.ellipsis))))
               : SizedBox.shrink()),
-          // SizedBox(height: 5.h),
+          SizedBox(height: 5.h),
           Btn_Login(),
           Obx(() => getController.selectedRole.value == 'Admin'
               ? GestureDetector(
@@ -323,8 +325,8 @@ class LoginScreen extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10)),color: white),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: white),
                         child: CustomTextWidget(
                             text: "Create new account",
                             textStyle: CustomTextStyles.textFontBold(
