@@ -3,10 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:excel/excel.dart';
@@ -15,7 +17,7 @@ import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 
-class SummaryController extends GetxController {
+class ManagerSummaryController extends GetxController {
   var isLoading = false.obs;
   var summary = {}.obs;
   var staffList = [].obs;
@@ -253,10 +255,11 @@ class SummaryController extends GetxController {
   }
 }
 
-class ManagerFinancePage extends StatelessWidget {
-  final SummaryController controller = Get.put(SummaryController());
+class ManagerSummaryPage extends StatelessWidget {
+  final ManagerSummaryController controller =
+      Get.put(ManagerSummaryController());
 
-  ManagerFinancePage({super.key});
+  ManagerSummaryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -281,9 +284,10 @@ class ManagerFinancePage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: ManagerDrawerScreen(),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingAvatar());
         }
 
         final summary = controller.summary;

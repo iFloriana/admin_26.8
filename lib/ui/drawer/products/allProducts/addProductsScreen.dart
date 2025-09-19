@@ -856,7 +856,7 @@ class AddProductScreen extends StatelessWidget {
     //   child: Text(isEditMode ? 'Update Product' : 'Add Product'),
     // );
     // Obx(() => controller.isLoading.value
-    //     ? const Center(child: CircularProgressIndicator())
+    //     ? const Center(child: CustomLoadingAvatar())
     //     : Row(
     //         children: [
     //           Expanded(

@@ -96,5 +96,8 @@ abstract class Routes {
   static const ManagerUnitsscreen = "/ManagerUnitsscreen";
   static const ManagerTagsscreen = "/ManagerTagsscreen";
   static const managerFinancePage = "/managerFinancePage";
+  static const ManagerSummaryPage = "/ManagerSummaryPage";
+  static const SummaryPage = "/SummaryPage";
+
   
 }

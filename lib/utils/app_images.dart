@@ -5,6 +5,8 @@ class AppImages {
   static const String cardbg = 'assets/images/img/appointment.png';
   static const String loading = 'assets/images/img/loading.gif';
   static const String placeholder = 'assets/images/img/No_Image_Available.jpg';
+  static const String loginbg = 'assets/images/img/salon-login-bg.jpg';
+  static const String happlogo = 'assets/images/img/h-applogo.png';
 }
 
 class AppSVGImages {

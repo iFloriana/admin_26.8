@@ -5,12 +5,10 @@ import 'package:flutter_template/ui/auth/forgot/forgot_screen.dart'
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
-import '../../../route/app_route.dart';
 import '../../../utils/custom_text_styles.dart';
 import '../../../utils/validation.dart';
 import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/Custome_button.dart';
-import '../../../wiget/custome_dropdown.dart';
 import '../../../wiget/custome_snackbar.dart';
 import '../../../wiget/custome_text.dart';
 import '../register/register_screen.dart';
@@ -21,16 +19,29 @@ class LoginScreen extends StatelessWidget {
 
   final LoginController getController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
+  bool isAdminSelected = false;
+  bool isManagerSelected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Login_screen(),
-            ],
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppImages.loginbg), // your background image
+            fit: BoxFit.cover, // covers the whole screen
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Login_screen(),
+              ],
+            ),
           ),
         ),
       ),
@@ -52,18 +63,125 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget Role() {
-    return Obx(() => CustomDropdown<String>(
-          value: getController.selectedRole.value.isEmpty
-              ? null
-              : getController.selectedRole.value,
-          items: getController.dropdownItems,
-          labelText: 'Role',
-          onChanged: (newValue) {
-            if (newValue != null) {
-              getController.selectedRole(newValue);
-            }
-          },
-        ));
+    return Obx(() {
+      return Row(
+        spacing: 15,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // 🔹 Admin Card
+          Expanded(
+            child: GestureDetector(
+              onTap: () => getController.selectedRole("Admin"),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                height: getController.selectedRole.value == "Admin" ? 70 : 60,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: getController.selectedRole.value == "Admin"
+                        ? [Colors.grey.shade200, secondaryColor]
+                        : [Colors.grey.shade200, secondaryColor],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: getController.selectedRole.value == "Admin"
+                          ? secondaryColor
+                          : Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.admin_panel_settings,
+                      size: 28,
+                      color: getController.selectedRole.value == "Admin"
+                          ? primaryColor
+                          : primaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Admin",
+                      style: TextStyle(
+                        fontSize: getController.selectedRole.value == "Admin"
+                            ? 16
+                            : 14,
+                        fontWeight: FontWeight.bold,
+                        color: getController.selectedRole.value == "Admin"
+                            ? Colors.black
+                            : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // 🔹 Manager Card
+          Expanded(
+            child: GestureDetector(
+              onTap: () => getController.selectedRole("Manager"),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                height: getController.selectedRole.value == "Manager" ? 70 : 60,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: getController.selectedRole.value == "Manager"
+                        ? [Colors.grey.shade200, secondaryColor]
+                        : [Colors.grey.shade200, secondaryColor],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: getController.selectedRole.value == "Manager"
+                          ? secondaryColor
+                          : Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.business_center,
+                      size: 28,
+                      color: getController.selectedRole.value == "Manager"
+                          ? primaryColor
+                          : primaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Manager",
+                      style: TextStyle(
+                        fontSize: getController.selectedRole.value == "Manager"
+                            ? 16
+                            : 14,
+                        fontWeight: FontWeight.bold,
+                        color: getController.selectedRole.value == "Manager"
+                            ? Colors.black
+                            : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   Widget InputTxtfield_Pass() {
@@ -122,7 +240,7 @@ class LoginScreen extends StatelessWidget {
           child: ElevatedButton(onPressed: () {}, child: Text('Submit')),
         ),
         Container(
-          height: 170.h,
+          height: 150.h,
           width: double.infinity,
           decoration: BoxDecoration(
             color: primaryColor,
@@ -161,6 +279,11 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         spacing: 10.h,
         children: [
+          Image.asset(
+            "${AppImages.happlogo}",
+            height: 100,
+            // width: 50,
+          ),
           CustomTextWidget(
             text: 'Welcome Back!',
             textStyle: CustomTextStyles.textFontSemiBold(
@@ -173,6 +296,7 @@ class LoginScreen extends StatelessWidget {
                 CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
           ),
           Role(),
+          SizedBox(height: 5),
           InputTxtfield_Email(),
           InputTxtfield_Pass(),
           Obx(() => getController.selectedRole.value == 'Admin'
@@ -189,19 +313,25 @@ class LoginScreen extends StatelessWidget {
                               color: primaryColor,
                               textOverflow: TextOverflow.ellipsis))))
               : SizedBox.shrink()),
-          SizedBox(height: 10.h),
+          // SizedBox(height: 5.h),
           Btn_Login(),
           Obx(() => getController.selectedRole.value == 'Admin'
               ? GestureDetector(
                   onTap: () => Get.to(RegisterScreen()),
                   child: Align(
                       alignment: Alignment.center,
-                      child: CustomTextWidget(
-                          text: "Create new account",
-                          textStyle: CustomTextStyles.textFontBold(
-                              size: 14.sp,
-                              color: primaryColor,
-                              textOverflow: TextOverflow.ellipsis))))
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)),color: white),
+                        child: CustomTextWidget(
+                            text: "Create new account",
+                            textStyle: CustomTextStyles.textFontBold(
+                                size: 14.sp,
+                                color: primaryColor,
+                                textOverflow: TextOverflow.ellipsis)),
+                      )))
               : SizedBox.shrink()),
         ],
       ),
@@ -212,7 +342,6 @@ class LoginScreen extends StatelessWidget {
     return Column(
       spacing: 35.h,
       children: [
-        login_screen_header(),
         login_screen_body(),
       ],
     );

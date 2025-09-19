@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/manager_ui/summry.dart';
+import 'package:flutter_template/manager_ui/manager_summry.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/manager_ui/manager_expence.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -171,7 +171,7 @@ class SplashController extends GetxController {
         Get.offNamed(Routes.dashboardScreen);
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
         // Get.offNamed(Routes.managerDashboard);
-        Get.to(ManagerFinancePage());
+        Get.to(ManagerSummaryPage());
       } else {
         Get.offNamed(Routes.loginScreen);
       }

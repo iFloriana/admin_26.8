@@ -54,6 +54,11 @@ class DrawerScreen extends StatelessWidget {
           title: 'Membership',
           icon: Icons.supervised_user_circle_outlined,
           route: Routes.addBranchMembership),
+          DrawerItem(
+          title: 'SummaryPage',
+          icon: Icons.supervised_user_circle_outlined,
+          route: Routes.SummaryPage),
+
 
       DrawerItem(
           title: 'Reports',

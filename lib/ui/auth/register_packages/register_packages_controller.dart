@@ -193,21 +193,26 @@ class PackagesController extends GetxController {
       return;
     }
 
-    final formData = dio.FormData.fromMap({
-      'full_name': registerData['owner_name'],
-      'phone_number': registerData['owner_phone'],
-      'email': registerData['owner_email'],
-      'address': registerData['salon_address'],
-      'package_id': selectedPackageId.value,
-      'salonDetails[salon_name]': registerData['salon_name'],
-    });
+    final payload = {
+      "full_name": registerData['owner_name'],
+      "phone_number": registerData['owner_phone'],
+      "email": registerData['owner_email'],
+      "address": registerData['salon_address'],
+      "package_id": selectedPackageId.value,
+      "salonDetails": {
+        "salon_name": registerData['salon_name'],
+      }
+    };
 
     try {
-      await dioClient.postFormData(
+      await dioClient.dio.post(
         '${Apis.baseUrl}${Endpoints.register_salon}',
-        formData,
-        (data) => data,
+        data: payload, // 🔹 send JSON, not FormData
+        options: dio.Options(
+          headers: {"Content-Type": "application/json"},
+        ),
       );
+
       CustomSnackbar.showSuccess('Success', 'Registration completed');
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {

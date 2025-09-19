@@ -6,6 +6,7 @@ import 'package:flutter_template/manager_ui/manager_products/category/CategorySc
 import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_screen.dart';
 import 'package:flutter_template/manager_ui/manager_products/subcategory/subcategoryScreen.dart';
 import 'package:flutter_template/manager_ui/manager_products/units/unitsScreen.dart';
+import 'package:flutter_template/manager_ui/manager_summry.dart';
 import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
@@ -30,6 +31,7 @@ import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCree
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart'
     show Staffdetailsscreen;
+import 'package:flutter_template/ui/drawer/summary.dart';
 import 'package:flutter_template/ui/tax/addNewTaxScreen.dart';
 import 'package:get/get.dart';
 import '../manager_ui/coupons/manager_coupons_screen.dart';
@@ -382,6 +384,16 @@ class AppPages {
     GetPage(
         name: Routes.managerFinancePage,
         page: () => managerFinancePage(),
+        transition: Transition.rightToLeft),
+
+         GetPage(
+        name: Routes.ManagerSummaryPage,
+        page: () => ManagerSummaryPage(),
+        transition: Transition.rightToLeft),
+
+          GetPage(
+        name: Routes.SummaryPage,
+        page: () => SummaryPage(),
         transition: Transition.rightToLeft),
   
   ];
