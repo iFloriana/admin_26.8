@@ -87,7 +87,8 @@ class managerFinanceController extends GetxController {
       print("Error fetching branches: $e");
     }
   }
-Future<void> fetchFinanceData() async {
+
+  Future<void> fetchFinanceData() async {
     try {
       isLoading.value = true;
       final getdata = await prefs.getManagerUser();
