@@ -171,7 +171,7 @@ class SplashController extends GetxController {
         Get.offNamed(Routes.dashboardScreen);
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
         // Get.offNamed(Routes.managerDashboard);
-        Get.to(ManagerSummaryPage());
+        Get.to(managerFinancePage());
       } else {
         Get.offNamed(Routes.loginScreen);
       }

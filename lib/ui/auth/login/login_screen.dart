@@ -30,8 +30,8 @@ class LoginScreen extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(AppImages.loginbg), // your background image
-            fit: BoxFit.cover, // covers the whole screen
+            image: AssetImage(AppImages.loginbg), 
+            fit: BoxFit.cover, 
           ),
         ),
         child: Form(

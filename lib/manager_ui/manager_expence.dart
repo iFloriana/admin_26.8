@@ -11,10 +11,23 @@ import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http_parser/http_parser.dart';
 import '../wiget/custome_snackbar.dart';
+
+class Branch1 {
+  final String? id;
+  final String? name;
+
+  Branch1({this.id, this.name});
+
+  factory Branch1.fromJson(Map<String, dynamic> json) {
+    return Branch1(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
 
 // 🎯 Controller
 class managerFinanceController extends GetxController {
@@ -30,8 +43,8 @@ class managerFinanceController extends GetxController {
   final owner_deposit_noteCtrl = TextEditingController();
   final addExpenceamountCtrl = TextEditingController();
   final addExpencenoteCtrl = TextEditingController();
-
-  // String? get selectedCategoryForApi => categoryMap[selectedCategory.value];
+  var branchList = <Branch1>[].obs;
+  var selectedBranchId = "".obs;
   final categories = [
     "Food & Drinks",
     "Maintenance",
@@ -39,39 +52,52 @@ class managerFinanceController extends GetxController {
     "Salon equipments",
     "Others"
   ];
-  var financeData = <String, dynamic>{}.obs; // whole API response
+  var financeData = <String, dynamic>{}.obs;
   var isLoading = false.obs;
-var selectedDateRange = Rxn<DateTimeRange>();
-
-// branch filter (if not already present)
-var branches = <Map<String, dynamic>>[].obs;
-var selectedBranch = "".obs;
+  var selectedDateRange = Rxn<DateTimeRange>();
+  var branches = <Map<String, String>>[].obs;
+  var selectedBranch = "".obs;
+  var expensesData = {}.obs;
   // Totals
   var totalCredit = 0.0.obs;
   var totalDebit = 0.0.obs;
-  // // For backend mapping
-  // final categoryMap = {
-  //   "Food & Drinks": "food_drinks",
-  //   "Maintenance": "maintenance",
-  //   "Cleaning": "cleaning",
-  //   "Salon equipments": "salon_equipments",
-  //   "Others": "other",
-  // };
   @override
   void onInit() {
     super.onInit();
-    fetchFinanceData(); // 👈 call automatically when controller starts
+    fetchFinanceData();
+    fetchBranches();
+  }
+
+  Future<void> fetchBranches() async {
+    try {
+      final getdata = await prefs.getManagerUser();
+
+      final response = await dioClient.dio.get(
+        "${Apis.baseUrl}/branches/names?salon_id=${getdata?.manager?.salonId}",
+      );
+
+      if (response.statusCode == 200) {
+        final List data = response.data["data"];
+        branches.value = [
+          {"_id": "", "name": "All Branches"}, // default option
+          ...data.map((e) => {"_id": e["_id"], "name": e["name"]})
+        ];
+      }
+    } catch (e) {
+      print("Error fetching branches: $e");
+    }
   }
 Future<void> fetchFinanceData() async {
     try {
       isLoading.value = true;
       final getdata = await prefs.getManagerUser();
 
+      // Build query
       Map<String, dynamic> query = {
         "salon_id": getdata?.manager?.salonId,
       };
-      if (selectedBranch.value.isNotEmpty) {
-        query["branch_id"] = selectedBranch.value;
+      if (selectedBranchId.value.isNotEmpty) {
+        query["branch_id"] = selectedBranchId.value;
       }
 
       final response = await dioClient.dio.get(
@@ -89,26 +115,44 @@ Future<void> fetchFinanceData() async {
         DateTime? start;
         DateTime? end;
         if (range != null) {
-          start = DateTime(range.start.year, range.start.month,
-              range.start.day); // 00:00 start
-          end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59,
-              59, 999); // end of day
+          start =
+              DateTime(range.start.year, range.start.month, range.start.day);
+          end = DateTime(
+            range.end.year,
+            range.end.month,
+            range.end.day,
+            23,
+            59,
+            59,
+            999,
+          );
         }
 
         raw.forEach((dateKey, items) {
           List<dynamic> itemsList = List<dynamic>.from(items ?? []);
+
           if (range != null) {
             itemsList = itemsList.where((item) {
               try {
                 final created = DateTime.parse(item["created_at"]).toLocal();
-                // include items where created is between start..end (inclusive)
                 return !(created.isBefore(start!) || created.isAfter(end!));
               } catch (e) {
                 return false;
               }
             }).toList();
+
+            // 🔥 Strict filter on the dateKey itself
+            try {
+              final dateObj = DateTime.parse(dateKey).toLocal();
+              if (dateObj.isBefore(start!) || dateObj.isAfter(end!)) {
+                itemsList = []; // force empty if date is outside
+              }
+            } catch (_) {}
           }
-          if (itemsList.isNotEmpty) filteredMap[dateKey] = itemsList;
+
+          if (itemsList.isNotEmpty) {
+            filteredMap[dateKey] = itemsList;
+          }
         });
 
         financeData.value = filteredMap;
@@ -481,29 +525,23 @@ class managerFinancePage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Finance Dashboard",
         actions: [
-           Obx(() {
-            return DropdownButton<String>(
-              value: controller.selectedBranch.value.isEmpty
-                  ? null
-                  : controller.selectedBranch.value,
-              hint: const Text("All Branches"),
-              underline: const SizedBox(),
-              items: [
-                const DropdownMenuItem(value: "", child: Text("All Branches")),
-                ...controller.branches.map((b) {
-                  return DropdownMenuItem<String>(
-                      value: b["_id"]?.toString() ?? "",
-                      child: Text(b["name"]?.toString() ?? "Branch"));
-                }).toList(),
-              ],
-              onChanged: (value) {
-                controller.selectedBranch.value = value ?? "";
-                controller.fetchFinanceData();
-              },
+          Obx(() {
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: controller.selectedBranchId.value,
+                items: controller.branches
+                    .map((branch) => DropdownMenuItem<String>(
+                          value: branch["_id"]!,
+                          child: Text(branch["name"]!),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  controller.selectedBranchId.value = value ?? "";
+                  controller.fetchFinanceData();
+                },
+              ),
             );
           }),
-
-          // Date range picker + selected range display + clear button
           Obx(() {
             final range = controller.selectedDateRange.value;
             return Row(

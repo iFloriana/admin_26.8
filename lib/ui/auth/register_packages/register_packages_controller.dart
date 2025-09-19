@@ -138,8 +138,6 @@ class PackagesController extends GetxController {
         double amount = selectedPackage.price! * 100.0;
         await dioClient.capturePayment(paymentId, amount);
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
-
-        // ✅ Show loading overlay for 2 seconds before registration
         await Get.showOverlay(
           asyncFunction: () async {
             await Future.delayed(const Duration(seconds: 2));
@@ -153,28 +151,6 @@ class PackagesController extends GetxController {
       print('====payment capture error=====');
     }
   }
-
-  // void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-  //   try {
-  //     String paymentId = response.paymentId ?? '';
-  //     var selectedPackage = packages
-  //         .firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
-  //     if (selectedPackage != null) {
-  //       double amount = selectedPackage.price! * 100.0;
-  //       await dioClient.capturePayment(paymentId, amount);
-  //       CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
-  //       try {
-  //         await onRegisterData();
-  //       } catch (e) {
-  //         CustomSnackbar.showError('Error', 'Registration failed: $e');
-  //         print('====onRegisterData error===== $e');
-  //       }
-  //     }
-  //   } catch (e) {
-  //     CustomSnackbar.showError('Error', 'Payment capture failed: $e');
-  //     print('====payment capture error=====');
-  //   }
-  // }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     CustomSnackbar.showError('Error', 'Payment failed: ${response.message}');
