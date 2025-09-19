@@ -527,19 +527,40 @@ class managerFinancePage extends StatelessWidget {
         title: "Finance Dashboard",
         actions: [
           Obx(() {
-            return DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: controller.selectedBranchId.value,
-                items: controller.branches
-                    .map((branch) => DropdownMenuItem<String>(
-                          value: branch["_id"]!,
-                          child: Text(branch["name"]!),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  controller.selectedBranchId.value = value ?? "";
-                  controller.fetchFinanceData();
-                },
+            // find selected branch
+            final selected = controller.branches.firstWhere(
+              (b) => b["_id"] == controller.selectedBranchId.value,
+              orElse: () => {"_id": "", "name": "All Branches"},
+            );
+
+            // get first letter
+            final firstLetter = (selected["name"] ?? "A").isNotEmpty
+                ? selected["name"]![0].toUpperCase()
+                : "A";
+
+            return PopupMenuButton<String>(
+              onSelected: (value) {
+                controller.selectedBranchId.value = value;
+                controller.fetchFinanceData();
+              },
+              itemBuilder: (context) {
+                return controller.branches
+                    .map(
+                      (branch) => PopupMenuItem<String>(
+                        value: branch["_id"]!,
+                        child: Text(branch["name"]!),
+                      ),
+                    )
+                    .toList();
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: secondaryColor,
+                child: Text(
+                  firstLetter,
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             );
           }),
