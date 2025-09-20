@@ -639,6 +639,7 @@ class managerFinancePage extends StatelessWidget {
 
         return Column(
           children: [
+            const SizedBox(height: 8),
             // 🔹 Totals Section
             SizedBox(
               height: 140,
