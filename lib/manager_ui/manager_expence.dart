@@ -58,6 +58,7 @@ class managerFinanceController extends GetxController {
   var branches = <Map<String, String>>[].obs;
   var selectedBranch = "".obs;
   var expensesData = {}.obs;
+  var openingBalance = 0.0.obs;
   // Totals
   var totalCredit = 0.0.obs;
   var totalDebit = 0.0.obs;
@@ -88,6 +89,34 @@ class managerFinanceController extends GetxController {
     }
   }
 
+  Future<void> fetchOpeningBalance({
+    required String salonId,
+    required String branchId,
+  }) async {
+    try {
+      final response = await dioClient.dio.get(
+        "${Apis.baseUrl}/expenses/opening-balance",
+        queryParameters: {
+          "salon_id": salonId,
+          "branch_id": branchId,
+        },
+      );
+
+      if (response.statusCode == 200 &&
+          response.data["success"] == true &&
+          response.data["balance"] != null) {
+        openingBalance.value =
+            double.tryParse("${response.data["balance"]["opening_balance"]}") ??
+                0.0;
+      } else {
+        openingBalance.value = 0.0;
+      }
+    } catch (e) {
+      print("Error fetching opening balance: $e");
+      openingBalance.value = 0.0;
+    }
+  }
+
   Future<void> fetchFinanceData() async {
     try {
       isLoading.value = true;
@@ -97,8 +126,18 @@ class managerFinanceController extends GetxController {
       Map<String, dynamic> query = {
         "salon_id": getdata?.manager?.salonId,
       };
+
       if (selectedBranchId.value.isNotEmpty) {
         query["branch_id"] = selectedBranchId.value;
+
+        // 🆕 Fetch opening balance for the selected branch
+        await fetchOpeningBalance(
+          salonId: getdata?.manager?.salonId ?? "",
+          branchId: selectedBranchId.value,
+        );
+      } else {
+        // Reset if "All Branches" is selected
+        openingBalance.value = 0.0;
       }
 
       final response = await dioClient.dio.get(
@@ -601,10 +640,41 @@ class managerFinancePage extends StatelessWidget {
         return Column(
           children: [
             // 🔹 Totals Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+            SizedBox(
+              height: 140,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
+                  if (controller.selectedBranchId.value.isNotEmpty)
+                    Expanded(
+                      child: Card(
+                        color: Colors.blue.shade50,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              const Icon(Icons.account_balance_wallet,
+                                  color: Colors.blue, size: 26),
+                              const SizedBox(height: 8),
+                              const Text("Opening Balance",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14)),
+                              Obx(() => Text(
+                                    "₹ ${controller.openingBalance.value.toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   Expanded(
                     child: Card(
                       color: Colors.green.shade50,
@@ -632,7 +702,6 @@ class managerFinancePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Card(
                       color: Colors.red.shade50,
