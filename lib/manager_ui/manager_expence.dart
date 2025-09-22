@@ -44,6 +44,7 @@ class managerFinanceController extends GetxController {
   final addExpenceamountCtrl = TextEditingController();
   final addExpencenoteCtrl = TextEditingController();
   var branchList = <Branch1>[].obs;
+  var amount = TextEditingController();
   var selectedBranchId = "".obs;
   final categories = [
     "Food & Drinks",
@@ -89,6 +90,45 @@ class managerFinanceController extends GetxController {
     }
   }
 
+  Future<void> updateOpeningBalanceDio() async {
+    try {
+      final manager = await prefs.getManagerUser();
+      if (manager?.manager?.salonId == null || selectedBranchId.value.isEmpty) {
+        print('Salon ID or Branch ID is missing.');
+        return;
+      }
+
+      final response = await dioClient.dio.post(
+        "${Apis.baseUrl}/expenses/opening-balance",
+        data: {
+          "salon_id": manager?.manager?.salonId,
+          "opening_balance": amount.text,
+          "branch_id": selectedBranchId.toString()
+        },
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      if (response.data != null && response.data['success'] == true) {
+        Get.back(); // Close the dialog
+        amount.clear();
+        // ✅ Fetch the updated opening balance from the server
+        await fetchOpeningBalance(
+          salonId: manager?.manager?.salonId ?? "",
+          branchId: selectedBranchId.value,
+        );
+
+        CustomSnackbar.showSuccess(
+            "Success", "Opening balance updated successfully");
+      } else {
+        print('Failed to update opening balance. Response: ${response.data}');
+        CustomSnackbar.showError("Error", "Failed to update opening balance");
+      }
+    } catch (e) {
+      print('Error updating opening balance: $e');
+      CustomSnackbar.showError("Exception", e.toString());
+    }
+  }
+
   Future<void> fetchOpeningBalance({
     required String salonId,
     required String branchId,
@@ -125,6 +165,7 @@ class managerFinanceController extends GetxController {
       // Build query
       Map<String, dynamic> query = {
         "salon_id": getdata?.manager?.salonId,
+        "branch_id": getdata?.manager?.branchId?.sId
       };
 
       if (selectedBranchId.value.isNotEmpty) {
@@ -640,97 +681,261 @@ class managerFinancePage extends StatelessWidget {
         return Column(
           children: [
             const SizedBox(height: 8),
-            // 🔹 Totals Section
-            SizedBox(
-              height: 140,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  if (controller.selectedBranchId.value.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                height: 140,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    if (controller.selectedBranchId.value.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          Get.dialog(
+                            barrierDismissible: false,
+                            Dialog(
+                              backgroundColor: Colors.transparent,
+                              child: WillPopScope(
+                                onWillPop: () async => false,
+                                child: Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(25),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 15,
+                                        offset: Offset(0, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      // 🔹 Top Icon
+                                      Container(
+                                        padding: EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              primaryColor,
+                                              secondaryColor
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.attach_money,
+                                          color: Colors.white,
+                                          size: 40,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 15),
+
+                                      // 🔹 Title
+                                      Text(
+                                        "Add Expense",
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey[900],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+
+                                      // 🔹 Subtitle / small decorative icons
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.money_off,
+                                              color: Colors.blueGrey[400],
+                                              size: 18),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            "Track your expenses easily",
+                                            style: TextStyle(
+                                                color: Colors.blueGrey[400],
+                                                fontSize: 14),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Icon(Icons.savings,
+                                              color: Colors.blueGrey[400],
+                                              size: 18),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20),
+
+                                      // 🔹 Amount Input
+                                      TextField(
+                                        controller: controller.amount,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          labelText: "Amount",
+                                          labelStyle: TextStyle(
+                                              color: Colors.blueGrey[600]),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            borderSide: BorderSide(
+                                                color: secondaryColor,
+                                                width: 2),
+                                          ),
+                                          prefixIcon: Icon(Icons.attach_money,
+                                              color: primaryColor),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 25),
+
+                                      // 🔹 Buttons
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () => Get.back(),
+                                            child: Text(
+                                              "Close",
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey[700]),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 25,
+                                                      vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              backgroundColor: primaryColor,
+                                              elevation: 5,
+                                            ),
+                                            onPressed: () {
+                                              // Save action
+                                              controller
+                                                  .updateOpeningBalanceDio();
+                                            },
+                                            child: Text(
+                                              "Save",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: white),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Expanded(
+                          child: Card(
+                            color: Colors.blue.shade50,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.account_balance_wallet,
+                                      color: Colors.blue, size: 26),
+                                  const SizedBox(height: 8),
+                                  const Text("Current Balance",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14)),
+                                  Obx(() => Text(
+                                        "₹ ${controller.openingBalance.value.toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     Expanded(
                       child: Card(
-                        color: Colors.blue.shade50,
+                        color: Colors.green.shade50,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.arrow_downward,
+                                  color: Colors.green, size: 32),
+                              const SizedBox(height: 8),
+                              const Text("Total Credit",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                "₹ ${controller.totalCredit.value.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Card(
+                        color: Colors.red.shade50,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.account_balance_wallet,
-                                  color: Colors.blue, size: 26),
+                              const Icon(Icons.arrow_upward,
+                                  color: Colors.red, size: 32),
                               const SizedBox(height: 8),
-                              const Text("Opening Balance",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14)),
-                              Obx(() => Text(
-                                    "₹ ${controller.openingBalance.value.toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold),
-                                  )),
+                              const Text("Total Debit",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                "₹ ${controller.totalDebit.value.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                         ),
                       ),
                     ),
-                  Expanded(
-                    child: Card(
-                      color: Colors.green.shade50,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.arrow_downward,
-                                color: Colors.green, size: 32),
-                            const SizedBox(height: 8),
-                            const Text("Total Credit",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(
-                              "₹ ${controller.totalCredit.value.toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Card(
-                      color: Colors.red.shade50,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.arrow_upward,
-                                color: Colors.red, size: 32),
-                            const SizedBox(height: 8),
-                            const Text("Total Debit",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(
-                              "₹ ${controller.totalDebit.value.toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
