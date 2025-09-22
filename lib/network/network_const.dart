@@ -15,7 +15,7 @@ class Endpoints {
   static const String salon = '/salons';
   static const String update_salon = '/salons/';
   static const String check_mailId = '/auth/check-email/';
-  static const String get_register_details = '/admin/';
+  static const String  get_register_details = '/admin/';
   static const String getStaffDetails = '/staffs?salon_id=';
   static const String postStaffDetails = '/staffs';
   static const String getCustomersDetails = '/customers';

@@ -12,7 +12,7 @@ class Adminprofilecontroller extends GetxController {
   var addressController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
-
+  var gst = TextEditingController();
   var passwordController = TextEditingController();
   var oldPasswordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
@@ -41,7 +41,7 @@ class Adminprofilecontroller extends GetxController {
   var block = ''.obs;
   var isLoading = false.obs;
   var error = ''.obs;
-
+var salonImageUrl = ''.obs;
   var isExpanded_Details = false.obs;
   var isExpanded_pass = false.obs;
 
@@ -66,6 +66,10 @@ class Adminprofilecontroller extends GetxController {
     addressController.text = profileDetails?.admin?.address ?? '';
     emailController.text = profileDetails?.admin?.email ?? '';
     phoneController.text = profileDetails?.admin?.phoneNumber ?? '';
+    gst.text = profileDetails?.salonDetails?.gstNumber ?? '';
+    if (profileDetails?.salonDetails?.imageUrl != null) {
+      salonImageUrl.value = profileDetails!.salonDetails!.imageUrl!;
+    }
   }
 
   Future onProdileUpdate() async {
@@ -74,21 +78,31 @@ class Adminprofilecontroller extends GetxController {
       'phone_number': phoneController.text,
       'email': emailController.text,
       'address': addressController.text,
-      'salonDetails[salon_name]': salonNameController.text,
+      'salonDetails': {
+        'salon_name': salonNameController.text,
+        'gst_number': gst.text,
+      },
     };
+
+    print("=======> ${gst.text}");
 
     try {
       final loginUser = await prefs.getUser();
+
       await dioClient.putData(
-        '${Apis.baseUrl}${Endpoints.get_register_details}${loginUser?.adminId}',
+        '${Apis.baseUrl}/auth/update-admin/${loginUser?.adminId}',
         data,
-        (json) => (json),
+        (json) => json,
       );
+
+      print(
+          "=====> ${Apis.baseUrl}${Endpoints.get_register_details}${loginUser?.adminId}");
       await prefs.onLogout();
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
+
 
   Future onChangePAssword() async {
     final loginUser = await prefs.getUser();
@@ -115,3 +129,5 @@ class Adminprofilecontroller extends GetxController {
 
   jsonDecode(Map<String, dynamic> response) {}
 }
+
+

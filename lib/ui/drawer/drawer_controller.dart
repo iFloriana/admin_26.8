@@ -6,10 +6,12 @@ class DrawermenuController extends GetxController {
   var fullname = ''.obs;
   var email = ''.obs;
   var appBarTitle = 'Dashboard'.obs;
+  var salonImageUrl = ''.obs;
 
   void selectPage(int page) {
     selectedPage.value = page;
   }
+
 //4.5
   @override
   void onInit() {
@@ -25,5 +27,8 @@ class DrawermenuController extends GetxController {
     final salonDetails = await prefs.getRegisterdetails();
     fullname.value = salonDetails!.admin!.fullName.toString();
     email.value = salonDetails.admin!.email.toString();
+    if (salonDetails?.salonDetails?.imageUrl != null) {
+      salonImageUrl.value = salonDetails.salonDetails!.imageUrl!;
+    }
   }
 }

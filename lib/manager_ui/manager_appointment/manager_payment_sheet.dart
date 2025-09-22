@@ -689,6 +689,15 @@ class _PaymentSummaryScreenState extends State<ManagerPaymentSummaryScreen> {
                   Row(
                     children: [
                       Row(children: [
+                        Row(children: [
+                          Radio<String>(
+                              activeColor: primaryColor,
+                              value: 'gst_invoice .',
+                              groupValue: _invoiceFormat,
+                              onChanged: (v) =>
+                                  setState(() => _invoiceFormat = v!)),
+                          const Text('GST Invoice'),
+                        ]),
                         Radio<String>(
                             activeColor: primaryColor,
                             value: 'fullpage',

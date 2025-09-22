@@ -33,8 +33,9 @@ class Admin {
   String? packageStartDate;
   String? packageExpirationDate;
   String? password;
-  int? iV;
+  String? createdAt;
   String? updatedAt;
+  int? iV;
 
   Admin(
       {this.sId,
@@ -46,8 +47,9 @@ class Admin {
       this.packageStartDate,
       this.packageExpirationDate,
       this.password,
-      this.iV,
-      this.updatedAt});
+      this.createdAt,
+      this.updatedAt,
+      this.iV});
 
   Admin.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -61,8 +63,9 @@ class Admin {
     packageStartDate = json['package_start_date'];
     packageExpirationDate = json['package_expiration_date'];
     password = json['password'];
-    iV = json['__v'];
+    createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,13 +81,15 @@ class Admin {
     data['package_start_date'] = this.packageStartDate;
     data['package_expiration_date'] = this.packageExpirationDate;
     data['password'] = this.password;
-    data['__v'] = this.iV;
+    data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
     return data;
   }
 }
 
 class PackageId {
+  String? status;
   String? sId;
   String? packageName;
   String? description;
@@ -94,7 +99,8 @@ class PackageId {
   int? iV;
 
   PackageId(
-      {this.sId,
+      {this.status,
+      this.sId,
       this.packageName,
       this.description,
       this.price,
@@ -103,6 +109,7 @@ class PackageId {
       this.iV});
 
   PackageId.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
     sId = json['_id'];
     packageName = json['package_name'];
     description = json['description'];
@@ -114,8 +121,8 @@ class PackageId {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
     data['_id'] = this.sId;
-    
     data['package_name'] = this.packageName;
     data['description'] = this.description;
     data['price'] = this.price;
@@ -130,7 +137,6 @@ class SalonDetails {
   String? sId;
   String? salonName;
   String? description;
-  String? address;
   String? contactNumber;
   String? contactEmail;
   String? openingTime;
@@ -142,12 +148,13 @@ class SalonDetails {
   String? createdAt;
   String? updatedAt;
   int? iV;
+  String? gstNumber;
+  String? imageUrl;
 
   SalonDetails(
       {this.sId,
       this.salonName,
       this.description,
-      this.address,
       this.contactNumber,
       this.contactEmail,
       this.openingTime,
@@ -158,13 +165,14 @@ class SalonDetails {
       this.signupId,
       this.createdAt,
       this.updatedAt,
-      this.iV});
+      this.iV,
+      this.gstNumber,
+      this.imageUrl});
 
   SalonDetails.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     salonName = json['salon_name'];
     description = json['description'];
-    address = json['address'];
     contactNumber = json['contact_number'];
     contactEmail = json['contact_email'];
     openingTime = json['opening_time'];
@@ -176,6 +184,8 @@ class SalonDetails {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
+    gstNumber = json['gst_number'];
+    imageUrl = json['image_url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -183,7 +193,6 @@ class SalonDetails {
     data['_id'] = this.sId;
     data['salon_name'] = this.salonName;
     data['description'] = this.description;
-    data['address'] = this.address;
     data['contact_number'] = this.contactNumber;
     data['contact_email'] = this.contactEmail;
     data['opening_time'] = this.openingTime;
@@ -195,6 +204,8 @@ class SalonDetails {
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
     data['__v'] = this.iV;
+    data['gst_number'] = this.gstNumber;
+    data['image_url'] = this.imageUrl;
     return data;
   }
 }

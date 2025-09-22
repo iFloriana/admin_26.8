@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileController.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -29,7 +30,32 @@ class Adminprofilescreen extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
+            spacing: 10,
             children: [
+              Obx(() {
+                if (getController.salonImageUrl.value.isNotEmpty) {
+                  return Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        "${Apis.pdfUrl}${getController.salonImageUrl.value}",
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.image_not_supported,
+                            size: 80,
+                            color: Colors.grey),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Icon(Icons.account_circle,
+                        size: 100, color: Colors.grey),
+                  );
+                }
+              }),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -98,6 +124,15 @@ class Adminprofilescreen extends StatelessWidget {
                                               InputTxtfield_Phone(),
                                               InputTxtfield_saloneName(),
                                               InputTxtfield_add(),
+                                              CustomTextFormField(
+                                                controller: getController.gst,
+                                                labelText: 'GST',
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                validator: (value) =>
+                                                    Validation.validateAddress(
+                                                        value),
+                                              ),
                                               SizedBox(height: 20.h),
                                               ElevatedButtonExample(
                                                 onPressed: () {

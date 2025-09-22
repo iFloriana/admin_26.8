@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -54,11 +55,10 @@ class DrawerScreen extends StatelessWidget {
           title: 'Membership',
           icon: Icons.supervised_user_circle_outlined,
           route: Routes.addBranchMembership),
-          DrawerItem(
+      DrawerItem(
           title: 'SummaryPage',
           icon: Icons.supervised_user_circle_outlined,
           route: Routes.SummaryPage),
-
 
       DrawerItem(
           title: 'Reports',
@@ -188,23 +188,36 @@ class DrawerScreen extends StatelessWidget {
             decoration: BoxDecoration(color: primaryColor),
             currentAccountPicture: GestureDetector(
               onTap: () => Get.toNamed(Routes.Adminprofilescreen),
-              child: CircleAvatar(
-                radius: 25,
-                backgroundColor: secondaryColor, // optional for contrast
-                child: Obx(() {
-                  final name = getController.fullname.value;
-                  final firstLetter =
-                      name.isNotEmpty ? name[0].toUpperCase() : '?';
-                  return Text(
-                    firstLetter,
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      color: white, // match your theme
+              child: Obx(() {
+                final imageUrl = "${Apis.pdfUrl}${getController.salonImageUrl.value}";
+                final name = getController.fullname.value;
+                final firstLetter =
+                    name.isNotEmpty ? name[0].toUpperCase() : '?';
+
+                if (imageUrl.isNotEmpty) {
+                  return CircleAvatar(
+                    radius: 25,
+                    backgroundColor: secondaryColor,
+                    backgroundImage: NetworkImage(imageUrl),
+                    onBackgroundImageError: (_, __) {
+                      // fallback UI if image fails to load
+                    },
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: 25,
+                    backgroundColor: secondaryColor,
+                    child: Text(
+                      firstLetter,
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                        color: white,
+                      ),
                     ),
                   );
-                }),
-              ),
+                }
+              }),
             ),
             accountName: Obx(() => CustomTextWidget(
                   text: getController.fullname.value.toString(),
