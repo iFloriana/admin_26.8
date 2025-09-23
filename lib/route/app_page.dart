@@ -25,6 +25,7 @@ import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/manager_ui/manager_expence.dart';
 import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart';
 import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerScreen.dart';
+import 'package:flutter_template/ui/drawer/products/product_list/productDetails.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
 import 'package:flutter_template/ui/drawer/services/categotys/addNewServicesScreen.dart';
 import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCreen.dart';
@@ -397,6 +398,8 @@ class AppPages {
         name: Routes.SummaryPage,
         page: () => SummaryPage(),
         transition: Transition.rightToLeft),
+
+        GetPage(name: Routes.productDetailScreen, page: () => ProductDetailScreen(),transition: Transition.rightToLeft)
   
   ];
 }

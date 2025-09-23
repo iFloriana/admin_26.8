@@ -34,9 +34,9 @@ class ProductListScreen extends StatelessWidget {
                 value: 'barcode_filter',
                 child: Row(
                   children: [
-                    Icon(Icons.filter_alt, color: Colors.grey, size: 16),
+                    Icon(Icons.barcode_reader, color: Colors.grey, size: 16),
                     SizedBox(width: 8),
-                    Text('Sort Newest First'),
+                    Text('Scan to filter'),
                   ],
                 ),
               ),
@@ -123,16 +123,66 @@ class ProductListScreen extends StatelessWidget {
   List<DataRow> _createRows() {
     return controller.productList
         .map((product) => DataRow(cells: [
-              DataCell(_ProductListItem(product: product)._buildProductInfo()),
-              DataCell(Text(product.brandId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(product.categoryId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(_ProductListItem(product: product).getPrice(),
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(_ProductListItem(product: product).getQuantity(),
-                  style: TextStyle(color: Colors.black))),
-              DataCell(_ProductListItem(product: product)._buildStatus()),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: _ProductListItem(product: product)._buildProductInfo(),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: Text(
+                    product.brandId?.name ?? 'N/A',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: Text(
+                    product.categoryId?.name ?? 'N/A',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: Text(
+                    _ProductListItem(product: product).getPrice(),
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: Text(
+                    _ProductListItem(product: product).getQuantity(),
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.productDetailScreen, arguments: product);
+                  },
+                  child: _ProductListItem(product: product)._buildStatus(),
+                ),
+              ),
               DataCell(_buildActionButtons(Get.context!, product)),
             ]))
         .toList();

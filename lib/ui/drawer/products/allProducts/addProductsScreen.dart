@@ -36,50 +36,41 @@ class AddProductScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildImagePicker(controller),
-              // const SizedBox(height: 16),
+              
               CustomTextFormField(
                 controller: controller.productNameController,
                 labelText: 'Product Name *',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
-              // const SizedBox(height: 12),
+            
               CustomTextFormField(
                 controller: controller.descriptionController,
                 labelText: 'Description',
                 maxLines: 3,
               ),
-              // const SizedBox(height: 16),
+  
               Row(
                 spacing: 5,
                 children: [
                   Expanded(child: _buildBrandDropdown(controller)),
-                  // const SizedBox(width: 8),
+                  
                   Expanded(child: _buildCategoryDropdown(controller)),
                 ],
               ),
-              // const SizedBox(height: 12),
+           
               Row(
                 spacing: 5,
                 children: [
                   Expanded(child: _buildTagDropdown(controller)),
-                  // const SizedBox(width: 8),
+                
                   Expanded(child: _buildUnitDropdown(controller)),
                 ],
               ),
-              // const SizedBox(height: 24),
-              // _buildSectionTitle(textTheme, 'Price, SKU & Stock'),add 
-              Obx(() => _buildPriceSection(controller)),
-              // const SizedBox(height: 24),
-              // Removed _buildSectionTitle(textTheme, 'Product Discount'),
-              // Removed _buildDiscountSection(controller),
-              // const SizedBox(height: 24),
-              // _buildSectionTitle(textTheme, 'Status'),
+                           Obx(() => _buildPriceSection(controller)),
+             
               _buildBranchDropdown(controller),
               _buildStatusSelector(controller),
-              // const SizedBox(height: 24),
-              // _buildSectionTitle(textTheme, 'Branch *'),
-
-              // const SizedBox(height: 32),
+             
               _buildActionButtons(controller, isEditMode),
             ],
           ),
@@ -162,61 +153,6 @@ class AddProductScreen extends StatelessWidget {
           }),
           const SizedBox(height: 8),
 
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     ElevatedButton(
-          //       onPressed: () {
-          //         Get.bottomSheet(
-          //           Container(
-          //             padding: const EdgeInsets.all(16),
-          //             decoration: const BoxDecoration(
-          //               color: Colors.white,
-          //               borderRadius:
-          //                   BorderRadius.vertical(top: Radius.circular(16)),
-          //             ),
-          //             child: Column(
-          //               mainAxisSize: MainAxisSize.min,
-          //               children: [
-          //                 ListTile(
-          //                   leading: const Icon(Icons.photo_library),
-          //                   title: const Text('Choose from Gallery'),
-          //                   onTap: () async {
-          //                     Get.back();
-          //                     await controller.pickImage();
-          //                   },
-          //                 ),
-          //                 ListTile(
-          //                   leading: const Icon(Icons.camera_alt),
-          //                   title: const Text('Take Photo'),
-          //                   onTap: () async {
-          //                     Get.back();
-          //                     await controller.pickImageFromCamera();
-          //                   },
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //           isScrollControlled: true,
-          //           shape: const RoundedRectangleBorder(
-          //             borderRadius:
-          //                 BorderRadius.vertical(top: Radius.circular(16)),
-          //           ),
-          //         );
-          //       },
-          //       child: const Text('Upload'),
-          //     ),
-          //     const SizedBox(width: 8),
-          //     TextButton(
-          //       onPressed: () {
-          //         controller.imageFile.value = null;
-          //         controller.editImageUrl.value = '';
-          //       },
-          //       child:
-          //           const Text('Remove', style: TextStyle(color: Colors.red)),
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -744,88 +680,9 @@ class AddProductScreen extends StatelessWidget {
             )
           ],
         )
-        // Row(
-        //   children: [
-        //     Expanded(
-        //         flex: 2,
-        //         child:
-        //     const SizedBox(width: 8),
-
-        //     const SizedBox(width: 8),
-
-        //     const SizedBox(width: 8),
-
-        //     const SizedBox(width: 8),
-        //    ,
-        //   ],
-        // ),
+       
         );
   }
-
-  // Removed _buildDiscountSection and _buildDateField as they are no longer needed
-  // Widget _buildDiscountSection(AddProductController controller) {
-  //   return Column(
-  //     children: [
-  //       Row(
-  //         children: [
-  //           Expanded(
-  //             child: Obx(() => DropdownButtonFormField<String>(
-  //                   value: controller.discountType.value,
-  //                   items: ['fixed', 'percentage']
-  //                       .map((t) => DropdownMenuItem(
-  //                             value: t,
-  //                             child: Text(t[0].toUpperCase() + t.substring(1)),
-  //                           ))
-  //                       .toList(),
-  //                   onChanged: (v) => controller.discountType.value = v!,
-  //                   decoration: const InputDecoration(
-  //                       labelText: 'Type', border: OutlineInputBorder()),
-  //                 )),
-  //           ),
-  //           const SizedBox(width: 8),
-  //           Expanded(
-  //               child: _buildDateField(
-  //                   Get.context!, controller.startDate, 'Start Date')),
-  //           const SizedBox(width: 8),
-  //           Expanded(
-  //               child: _buildDateField(
-  //                   Get.context!, controller.endDate, 'End Date')),
-  //         ],
-  //       ),
-  //       const SizedBox(height: 12),
-  //       TextFormField(
-  //         controller: controller.discountAmountController,
-  //         decoration: const InputDecoration(
-  //             labelText: 'Discount Amount', border: OutlineInputBorder()),
-  //         keyboardType: TextInputType.number,
-  //       ),
-  //     ],
-  //   );
-  // }
-  //
-  // Widget _buildDateField(
-  //     BuildContext context, Rx<DateTime?> date, String label) {
-  //   final format = DateFormat('MM/dd/yyyy');
-  //   return Obx(() => InkWell(
-  //         onTap: () async {
-  //           final picked = await showDatePicker(
-  //             context: context,
-  //             initialDate: date.value ?? DateTime.now(),
-  //             firstDate: DateTime(2000),
-  //             lastDate: DateTime(2101),
-  //           );
-  //           if (picked != null) {
-  //             date.value = picked;
-  //           }
-  //         },
-  //         child: InputDecorator(
-  //           decoration: InputDecoration(
-  //               labelText: label, border: const OutlineInputBorder()),
-  //           child: Text(
-  //               date.value != null ? format.format(date.value!) : 'mm/dd/yyyy'),
-  //         ),
-  //       ));
-  // }
 
   Widget _buildStatusSelector(AddProductController controller) {
     return Obx(() => Row(
@@ -850,33 +707,5 @@ class AddProductScreen extends StatelessWidget {
     return ElevatedButtonExample(
         text: isEditMode ? 'Update Product' : 'Add Product',
         onPressed: controller.saveProduct);
-
-    // ElevatedButton(
-    //   onPressed: controller.saveProduct,
-    //   child: Text(isEditMode ? 'Update Product' : 'Add Product'),
-    // );
-    // Obx(() => controller.isLoading.value
-    //     ? const Center(child: CustomLoadingAvatar())
-    //     : Row(
-    //         children: [
-    //           Expanded(
-    //             child: ElevatedButton(
-    //               style: ElevatedButton.styleFrom(
-    //                   padding: const EdgeInsets.symmetric(vertical: 16)),
-    //               onPressed: controller.saveProduct,
-    //               child: Text(isEditMode ? 'Update Product' : 'Add Product'),
-    //             ),
-    //           ),
-    //           const SizedBox(width: 8),
-    //           Expanded(
-    //             child: OutlinedButton(
-    //               style: OutlinedButton.styleFrom(
-    //                   padding: const EdgeInsets.symmetric(vertical: 16)),
-    //               onPressed: () => Get.back(),
-    //               child: const Text('Cancel'),
-    //             ),
-    //           ),
-    //         ],
-    //       ));
   }
 }

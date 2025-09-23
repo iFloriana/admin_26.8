@@ -14,7 +14,7 @@ abstract class Routes {
   static const FinancePage = '/FinancePage';
   static const addService = '/AddNewService';
   static const gerStaff = '/Staffdetailsscreen';
-
+  static const productDetailScreen = '/productDetailScreen';
   static const addtex = '/Addnewtaxscreen';
   static const getCoupons = '/CouponsScreen';
   static const addCoupon = '/AddCouponScreen';
