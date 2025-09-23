@@ -590,25 +590,42 @@ class FinancePage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Finance Dashboard",
         actions: [
-          // 🆕 Branch Filter Dropdown
           Obx(() {
-            return DropdownButton<String>(
-              value: controller.selectedBranch.value.isEmpty
-                  ? null
-                  : controller.selectedBranch.value,
-              hint: const Text("Select Branch"),
-              items: controller.branchList.map((Branch1 branch) {
-                return DropdownMenuItem<String>(
-                  value: branch.id,
-                  child: Text(branch.name ?? ""),
-                );
-              }).toList(),
-              onChanged: (String? newId) {
-                if (newId != null) {
+            final selectedBranchName = controller.branchList
+                .firstWhereOrNull(
+                    (branch) => branch.id == controller.selectedBranch.value)
+                ?.name;
+            final avatarText =
+                selectedBranchName != null && selectedBranchName.isNotEmpty
+                    ? selectedBranchName.substring(0, 1).toUpperCase()
+                    : '?';
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: PopupMenuButton<String>(
+                onSelected: (String newId) {
                   controller.selectedBranch.value = newId;
                   controller.fetchFinanceData();
-                }
-              },
+                },
+                itemBuilder: (BuildContext context) {
+                  return controller.branchList.map((Branch1 branch) {
+                    return PopupMenuItem<String>(
+                      value: branch.id,
+                      child: Text(branch.name ?? ""),
+                    );
+                  }).toList();
+                },
+                child: CircleAvatar(
+                  backgroundColor: secondaryColor,
+                  child: Text(
+                    avatarText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             );
           }),
           Obx(() {
