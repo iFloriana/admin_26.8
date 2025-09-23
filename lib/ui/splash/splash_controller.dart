@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
+import '../drawer/admin_expence.dart';
 
 class SplashController extends GetxController {
   // State to track if update is required
@@ -168,7 +169,8 @@ class SplashController extends GetxController {
       String? managerAccessToken = managerUser?.token;
 
       if (accessToken != null && accessToken.isNotEmpty) {
-        Get.offNamed(Routes.dashboardScreen);
+        // Get.offNamed(Routes.dashboardScreen);
+        Get.to(FinancePage());
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
         // Get.offNamed(Routes.managerDashboard);
         Get.to(managerFinancePage());

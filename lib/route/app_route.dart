@@ -11,7 +11,7 @@ abstract class Routes {
   static const adminprofilescreen = '/Adminprofilescreen';
   static const addNewStaff = '/Addnewstaffscreen';
   static const addNewServicesScreen = '/AddNewServicesScreen';
-
+  static const FinancePage = '/FinancePage';
   static const addService = '/AddNewService';
   static const gerStaff = '/Staffdetailsscreen';
 
@@ -98,6 +98,4 @@ abstract class Routes {
   static const managerFinancePage = "/managerFinancePage";
   static const ManagerSummaryPage = "/ManagerSummaryPage";
   static const SummaryPage = "/SummaryPage";
-
-  
 }

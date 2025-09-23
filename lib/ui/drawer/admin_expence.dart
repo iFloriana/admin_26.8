@@ -2,18 +2,18 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http_parser/http_parser.dart';
-import '../wiget/custome_snackbar.dart';
 
 class Branch1 {
   final String? id;
@@ -30,7 +30,7 @@ class Branch1 {
 }
 
 // 🎯 Controller
-class managerFinanceController extends GetxController {
+class FinanceController extends GetxController {
   var selectedImage = Rx<File?>(null);
   var selectedCategory = "".obs;
   final ImagePicker _picker = ImagePicker();
@@ -45,7 +45,6 @@ class managerFinanceController extends GetxController {
   final addExpencenoteCtrl = TextEditingController();
   var branchList = <Branch1>[].obs;
   var amount = TextEditingController();
-  // var selectedBranchId = "".obs;
   final categories = [
     "Food & Drinks",
     "Maintenance",
@@ -63,27 +62,51 @@ class managerFinanceController extends GetxController {
   // Totals
   var totalCredit = 0.0.obs;
   var totalDebit = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
-    fetchFinanceData();
-    print('===========> ${Apis.baseUrl}${Endpoints.getBranchName}6877740e7c0e7ecb364b21c7');
+    getBranches();
+  }
+
+  Future<void> getBranches() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser?.salonId}',
+        (json) => json,
+      );
+      final data = response['data'] as List;
+      branchList.value = data.map((e) => Branch1.fromJson(e)).toList();
+      // ✅ Set the selected branch to the first one by default
+      if (branchList.isNotEmpty) {
+        selectedBranch.value = branchList.first.id!;
+        fetchFinanceData(); // Fetch data for the default branch
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
   }
 
   Future<void> updateOpeningBalanceDio() async {
     try {
-      final manager = await prefs.getManagerUser();
-      if (manager?.manager?.salonId == null) {
+      final manager = await prefs.getUser();
+      if (manager?.salonId == null) {
         print('Salon ID missing.');
+        return;
+      }
+      // 🆕 Use the selected branch ID
+      if (selectedBranch.value.isEmpty) {
+        CustomSnackbar.showError('Error', 'Please select a branch');
         return;
       }
 
       final response = await dioClient.dio.post(
         "${Apis.baseUrl}/expenses/opening-balance",
         data: {
-          "salon_id": manager?.manager?.salonId,
+          "salon_id": manager?.salonId,
           "opening_balance": amount.text,
-          "branch_id": manager?.manager?.branchId?.sId
+          "branch_id": selectedBranch.value,
         },
         options: Options(headers: {"Content-Type": "application/json"}),
       );
@@ -91,10 +114,10 @@ class managerFinanceController extends GetxController {
       if (response.data != null && response.data['success'] == true) {
         Get.back(); // Close the dialog
         amount.clear();
-        // ✅ Fetch the updated opening balance from the server
+        // ✅ Fetch the updated opening balance for the selected branch
         await fetchOpeningBalance(
-          salonId: manager?.manager?.salonId ?? "",
-          branchId: manager?.manager?.branchId?.sId ?? "",
+          salonId: manager?.salonId ?? "",
+          branchId: selectedBranch.value,
         );
 
         CustomSnackbar.showSuccess(
@@ -138,28 +161,22 @@ class managerFinanceController extends GetxController {
   }
 
   Future<void> fetchFinanceData() async {
+    if (selectedBranch.value.isEmpty)
+      return; // Do not fetch if no branch is selected
+
     try {
       isLoading.value = true;
-      final getdata = await prefs.getManagerUser();
+      final getdata = await prefs.getUser();
 
-      // Build query
       Map<String, dynamic> query = {
-        "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId
+        "salon_id": getdata?.salonId,
+        "branch_id": selectedBranch.value,
       };
 
-      if (getdata?.manager?.branchId?.sId != null) {
-        query["branch_id"] = getdata?.manager?.branchId?.sId;
-
-        // 🆕 Fetch opening balance for the selected branch
-        await fetchOpeningBalance(
-          salonId: getdata?.manager?.salonId ?? "",
-          branchId: getdata?.manager?.branchId?.sId ?? "",
-        );
-      } else {
-        // Reset if "All Branches" is selected
-        openingBalance.value = 0.0;
-      }
+      await fetchOpeningBalance(
+        salonId: getdata?.salonId ?? "",
+        branchId: selectedBranch.value,
+      );
 
       final response = await dioClient.dio.get(
         "${Apis.baseUrl}/expenses",
@@ -172,7 +189,6 @@ class managerFinanceController extends GetxController {
         final Map<String, dynamic> filteredMap = {};
         final DateTimeRange? range = selectedDateRange.value;
 
-        // Precompute inclusive start/end (local dates)
         DateTime? start;
         DateTime? end;
         if (range != null) {
@@ -202,11 +218,10 @@ class managerFinanceController extends GetxController {
               }
             }).toList();
 
-            // 🔥 Strict filter on the dateKey itself
             try {
               final dateObj = DateTime.parse(dateKey).toLocal();
               if (dateObj.isBefore(start!) || dateObj.isAfter(end!)) {
-                itemsList = []; // force empty if date is outside
+                itemsList = [];
               }
             } catch (_) {}
           }
@@ -218,7 +233,6 @@ class managerFinanceController extends GetxController {
 
         financeData.value = filteredMap;
 
-        // recalc totals from the filteredMap
         double credit = 0;
         double debit = 0;
         filteredMap.forEach((date, transactions) {
@@ -242,7 +256,7 @@ class managerFinanceController extends GetxController {
   }
 
   Future<void> postVendorPayment(File? imageFile) async {
-    var getdata = await prefs.getManagerUser();
+    var getdata = await prefs.getUser();
 
     try {
       MultipartFile? imageMultipart;
@@ -251,7 +265,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -261,7 +274,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -271,8 +283,8 @@ class managerFinanceController extends GetxController {
       }
 
       FormData formData = FormData.fromMap({
-        "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "salon_id": getdata?.salonId,
+        "branch_id": selectedBranch.value, // 🆕 Use the selected branch ID
         "type": "vendor_pay",
         "vendor_name": vendorNameCtrl.text.trim(),
         "amount": vendoramountCtrl.text.trim(),
@@ -293,7 +305,6 @@ class managerFinanceController extends GetxController {
         vendoramountCtrl.clear();
         vendornoteCtrl.clear();
 
-        // 🔹 Clear image from controller
         clearImage();
         Get.back();
         CustomSnackbar.showSuccess("Success", "Payment added successfully");
@@ -311,7 +322,7 @@ class managerFinanceController extends GetxController {
   }
 
   Future<void> recivefromOwner(File? imageFile) async {
-    var getdata = await prefs.getManagerUser();
+    var getdata = await prefs.getUser();
 
     try {
       MultipartFile? imageMultipart;
@@ -320,7 +331,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -330,7 +340,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -340,8 +349,8 @@ class managerFinanceController extends GetxController {
       }
 
       FormData formData = FormData.fromMap({
-        "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "salon_id": getdata?.salonId,
+        "branch_id": selectedBranch.value, // 🆕 Use the selected branch ID
         "type": "receive_from_owner_account",
         "amount": receivce_from_owner_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -376,7 +385,7 @@ class managerFinanceController extends GetxController {
   }
 
   Future<void> owenerDeposit(File? imageFile) async {
-    var getdata = await prefs.getManagerUser();
+    var getdata = await prefs.getUser();
 
     try {
       MultipartFile? imageMultipart;
@@ -385,7 +394,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -395,7 +403,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -405,8 +412,8 @@ class managerFinanceController extends GetxController {
       }
 
       FormData formData = FormData.fromMap({
-        "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "salon_id": getdata?.salonId,
+        "branch_id": selectedBranch.value, // 🆕 Use the selected branch ID
         "type": "deposit_to_owner_account",
         "amount": owner_deposit_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -441,7 +448,7 @@ class managerFinanceController extends GetxController {
   }
 
   Future<void> add_expance(File? imageFile) async {
-    var getdata = await prefs.getManagerUser();
+    var getdata = await prefs.getUser();
 
     try {
       MultipartFile? imageMultipart;
@@ -450,7 +457,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -460,7 +466,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -471,8 +476,8 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "category": selectedCategory.value,
-        "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "salon_id": getdata?.salonId,
+        "branch_id": selectedBranch.value, // 🆕 Use the selected branch ID
         "type": 'add_expense',
         "amount": addExpenceamountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -576,9 +581,8 @@ class managerFinanceController extends GetxController {
 }
 
 // 🎯 Main Page
-class managerFinancePage extends StatelessWidget {
-  final managerFinanceController controller =
-      Get.put(managerFinanceController());
+class FinancePage extends StatelessWidget {
+  final FinanceController controller = Get.put(FinanceController());
 
   @override
   Widget build(BuildContext context) {
@@ -586,6 +590,27 @@ class managerFinancePage extends StatelessWidget {
       appBar: CustomAppBar(
         title: "Finance Dashboard",
         actions: [
+          // 🆕 Branch Filter Dropdown
+          Obx(() {
+            return DropdownButton<String>(
+              value: controller.selectedBranch.value.isEmpty
+                  ? null
+                  : controller.selectedBranch.value,
+              hint: const Text("Select Branch"),
+              items: controller.branchList.map((Branch1 branch) {
+                return DropdownMenuItem<String>(
+                  value: branch.id,
+                  child: Text(branch.name ?? ""),
+                );
+              }).toList(),
+              onChanged: (String? newId) {
+                if (newId != null) {
+                  controller.selectedBranch.value = newId;
+                  controller.fetchFinanceData();
+                }
+              },
+            );
+          }),
           Obx(() {
             final range = controller.selectedDateRange.value;
             return Row(
@@ -610,7 +635,7 @@ class managerFinancePage extends StatelessWidget {
           }),
         ],
       ),
-      drawer: ManagerDrawerScreen(),
+      drawer: DrawerScreen(),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CustomLoadingAvatar());

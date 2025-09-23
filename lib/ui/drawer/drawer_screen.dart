@@ -50,7 +50,10 @@ class DrawerScreen extends StatelessWidget {
           title: 'Packages',
           icon: Icons.category_outlined,
           route: Routes.GetBranchPackagesScreen),
-
+      DrawerItem(
+          title: 'Expence',
+          icon: Icons.category_outlined,
+          route: Routes.FinancePage),
       DrawerItem(
           title: 'Membership',
           icon: Icons.supervised_user_circle_outlined,
