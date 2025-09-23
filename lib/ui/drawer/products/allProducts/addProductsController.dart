@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart' as dio;
@@ -9,7 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import 'package:flutter_template/ui/drawer/products/product_list/product_list_controller.dart';
 import 'package:flutter_template/ui/drawer/products/product_list/product_list_model.dart';
 
@@ -452,7 +452,7 @@ class AddProductController extends GetxController {
 
     selectedBrand.value =
         brandList.firstWhereOrNull((b) => b.id == product.brandId?.id);
-    
+
     selectedCategory.value =
         categoryList.firstWhereOrNull((c) => c.id == product.categoryId?.id);
     selectedTag.value =
@@ -637,10 +637,9 @@ class AddProductController extends GetxController {
           'Content-Type': 'multipart/form-data',
         }),
       );
-
+      Get.back();
       CustomSnackbar.showSuccess("Success", "Product updated successfully!");
       Get.find<ProductListController>().fetchProducts(); // Refresh list
-      Get.back();
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to update product: $e");
     } finally {
@@ -746,8 +745,8 @@ class AddProductController extends GetxController {
           'Content-Type': 'multipart/form-data',
         }),
       );
-
-      // Clear all controllers and reset fields
+      Get.back();
+       Get.find<ProductListController>().fetchProducts();
       productNameController.clear();
       descriptionController.clear();
       priceController.clear();
@@ -768,7 +767,6 @@ class AddProductController extends GetxController {
       imageFile.value = null;
 
       CustomSnackbar.showSuccess("Success", "Product added successfully!");
-      Get.back();
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to add product: $e");
     } finally {

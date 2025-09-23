@@ -30,36 +30,56 @@ class Adminprofilescreen extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
-            spacing: 10,
             children: [
               Obx(() {
-                if (getController.salonImageUrl.value.isNotEmpty) {
-                  return Center(
+                final hasSingleImage = getController.singleImage.value != null;
+                final hasEditImageUrl =
+                    getController.editImageUrl.value.isNotEmpty;
+                final hasSalonImageUrl =
+                    getController.salonImageUrl.value.isNotEmpty;
+
+                return GestureDetector(
+                  onTap: () {
+                    _showImagePickerOptions();
+                  },
+                  child: Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        "${Apis.pdfUrl}${getController.salonImageUrl.value}",
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.image_not_supported,
-                            size: 80,
-                            color: Colors.grey),
-                      ),
+                      child: hasSingleImage
+                          ? Image.file(
+                              getController.singleImage.value!,
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : hasEditImageUrl
+                              ? Image.network(
+                                  "${Apis.pdfUrl}${getController.editImageUrl.value}",
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                )
+                              : hasSalonImageUrl
+                                  ? Image.network(
+                                      "${Apis.pdfUrl}${getController.salonImageUrl.value}",
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) => Icon(
+                                              Icons.image_not_supported,
+                                              size: 80,
+                                              color: Colors.grey),
+                                    )
+                                  : Icon(Icons.account_circle,
+                                      size: 100, color: Colors.grey),
                     ),
-                  );
-                } else {
-                  return Center(
-                    child: Icon(Icons.account_circle,
-                        size: 100, color: Colors.grey),
-                  );
-                }
+                  ),
+                );
               }),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
-                    spacing: 20.h,
                     children: [
                       GestureDetector(
                         onTap: getController.expand_details,
@@ -116,7 +136,6 @@ class Adminprofilescreen extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 12.0),
                                           child: Column(
-                                            spacing: 10,
                                             children: [
                                               SizedBox(height: 1.h),
                                               InputTxtfield_fullName(),
@@ -203,7 +222,6 @@ class Adminprofilescreen extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 12.0),
                                           child: Column(
-                                            spacing: 10,
                                             children: [
                                               SizedBox(height: 1.h),
                                               InputTxtfield_Oldpassword(),
@@ -276,6 +294,54 @@ class Adminprofilescreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showImagePickerOptions() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                Get.back();
+                getController.pickImageFromGallery();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Take Photo'),
+              onTap: () {
+                Get.back();
+                getController.pickImageFromCamera();
+              },
+            ),
+            if (getController.singleImage.value != null ||
+                getController.editImageUrl.value.isNotEmpty)
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Remove Photo',
+                    style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  Get.back();
+                  getController.clearImage();
+                },
+              ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     );
   }

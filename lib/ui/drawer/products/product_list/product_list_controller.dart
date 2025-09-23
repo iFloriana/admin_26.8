@@ -26,8 +26,8 @@ class ProductListController extends GetxController {
       var response = await dioClient.dio
           .get('${Apis.baseUrl}/products?salon_id=${loginUser!.salonId}');
       if (response.statusCode == 200) {
-        // The response has structure: {"message": "...", "data": [...]}
         var responseData = response.data;
+        print("===>${Apis.baseUrl}/products?salon_id=${loginUser!.salonId}");
         if (responseData is Map && responseData.containsKey('data')) {
           var products = productFromJson(jsonEncode(responseData['data']));
           productList.assignAll(products);

@@ -67,7 +67,7 @@ class AddProductScreen extends StatelessWidget {
                 ],
               ),
               // const SizedBox(height: 24),
-              // _buildSectionTitle(textTheme, 'Price, SKU & Stock'),
+              // _buildSectionTitle(textTheme, 'Price, SKU & Stock'),add 
               Obx(() => _buildPriceSection(controller)),
               // const SizedBox(height: 24),
               // Removed _buildSectionTitle(textTheme, 'Product Discount'),

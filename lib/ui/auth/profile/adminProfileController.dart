@@ -1,10 +1,14 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
-
 import 'package:flutter_template/network/network_const.dart';
-
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
+import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img; // Add image package
+import 'dart:typed_data';
 
 class Adminprofilecontroller extends GetxController {
   var fullnameController = TextEditingController();
@@ -16,7 +20,8 @@ class Adminprofilecontroller extends GetxController {
   var passwordController = TextEditingController();
   var oldPasswordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
-
+  final Rx<File?> singleImage = Rx<File?>(null);
+  final RxString editImageUrl = ''.obs;
   var showPassword = false.obs;
   var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
@@ -41,7 +46,7 @@ class Adminprofilecontroller extends GetxController {
   var block = ''.obs;
   var isLoading = false.obs;
   var error = ''.obs;
-var salonImageUrl = ''.obs;
+  var salonImageUrl = ''.obs;
   var isExpanded_Details = false.obs;
   var isExpanded_pass = false.obs;
 
@@ -59,6 +64,81 @@ var salonImageUrl = ''.obs;
     getProfileData();
   }
 
+  void clearImage() {
+    singleImage.value = null;
+    editImageUrl.value = '';
+    salonImageUrl.value = '';
+  }
+
+  String? _getMimeType(String path) {
+    final ext = path.toLowerCase();
+    if (ext.endsWith('.jpg') || ext.endsWith('.jpeg')) {
+      return 'image/jpeg';
+    } else if (ext.endsWith('.png')) {
+      return 'image/png';
+    } else if (ext.endsWith('.heic') || ext.endsWith('.heif')) {
+      return 'image/heic';
+    }
+    return null;
+  }
+
+  Future<void> pickImageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    editImageUrl.value = '';
+    await _handlePickedFile(pickedFile, isFromCamera: false);
+  }
+
+  Future<void> pickImageFromCamera() async {
+    final picker = ImagePicker();
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+    editImageUrl.value = '';
+    await _handlePickedFile(pickedFile, isFromCamera: true);
+  }
+
+  Future<void> _handlePickedFile(XFile? pickedFile,
+      {required bool isFromCamera}) async {
+    const maxSizeInBytes = 150 * 1024; // 150 KB
+    if (pickedFile != null) {
+      final file = File(pickedFile.path);
+      final mimeType = _getMimeType(pickedFile.path) ?? pickedFile.mimeType;
+
+      File? processedFile;
+      if (isFromCamera ||
+          mimeType == 'image/heic' ||
+          mimeType == 'image/heif') {
+        // Convert camera images (or HEIC/HEIF) to JPEG
+        final bytes = await file.readAsBytes();
+        final image = img.decodeImage(bytes);
+        if (image != null) {
+          final jpegBytes = img.encodeJpg(image, quality: 85);
+          final tempPath = '${file.path}.jpg';
+          processedFile = File(tempPath)..writeAsBytesSync(jpegBytes);
+        } else {
+          CustomSnackbar.showError('Error', 'Failed to process image');
+          return;
+        }
+      } else if (mimeType == 'image/jpeg' ||
+          mimeType == 'image/jpg' ||
+          mimeType == 'image/png') {
+        processedFile = file; // Use original file for valid formats
+      } else {
+        CustomSnackbar.showError(
+            'Invalid Image', 'Only JPG, JPEG, PNG images are allowed!');
+        return;
+      }
+
+      if (processedFile != null &&
+          await processedFile.length() <= maxSizeInBytes) {
+        singleImage.value = processedFile;
+      } else {
+        CustomSnackbar.showError('Error', 'Image size must be less than 150KB');
+      }
+    }
+  }
+
   void getProfileData() async {
     final profileDetails = await prefs.getRegisterdetails();
     fullnameController.text = profileDetails?.admin?.fullName ?? '';
@@ -73,36 +153,67 @@ var salonImageUrl = ''.obs;
   }
 
   Future onProdileUpdate() async {
-    Map<String, dynamic> data = {
-      'full_name': fullnameController.text,
-      'phone_number': phoneController.text,
-      'email': emailController.text,
-      'address': addressController.text,
-      'salonDetails': {
-        'salon_name': salonNameController.text,
-        'gst_number': gst.text,
-      },
-    };
-
-    print("=======> ${gst.text}");
+    final loginUser = await prefs.getUser();
+    final url = '${Apis.baseUrl}/auth/update-admin/${loginUser?.adminId}';
 
     try {
-      final loginUser = await prefs.getUser();
+      isLoading.value = true; // Add loading state
+      if (singleImage.value != null) {
+        // Handle multipart form data with image
+        final fileName = singleImage.value!.path.split('/').last;
+        final fileExtension = fileName.split('.').last.toLowerCase();
 
-      await dioClient.putData(
-        '${Apis.baseUrl}/auth/update-admin/${loginUser?.adminId}',
-        data,
-        (json) => json,
-      );
+        final imageMultipart = await MultipartFile.fromFile(
+          singleImage.value!.path,
+          filename: fileName,
+          contentType: MediaType('image', fileExtension),
+        );
 
-      print(
-          "=====> ${Apis.baseUrl}${Endpoints.get_register_details}${loginUser?.adminId}");
+        final formData = FormData.fromMap({
+          'full_name': fullnameController.text,
+          'phone_number': phoneController.text,
+          'email': emailController.text,
+          'address': addressController.text,
+          'salonDetails[salon_name]': salonNameController.text,
+          'salonDetails[gst_number]': gst.text,
+          'image': imageMultipart,
+        });
+
+        await dioClient.dio.put(
+          url,
+          data: formData,
+          options: Options(
+            contentType: "multipart/form-data",
+          ),
+        );
+      } else {
+        // Handle standard JSON data without image
+        final data = {
+          'full_name': fullnameController.text,
+          'phone_number': phoneController.text,
+          'email': emailController.text,
+          'address': addressController.text,
+          'salonDetails': {
+            'salon_name': salonNameController.text,
+            'gst_number': gst.text,
+          },
+        };
+
+        await dioClient.putData(
+          url,
+          data,
+          (json) => json,
+        );
+      }
+
       await prefs.onLogout();
+      CustomSnackbar.showSuccess('Success', 'Profile updated successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
-
 
   Future onChangePAssword() async {
     final loginUser = await prefs.getUser();
@@ -114,20 +225,21 @@ var salonImageUrl = ''.obs;
     };
 
     try {
+      isLoading.value = true;
       await dioClient.postData(
         '${Apis.baseUrl}${Endpoints.resetPass}',
         changeData,
         (json) => json,
       );
 
-      CustomSnackbar.showSuccess('Success', 'password update  successfully');
+      CustomSnackbar.showSuccess('Success', 'password update successfully');
       await prefs.onLogout();
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 
   jsonDecode(Map<String, dynamic> response) {}
 }
-
-
