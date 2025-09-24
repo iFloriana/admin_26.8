@@ -65,6 +65,7 @@ dependencies:
   open_file: ^3.3.2
   flutter_expandable_fab: ^2.5.2
   package_info_plus: ^8.3.1
+  flutter_slidable: ^4.0.1
 
 
 #NAME  :  Dhairya Soni

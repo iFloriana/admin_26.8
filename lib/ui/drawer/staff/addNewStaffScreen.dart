@@ -72,36 +72,7 @@ class Addnewstaffscreen extends StatelessWidget {
                 child: Column(
                   spacing: 30.h,
                   children: [
-                    // Obx(() => StepProgress(
-                    //       totalSteps: 2,
-                    //       currentStep: getController.currentStep.value,
-                    //       stepSize: 24,
-                    //       nodeTitles: const [
-                    //         "Owner's Info",
-                    //         "Salon's Info",
-                    //       ],
-                    //       padding: const EdgeInsets.all(18),
-                    //       theme: const StepProgressThemeData(
-                    //         shape: StepNodeShape.diamond,
-                    //         activeForegroundColor: primaryColor,
-                    //         defaultForegroundColor: secondaryColor,
-                    //         stepLineSpacing: 18,
-                    //         stepLineStyle: StepLineStyle(
-                    //           borderRadius: Radius.circular(4),
-                    //         ),
-                    //         nodeLabelStyle: StepLabelStyle(
-                    //           margin: EdgeInsets.only(bottom: 6),
-                    //         ),
-                    //         stepNodeStyle: StepNodeStyle(
-                    //           activeIcon: null,
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.all(
-                    //               Radius.circular(6),
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     )),
+              
                     Obx(() =>
                         _stepForm(getController.currentStep.value, context)),
                     Obx(() => Row(
@@ -322,15 +293,6 @@ class Addnewstaffscreen extends StatelessWidget {
     );
   }
 
-  // Widget InputTxtfield_Salary() {
-  //   return CustomTextFormField(
-  //     controller: getController.salaryController,
-  //     labelText: "Salary",
-  //     keyboardType: TextInputType.number,
-  //     validator: (value) => Validation.validateSalary(value),
-  //   );
-  // }
-
   Widget InputTxtfield_Duration() {
     return CustomTextFormField(
       controller: getController.durationController,
@@ -425,45 +387,6 @@ class Addnewstaffscreen extends StatelessWidget {
         ));
   }
 
-  // Widget InputTxtfield_Pass() {
-  //   return Obx(() => CustomTextFormField(
-  //         controller: getController.passwordController,
-  //         labelText: 'Password',
-  //         obscureText: !getController.showPass.value,
-  //         suffixIcon: IconButton(
-  //           onPressed: () {
-  //             getController.toggleShowPass();
-  //           },
-  //           icon: Icon(
-  //             getController.showPass.value
-  //                 ? Icons.visibility
-  //                 : Icons.visibility_off,
-  //             color: grey,
-  //           ),
-  //         ),
-  //         validator: (value) => Validation.validatePassword(value),
-  //       ));
-  // }
-
-  // Widget InputTxtfield_confirmPass() {
-  //   return Obx(() => CustomTextFormField(
-  //         controller: getController.confirmpasswordController,
-  //         labelText: 'Confirm Password',
-  //         obscureText: !getController.showPass2.value,
-  //         suffixIcon: IconButton(
-  //           onPressed: () {
-  //             getController.toggleShowPass2();
-  //           },
-  //           icon: Icon(
-  //             getController.showPass.value
-  //                 ? Icons.visibility
-  //                 : Icons.visibility_off,
-  //             color: grey,
-  //           ),
-  //         ),
-  //         validator: (value) => Validation.validatePassword(value),
-  //       ));
-  // }
 
   Widget serviceDropdown() {
     return Obx(() {
@@ -519,30 +442,6 @@ class Addnewstaffscreen extends StatelessWidget {
     });
   }
 
-  // Widget branchDropdown() {
-  //   return Obx(() {
-  //     return DropdownButton<Branch>(
-  //       value: getController.selectedBranch.value,
-  //       hint: Text("Select Branch"),
-  //       items: getController.branchList.map((Branch branch) {
-  //         return DropdownMenuItem<Branch>(
-  //           value: branch,
-  //           child: Text(branch.name ?? ''),
-  //         );
-  //       }).toList(),
-  //       onChanged: (Branch? newValue) {
-  //         if (newValue != null) {
-  //           getController.selectedBranch.value = newValue;
-
-  //           CustomSnackbar.showSuccess(
-  //             'Branch Selected',
-  //             'ID: ${newValue.id}',
-  //           );
-  //         }
-  //       },
-  //     );
-  //   });
-  // }
   Widget branchDropdown() {
     return Obx(() {
       return DropdownButtonFormField<Branch>(
