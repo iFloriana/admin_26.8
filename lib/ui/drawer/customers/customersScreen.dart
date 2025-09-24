@@ -14,126 +14,201 @@ import 'customerController.dart';
 class CustomersScreen extends StatelessWidget {
   CustomersScreen({super.key});
   final CustomerController customerController = Get.put(CustomerController());
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Customers"),
-      drawer: DrawerScreen(),
-      body: Obx(() => customerController.customerList.isEmpty
-          ? Center(
-              child: Text(
-                "No customers available.",
-                style: TextStyle(fontSize: 16.sp),
+      appBar: CustomAppBar(
+        title: customerController.isSearching.value ? '' : 'Customers',
+        actions: [
+          Obx(() {
+            if (customerController.isSearching.value) {
+              return SizedBox(
+                width: 220.w,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 8.w),
+                  child: TextField(
+                    controller: searchController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'Search by name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16.sp),
+                      suffixIcon: IconButton(
+                        icon:
+                            Icon(Icons.clear, color: Colors.grey, size: 20.sp),
+                        onPressed: () {
+                          searchController.clear();
+                          customerController.clearSearch();
+                        },
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    onChanged: customerController.searchCustomers,
+                    onSubmitted: (value) {
+                      customerController.searchCustomers(value);
+                      customerController.isSearching.value = false;
+                      searchController.clear();
+                    },
+                  ),
+                ),
+              );
+            }
+            return IconButton(
+              icon: Icon(
+                customerController.isSearching.value
+                    ? Icons.close
+                    : Icons.search,
+                color: Colors.white,
+                size: 24.sp,
               ),
-            )
-          : ListView.builder(
-              shrinkWrap: true,
-              itemCount: customerController.customerList.length,
-              itemBuilder: (context, index) {
-                final customer = customerController.customerList[index];
-                return Slidable(
-                  key: ValueKey(customer.id),
-                  startActionPane: ActionPane(
-                    motion: const DrawerMotion(),
-                    extentRatio: 0.25,
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          Get.toNamed(
-                            Routes.editCustomer,
-                            arguments: customer,
-                          );
-                        },
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomLeft: Radius.circular(20),
-                        ),
-                        icon: Icons.edit,
-                        label: 'Edit',
-                      ),
-                    ],
+              onPressed: () {
+                if (customerController.isSearching.value) {
+                  searchController.clear();
+                  customerController.clearSearch();
+                } else {
+                  customerController.isSearching.value = true;
+                }
+              },
+            );
+          }),
+        ],
+      ),
+      drawer: DrawerScreen(),
+      body: Obx(() => customerController.isLoading.value
+          ? const Center(child: CircularProgressIndicator())
+          : customerController.filteredCustomerList.isEmpty
+              ? Center(
+                  child: Text(
+                    customerController.isSearching.value
+                        ? "No customers found."
+                        : "No customers available.",
+                    style: TextStyle(fontSize: 16.sp),
                   ),
-                  endActionPane: ActionPane(
-                    motion: const DrawerMotion(),
-                    extentRatio: 0.25,
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          _confirmDelete(
-                              context, customer.id, customerController);
-                        },
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: customerController.filteredCustomerList.length,
+                  itemBuilder: (context, index) {
+                    final customer =
+                        customerController.filteredCustomerList[index];
+                    return Slidable(
+                      key: ValueKey(customer.id),
+                      startActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        extentRatio: 0.25,
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              Get.toNamed(
+                                Routes.editCustomer,
+                                arguments: customer,
+                              );
+                            },
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              bottomLeft: Radius.circular(20),
+                            ),
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Card(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
-                    child: ListTile(
-                      onTap: () {
-                        Get.to(CustomerProfileScreen(customer: customer,));
-                      },
-                      leading: customer.image != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    '${Apis.pdfUrl}${customer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) => Container(
-                                  width: 50,
-                                  height: 50,
+                      endActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        extentRatio: 0.25,
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              _confirmDelete(
+                                  context, customer.id, customerController);
+                            },
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                          ),
+                        ],
+                      ),
+                      child: Card(
+                        margin: EdgeInsets.symmetric(
+                            vertical: 4.h, horizontal: 8.w),
+                        child: ListTile(
+                          onTap: () {
+                            Get.to(CustomerProfileScreen(customer: customer));
+                          },
+                          leading: customer.image != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        '${Apis.pdfUrl}${customer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                                    width: 50.w,
+                                    height: 50.h,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      width: 50.w,
+                                      height: 50.h,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      child:
+                                          const Icon(Icons.image_not_supported),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 50.w,
+                                  height: 50.h,
                                   decoration: BoxDecoration(
                                     color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(8.r),
                                   ),
                                   child: const Icon(Icons.image_not_supported),
                                 ),
+                          title: Text(
+                            customer.fullName,
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                customer.phoneNumber,
+                                style: TextStyle(fontSize: 14.sp),
                               ),
-                            )
-                          : Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Icons.image_not_supported),
-                            ),
-                      title: Text(customer.fullName),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text(customer.email),
-                          Text(customer.phoneNumber),
-                        ],
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            )),
+                    );
+                  },
+                )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed(Routes.addCustomer);
         },
         child: Icon(
           Icons.add,
-          color: white,
+          color: Colors.white,
+          size: 24.sp,
         ),
         backgroundColor: primaryColor,
       ),

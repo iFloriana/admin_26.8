@@ -21,7 +21,7 @@ class Customer {
   final int status;
   final String branchMembershipId;
   final Map<String, dynamic>? branchMembershipObj;
-  final String? image; // Add image field
+  final String? image;
 
   Customer({
     required this.id,
@@ -34,7 +34,7 @@ class Customer {
     this.status = 1,
     this.branchMembershipId = '',
     this.branchMembershipObj,
-    this.image, // Add image parameter
+    this.image,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
@@ -58,13 +58,16 @@ class Customer {
       branchMembershipObj: json['branch_membership'] is Map<String, dynamic>
           ? json['branch_membership'] as Map<String, dynamic>
           : null,
-      image: json['image_url'], // Parse image field
+      image: json['image_url'],
     );
   }
 }
 
 class CustomerController extends GetxController {
   var isLoading = false.obs;
+  RxList<Customer> customerList = <Customer>[].obs;
+  RxList<Customer> filteredCustomerList = <Customer>[].obs; // Filtered list
+  var isSearching = false.obs; // Add isSearching to match sample
 
   // Add these for add/edit flows
   var fullNameController = TextEditingController();
@@ -113,8 +116,6 @@ class CustomerController extends GetxController {
 
   final Rx<File?> singleImage = Rx<File?>(null);
   final RxString editImageUrl = ''.obs;
-
-  RxList<Customer> customerList = <Customer>[].obs;
 
   // Flags to track loading
   var packagesLoaded = false.obs;
@@ -194,7 +195,7 @@ class CustomerController extends GetxController {
   Future<void> fetchCustomers() async {
     try {
       final loginUser = await prefs.getUser();
-
+      isLoading.value = true;
       final Map<String, dynamic> response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.getCustomersDetails}?salon_id=${loginUser!.salonId}',
         (json) => json as Map<String, dynamic>,
@@ -202,8 +203,11 @@ class CustomerController extends GetxController {
 
       final List<dynamic> data = response['data'];
       customerList.value = data.map((e) => Customer.fromJson(e)).toList();
+      filteredCustomerList.assignAll(customerList); // Initialize filtered list
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch customers: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -218,6 +222,8 @@ class CustomerController extends GetxController {
 
       if (response != null) {
         customerList.removeWhere((customer) => customer.id == customerId);
+        filteredCustomerList
+            .removeWhere((customer) => customer.id == customerId);
         CustomSnackbar.showSuccess('Success', 'Customer deleted successfully');
         await fetchCustomers();
       }
@@ -286,6 +292,7 @@ class CustomerController extends GetxController {
               ? selectedImage.value!.path
               : existingImageUrl.value,
         );
+        filteredCustomerList.assignAll(customerList); // Update filtered list
         customerList.refresh();
       }
 
@@ -335,5 +342,24 @@ class CustomerController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get branch memberships: $e');
       membershipsLoaded.value = true;
     }
+  }
+
+  void searchCustomers(String query) {
+    isSearching.value = query.isNotEmpty;
+    if (query.isEmpty) {
+      filteredCustomerList.assignAll(customerList); // Reset to full list
+    } else {
+      filteredCustomerList.assignAll(
+        customerList
+            .where((customer) =>
+                customer.fullName.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
+  }
+
+  void clearSearch() {
+    isSearching.value = false;
+    filteredCustomerList.assignAll(customerList); // Reset to full list
   }
 }

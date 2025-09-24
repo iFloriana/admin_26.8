@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/customers/customerController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/network/network_const.dart';
@@ -9,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 class CustomerProfileScreen extends StatelessWidget {
   CustomerProfileScreen({super.key, required this.customer});
   final Customer customer;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -16,15 +18,17 @@ class CustomerProfileScreen extends StatelessWidget {
       child: Scaffold(
         appBar: CustomAppBar(
           title: customer.fullName ?? 'Customer Profile',
-          bottom: const TabBar(
+          bottom: TabBar(
             indicatorColor: secondaryColor,
             labelColor: Colors.white,
-            splashBorderRadius: BorderRadius.vertical(
+            splashBorderRadius: const BorderRadius.vertical(
               bottom: Radius.circular(20.0),
             ),
             unselectedLabelColor: secondaryColor,
             dividerColor: Colors.transparent,
-            tabs: [
+            labelStyle: TextStyle(fontSize: 14.sp),
+            unselectedLabelStyle: TextStyle(fontSize: 14.sp),
+            tabs: const [
               Tab(text: 'Profile'),
               Tab(text: 'Membership & Package'),
               Tab(text: 'History'),
@@ -50,13 +54,13 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
             child: CircleAvatar(
-              radius: 50,
+              radius: 50.r,
               backgroundColor: Colors.deepPurple.shade100,
               child: customer.image != null && customer.image!.isNotEmpty
                   ? ClipOval(
@@ -64,8 +68,8 @@ class ProfileTab extends StatelessWidget {
                         imageUrl:
                             '${Apis.pdfUrl}${customer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
                         fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
+                        width: 100.w,
+                        height: 100.h,
                         placeholder: (context, url) =>
                             const CircularProgressIndicator(),
                         errorWidget: (context, url, error) => const Icon(
@@ -82,10 +86,19 @@ class ProfileTab extends StatelessWidget {
                     ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _buildDetailRow('Name', customer.fullName ?? 'N/A'),
           _buildDetailRow('Email', customer.email ?? 'N/A'),
           _buildDetailRow('Phone', customer.phoneNumber ?? 'N/A'),
+          _buildDetailRow('Gender', customer.gender ?? 'N/A'),
+          _buildDetailRow(
+              'Status', customer.status == 1 ? 'Active' : 'Inactive'),
+          _buildDetailRow(
+              'Packages', customer.branchPackage.join(', ') ?? 'N/A'),
+          _buildDetailRow(
+            'Membership',
+            customer.branchMembershipObj?['name']?.toString() ?? 'N/A',
+          ),
         ],
       ),
     );
@@ -93,24 +106,24 @@ class ProfileTab extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 120.w,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(fontSize: 16.sp, color: Colors.black87),
             ),
           ),
         ],
@@ -129,16 +142,16 @@ class MembershipPackageTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.card_membership, size: 80, color: Colors.grey.shade400),
-          const SizedBox(height: 20),
+          Icon(Icons.card_membership, size: 80.sp, color: Colors.grey.shade400),
+          SizedBox(height: 20.h),
           Text(
             'Membership & Package for ${customer.fullName ?? "Customer"}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 10),
-          const Text(
+          SizedBox(height: 10.h),
+          Text(
             'No membership or package data available',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16.sp, color: Colors.grey),
           ),
         ],
       ),
@@ -156,16 +169,16 @@ class HistoryTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history, size: 80, color: Colors.grey.shade400),
-          const SizedBox(height: 20),
+          Icon(Icons.history, size: 80.sp, color: Colors.grey.shade400),
+          SizedBox(height: 20.h),
           Text(
             'History for ${customer.fullName ?? "Customer"}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 10),
-          const Text(
+          SizedBox(height: 10.h),
+          Text(
             'No history data available',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16.sp, color: Colors.grey),
           ),
         ],
       ),
