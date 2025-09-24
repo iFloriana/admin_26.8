@@ -13,11 +13,10 @@ class StaffProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3, // Updated to 3 tabs
       child: Scaffold(
         appBar: CustomAppBar(
           title: staff.fullName ?? 'Staff Profile',
-         
           bottom: const TabBar(
             indicatorColor: secondaryColor,
             labelColor: Colors.white,
@@ -29,6 +28,7 @@ class StaffProfileScreen extends StatelessWidget {
             tabs: [
               Tab(text: 'Details'),
               Tab(text: 'Attendance'),
+              Tab(text: 'Performance'), // New Performance tab
             ],
           ),
         ),
@@ -36,6 +36,7 @@ class StaffProfileScreen extends StatelessWidget {
           children: [
             StaffDetailsTab(staff: staff),
             AttendanceTab(staff: staff),
+            PerformanceTab(staff: staff), // New Performance tab widget
           ],
         ),
       ),
@@ -156,6 +157,33 @@ class AttendanceTab extends StatelessWidget {
           const SizedBox(height: 10),
           const Text(
             'No attendance data available',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PerformanceTab extends StatelessWidget {
+  final Data staff;
+  const PerformanceTab({super.key, required this.staff});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.bar_chart, size: 80, color: Colors.grey.shade400),
+          const SizedBox(height: 20),
+          Text(
+            'Performance records for ${staff.fullName ?? "Staff"}',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'No performance data available',
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
