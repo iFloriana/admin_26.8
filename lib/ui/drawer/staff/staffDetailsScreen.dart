@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
+import 'package:flutter_template/ui/drawer/staff/staffProofile.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
@@ -118,89 +119,96 @@ class Staffdetailsscreen extends StatelessWidget {
               final staff = controller.filteredStaffList[index];
 
               return Slidable(
-                  key: ValueKey(staff.sId),
-                  startActionPane: ActionPane(
-                      motion: const DrawerMotion(),
-                      extentRatio: 0.25,
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            Get.to(() => Addnewstaffscreen(staff: staff));
-                          },
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              bottomLeft: Radius.circular(20)),
-                          icon: Icons.edit,
-                          label: 'Edit',
-                        ),
-                      ]),
-                  endActionPane: ActionPane(
-                    motion: const DrawerMotion(),
-                    extentRatio: 0.25,
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          _confirmDelete(context, staff.sId ?? '', controller);
-                        },
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
+                key: ValueKey(staff.sId),
+                startActionPane: ActionPane(
+                  motion: const DrawerMotion(),
+                  extentRatio: 0.25,
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        Get.to(() => Addnewstaffscreen(staff: staff));
+                      },
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomLeft: Radius.circular(20),
                       ),
-                    ],
-                  ),
-                  child: Card(
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(16),
-                    // ),
-                    // elevation: 4,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      // contentPadding: const EdgeInsets.symmetric(
-                      //     horizontal: 16, vertical: 12),
-                      leading: CircleAvatar(
-                        radius: 28,
-                        backgroundColor: Colors.deepPurple.shade100,
-                        backgroundImage: staff.image != null
-                            ? NetworkImage(
-                                '${Apis.pdfUrl}${staff.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-                              )
-                            : null,
-                        child: staff.image == null
-                            ? const Icon(Icons.person,
-                                size: 30, color: Colors.white)
-                            : null,
+                      icon: Icons.edit,
+                      label: 'Edit',
+                    ),
+                  ],
+                ),
+                endActionPane: ActionPane(
+                  motion: const DrawerMotion(),
+                  extentRatio: 0.25,
+                  children: [
+                    SlidableAction(
+                      onPressed: (context) {
+                        _confirmDelete(context, staff.sId ?? '', controller);
+                      },
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
                       ),
-                      title: Text(
-                        staff.fullName ?? "Unknown Staff",
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (staff.email != null)
-                            Text(
-                              staff.email!,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.black54),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          if (staff.phoneNumber != null)
-                            Text(
-                              staff.phoneNumber!,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.black54),
-                            ),
-                        ],
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
+                ),
+                child: Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
+                      Get.to(() => StaffProfileScreen(staff: staff));
+                    },
+                    leading: CircleAvatar(
+                      radius: 28,
+                      backgroundColor: Colors.deepPurple.shade100,
+                      backgroundImage: staff.image != null
+                          ? NetworkImage(
+                              '${Apis.pdfUrl}${staff.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                            )
+                          : null,
+                      child: staff.image == null
+                          ? const Icon(Icons.person,
+                              size: 30, color: Colors.white)
+                          : null,
+                    ),
+                    title: Text(
+                      staff.fullName ?? "Unknown Staff",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ));
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (staff.email != null)
+                          Text(
+                            staff.email!,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        if (staff.phoneNumber != null)
+                          Text(
+                            staff.phoneNumber!,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
             },
           );
         }),
@@ -268,7 +276,7 @@ class Staffdetailsscreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         );
