@@ -264,7 +264,7 @@ class CustomerController extends GetxController {
       final formData = dio.FormData.fromMap(customerData);
 
       await dioClient.dio.put(
-        '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.customers}/$customerId',
         data: formData,
         options: dio.Options(
           headers: {
