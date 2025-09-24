@@ -15,9 +15,8 @@ class ProductDetailScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: "Product Details",
-          // title: product.productName,
+        appBar: CustomAppBar( 
+          title: product.productName,
           bottom: const TabBar(
             indicatorColor: secondaryColor,
             labelColor: Colors.white,
@@ -34,7 +33,6 @@ class ProductDetailScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            // First Tab: Product Details
             _buildProductDetailsTab(context),
 
             ProductStockHistoryTab(productId: product.id),

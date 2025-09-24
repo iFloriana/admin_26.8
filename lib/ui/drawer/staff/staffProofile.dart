@@ -4,6 +4,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class StaffProfileScreen extends StatelessWidget {
   final Data staff;
@@ -11,31 +12,30 @@ class StaffProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: staff.fullName ?? 'Staff Profile',
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: staff.fullName ?? 'Staff Profile',
+         
+          bottom: const TabBar(
+            indicatorColor: secondaryColor,
+            labelColor: Colors.white,
+            splashBorderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20.0),
+            ),
+            unselectedLabelColor: secondaryColor,
+            dividerColor: Colors.transparent,
+            tabs: [
+              Tab(text: 'Details'),
+              Tab(text: 'Attendance'),
+            ],
+          ),
+        ),
+        body: TabBarView(
           children: [
-            const TabBar(
-              indicatorColor: primaryColor,
-              labelColor: primaryColor,
-              unselectedLabelColor: Colors.grey,
-              tabs: [
-                Tab(text: 'Details'),
-                Tab(text: 'Attendance'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  StaffDetailsTab(staff: staff),
-                  AttendanceTab(staff: staff),
-                ],
-              ),
-            ),
+            StaffDetailsTab(staff: staff),
+            AttendanceTab(staff: staff),
           ],
         ),
       ),
@@ -49,6 +49,20 @@ class StaffDetailsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Date formatter for YYYY-MM-DD
+    final DateFormat dateFormatter = DateFormat('yyyy-MM-dd');
+
+    // Format createdAt date
+    String formattedJoiningDate = 'N/A';
+    if (staff.createdAt != null) {
+      try {
+        final DateTime parsedDate = DateTime.parse(staff.createdAt!);
+        formattedJoiningDate = dateFormatter.format(parsedDate);
+      } catch (e) {
+        formattedJoiningDate = 'Invalid Date';
+      }
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -89,6 +103,7 @@ class StaffDetailsTab extends StatelessWidget {
             '${staff.lunchTime?.timing ?? 'N/A'} (${staff.lunchTime?.duration ?? 0} min)',
           ),
           _buildDetailRow('Status', staff.status == 1 ? 'Active' : 'Inactive'),
+          _buildDetailRow('Joining At', formattedJoiningDate),
         ],
       ),
     );
@@ -128,7 +143,6 @@ class AttendanceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder for attendance data
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
