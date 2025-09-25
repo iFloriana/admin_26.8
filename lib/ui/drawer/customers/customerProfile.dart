@@ -32,7 +32,8 @@ class CustomerProfileScreen extends StatelessWidget {
               Tab(text: 'Membership & Package'),
               Tab(text: 'History'),
             ],
-          ), title:customer.fullName ?? 'Customer Profile',
+          ),
+          title: customer.fullName ?? 'Customer Profile',
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -76,7 +77,10 @@ class ProfileTab extends StatelessWidget {
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade50],
+                    colors: [
+                      Colors.deepPurple.shade100,
+                      Colors.deepPurple.shade50
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -271,7 +275,8 @@ class MembershipPackageTab extends StatelessWidget {
                 SizedBox(height: 10.h),
                 Text(
                   'No package or membership found',
-                  style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
+                  style:
+                      TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -292,10 +297,9 @@ class MembershipPackageTab extends StatelessWidget {
                   Text(
                     'Packages',
                     style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor),
                   ),
                   SizedBox(height: 12.h),
                   ...packages.map((package) => Card(
@@ -326,7 +330,8 @@ class MembershipPackageTab extends StatelessWidget {
                                         color: secondaryColor, size: 24.sp),
                                     SizedBox(width: 8.w),
                                     Text(
-                                      package['branch_package']['package_name'] ??
+                                      package['branch_package']
+                                              ['package_name'] ??
                                           'N/A',
                                       style: TextStyle(
                                         fontSize: 18.sp,
@@ -363,12 +368,12 @@ class MembershipPackageTab extends StatelessWidget {
                                   Text(
                                     'Services Included:',
                                     style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
-                                    ),
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87),
                                   ),
-                                  ...package['branch_package']['package_details']
+                                  ...package['branch_package']
+                                          ['package_details']
                                       .map<Widget>((service) => Padding(
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 4.h),
@@ -380,9 +385,9 @@ class MembershipPackageTab extends StatelessWidget {
                                                 SizedBox(width: 8.w),
                                                 Expanded(
                                                   child: Text(
-                                                    'Service ID: ${service['service_id']}, Price: ${service['discounted_price']}, Quantity: ${service['quantity']}',
-                                                    style:
-                                                        TextStyle(fontSize: 14.sp),
+                                                    'Service: ${service['service_id']['name'] ?? 'N/A'}, Price: ${service['discounted_price'] ?? 'N/A'}, Quantity: ${service['quantity'] ?? 'N/A'}',
+                                                    style: TextStyle(
+                                                        fontSize: 14.sp),
                                                   ),
                                                 ),
                                               ],
@@ -401,10 +406,9 @@ class MembershipPackageTab extends StatelessWidget {
                   Text(
                     'Memberships',
                     style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                    ),
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor),
                   ),
                   SizedBox(height: 12.h),
                   ...memberships.map((membership) => Card(
@@ -455,12 +459,13 @@ class MembershipPackageTab extends StatelessWidget {
                                 _buildDetailRow(
                                     'Amount',
                                     membership['branch_membership']
-                                            ['membership_amount']
-                                        ?.toString() ??
+                                                ['membership_amount']
+                                            ?.toString() ??
                                         'N/A'),
                                 _buildDetailRow(
                                     'Discount',
-                                    membership['branch_membership']['discount'] !=
+                                    membership['branch_membership']
+                                                ['discount'] !=
                                             null
                                         ? '${membership['branch_membership']['discount']}${membership['branch_membership']['discount_type'] == 'percentage' ? '%' : ''}'
                                         : 'N/A'),
@@ -473,8 +478,10 @@ class MembershipPackageTab extends StatelessWidget {
                                     _formatDate(membership['date'])),
                                 _buildDetailRow('Valid Till',
                                     _formatDate(membership['expiry_date'])),
-                                _buildDetailRow('Status',
-                                    membership['status']?.toUpperCase() ?? 'N/A'),
+                                _buildDetailRow(
+                                    'Status',
+                                    membership['status']?.toUpperCase() ??
+                                        'N/A'),
                                 _buildDetailRow('Payment Method',
                                     membership['payment_method'] ?? 'N/A'),
                               ],
@@ -593,8 +600,7 @@ class HistoryTab extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.history,
-                    size: 80.sp, color: Colors.grey.shade400),
+                Icon(Icons.history, size: 80.sp, color: Colors.grey.shade400),
                 SizedBox(height: 20.h),
                 Text(
                   'History for ${customer.fullName ?? "Customer"}',
@@ -607,7 +613,8 @@ class HistoryTab extends StatelessWidget {
                 SizedBox(height: 10.h),
                 Text(
                   'No history data available',
-                  style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
+                  style:
+                      TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -659,8 +666,8 @@ class HistoryTab extends StatelessWidget {
                         SizedBox(height: 8.h),
                         _buildDetailRow(
                             'Branch', visit['branch_name'] ?? 'N/A'),
-                        _buildDetailRow('Status',
-                            visit['status']?.toUpperCase() ?? 'N/A'),
+                        _buildDetailRow(
+                            'Status', visit['status']?.toUpperCase() ?? 'N/A'),
                         _buildDetailRow('Services',
                             (visit['services'] as List?)?.join(', ') ?? 'N/A'),
                       ],
