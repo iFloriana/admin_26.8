@@ -8,7 +8,7 @@ import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
-import 'package:get/get.dart';
+import 'package:get/Get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
@@ -60,7 +60,8 @@ class EditCustomerScreen extends StatelessWidget {
     customerController.singleImage.value = null;
     // Prefill package/membership fields
     final hasPackages = customer.branchPackage.isNotEmpty;
-    final hasMembership = (customer.branchMembershipId.isNotEmpty) ||
+    final hasMembership = (customer.branchMembership.isNotEmpty) ||
+        (customer.branchMembershipId.isNotEmpty) ||
         (customer.branchMembershipObj != null &&
             customer.branchMembershipObj!['_id'] != null);
     customerController.showPackageFields.value = hasPackages || hasMembership;
@@ -85,7 +86,9 @@ class EditCustomerScreen extends StatelessWidget {
 
     // Prefill branch membership (use id from object if id is missing)
     String? membershipId;
-    if (customer.branchMembershipId.isNotEmpty) {
+    if (customer.branchMembership.isNotEmpty) {
+      membershipId = customer.branchMembership;
+    } else if (customer.branchMembershipId.isNotEmpty) {
       membershipId = customer.branchMembershipId;
     } else if (customer.branchMembershipObj != null &&
         customer.branchMembershipObj!['_id'] != null) {
@@ -204,7 +207,7 @@ class EditCustomerScreen extends StatelessWidget {
                               selectedIcon: const Icon(Icons.check_box,
                                   color: primaryColor),
                               disabledIcon:
-                                  Icon(Icons.lock, color: Colors.grey),
+                                  Icon(Icons.lock, color: Colors.grey.shade300),
                             ),
                             onSelectionChange: (selectedItems) {
                               customerController.selectedPackages.value =
