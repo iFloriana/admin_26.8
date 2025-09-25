@@ -23,7 +23,7 @@ class PaymentSummaryScreen extends StatefulWidget {
 class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
   final controller = Get.find<AppointmentController>();
   final _additionalChargesCtrl = TextEditingController(text: '0');
-  String _invoiceFormat = 'fullpage';
+  String _invoiceFormat = 'gst_invoice';
   bool _showAdditionalCharges = false;
   List<Map<String, String>> _splitPayments = [
     {"method": '', "amount": ''},
@@ -687,10 +687,10 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                   const Text('Invoice Formate'),
                   Row(
                     children: [
-                       Row(children: [
+                      Row(children: [
                         Radio<String>(
                             activeColor: primaryColor,
-                            value: 'gst_invoice .',
+                            value: 'gst_invoice',
                             groupValue: _invoiceFormat,
                             onChanged: (v) =>
                                 setState(() => _invoiceFormat = v!)),
@@ -705,6 +705,10 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                                 setState(() => _invoiceFormat = v!)),
                         const Text('Full Page'),
                       ]),
+                    ],
+                  ),
+                  Row(
+                    children: [
                       Row(children: [
                         Radio<String>(
                             activeColor: primaryColor,
@@ -796,8 +800,8 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                       final fullUrl = '${Apis.pdfUrl}$url';
                       await controller.openPdf(fullUrl);
                     }
-                    Get.back();
                     Get.put((AppointmentController())).getAppointment();
+                    Get.back();
                   } catch (e) {
                     CustomSnackbar.showError(
                         'Error', 'Failed to generate bill: $e');

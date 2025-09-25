@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/network/dio.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:excel/excel.dart';
@@ -21,7 +20,7 @@ class Appointment {
   final String clientName;
   final String? clientImage;
   final String? clientPhone;
-  final int amount;
+  final num amount;
   final String staffName;
   final String? staffImage;
   final String serviceName;
@@ -95,6 +94,24 @@ class Appointment {
       return normalized;
     }
 
+    // Safely extract membership discount only if branchMembership is a Map
+    double? extractMembershipDiscount(dynamic bm) {
+      if (bm is Map && bm != null) {
+        final discount = bm['discount'];
+        return (discount is int
+            ? discount.toDouble()
+            : (discount ?? 0).toDouble());
+      }
+      return null;
+    }
+
+    String? extractMembershipDiscountType(dynamic bm) {
+      if (bm is Map && bm != null) {
+        return toString(bm['discount_type']);
+      }
+      return null;
+    }
+
     return Appointment(
       appointmentId: toString(json['appointment_id']),
       date: toString(json['appointment_date']).split('T')[0],
@@ -116,14 +133,9 @@ class Appointment {
           : '-',
       status: _normalizeStatus(toString(json['status'])),
       paymentStatus: toString(json['payment_status']),
-      branchMembershipDiscount: branchMembership != null
-          ? (branchMembership['discount'] is int
-              ? (branchMembership['discount'] as int).toDouble()
-              : (branchMembership['discount'] ?? 0).toDouble())
-          : null,
-      branchMembershipDiscountType: branchMembership != null
-          ? toString(branchMembership['discount_type'])
-          : null,
+      branchMembershipDiscount: extractMembershipDiscount(branchMembership),
+      branchMembershipDiscountType:
+          extractMembershipDiscountType(branchMembership),
     );
   }
 }
@@ -277,7 +289,7 @@ class AppointmentController extends GetxController {
       if (sortOrder == 'asc') {
         return dateA.compareTo(dateB);
       } else {
-        return dateB.compareTo(dateA);
+        return dateB.compareTo(dateB);
       }
     });
 
@@ -347,7 +359,8 @@ class AppointmentController extends GetxController {
   Future<void> applyCoupon(String code) async {
     final loginUser = await prefs.getUser();
     try {
-      final res = await dioClient.dio.get("${Apis.baseUrl}/coupons", queryParameters: {
+      final res =
+          await dioClient.dio.get("${Apis.baseUrl}/coupons", queryParameters: {
         "salon_id": loginUser!.salonId,
       });
 
@@ -415,9 +428,8 @@ class AppointmentController extends GetxController {
 
     // Membership discount
     if (membershipDiscount > 0) {
-      final isPercent = (membershipDiscountType ?? '')
-          .toLowerCase()
-          .startsWith('percent');
+      final isPercent =
+          (membershipDiscountType ?? '').toLowerCase().startsWith('percent');
       if (isPercent) {
         discountedAmount -= (membershipDiscount * discountedAmount / 100.0);
       } else {
@@ -430,9 +442,11 @@ class AppointmentController extends GetxController {
 
     // Additional discount
     if (hasAdditionalDiscount && additionalDiscountValue > 0) {
-      final isPercent = additionalDiscountType.toLowerCase().startsWith('percent');
+      final isPercent =
+          additionalDiscountType.toLowerCase().startsWith('percent');
       if (isPercent) {
-        discountedAmount -= (additionalDiscountValue * discountedAmount / 100.0);
+        discountedAmount -=
+            (additionalDiscountValue * discountedAmount / 100.0);
       } else {
         discountedAmount -= additionalDiscountValue;
       }

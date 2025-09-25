@@ -22,6 +22,8 @@ class Customer {
   final String branchMembershipId;
   final Map<String, dynamic>? branchMembershipObj;
   final String? image;
+  final List<Map<String, dynamic>> branchPackages; // Add branch_packages
+  final List<Map<String, dynamic>> branchMemberships; // Add branch_memberships
 
   Customer({
     required this.id,
@@ -35,6 +37,8 @@ class Customer {
     this.branchMembershipId = '',
     this.branchMembershipObj,
     this.image,
+    this.branchPackages = const [],
+    this.branchMemberships = const [],
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
@@ -59,6 +63,14 @@ class Customer {
           ? json['branch_membership'] as Map<String, dynamic>
           : null,
       image: json['image_url'],
+      branchPackages: (json['branch_packages'] as List?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          [],
+      branchMemberships: (json['branch_memberships'] as List?)
+              ?.map((e) => e as Map<String, dynamic>)
+              .toList() ??
+          [],
     );
   }
 }
@@ -66,8 +78,8 @@ class Customer {
 class CustomerController extends GetxController {
   var isLoading = false.obs;
   RxList<Customer> customerList = <Customer>[].obs;
-  RxList<Customer> filteredCustomerList = <Customer>[].obs; // Filtered list
-  var isSearching = false.obs; // Add isSearching to match sample
+  RxList<Customer> filteredCustomerList = <Customer>[].obs;
+  var isSearching = false.obs;
 
   // Add these for add/edit flows
   var fullNameController = TextEditingController();
@@ -203,7 +215,7 @@ class CustomerController extends GetxController {
 
       final List<dynamic> data = response['data'];
       customerList.value = data.map((e) => Customer.fromJson(e)).toList();
-      filteredCustomerList.assignAll(customerList); // Initialize filtered list
+      filteredCustomerList.assignAll(customerList);
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch customers: $e');
     } finally {
@@ -239,7 +251,6 @@ class CustomerController extends GetxController {
       final loginUser = await prefs.getUser();
       isLoading.value = true;
 
-      // Prepare form data for multipart request
       Map<String, dynamic> customerData = {
         'full_name': fullNameController.text,
         'email': emailController.text,
@@ -257,7 +268,6 @@ class CustomerController extends GetxController {
         }
       }
 
-      // Add image if selected
       if (selectedImage.value != null) {
         customerData['image'] = await dio.MultipartFile.fromFile(
           selectedImage.value!.path,
@@ -266,7 +276,6 @@ class CustomerController extends GetxController {
         );
       }
 
-      // Create FormData for multipart request
       final formData = dio.FormData.fromMap(customerData);
 
       await dioClient.dio.put(
@@ -279,7 +288,6 @@ class CustomerController extends GetxController {
         ),
       );
 
-      // Update in list
       int index = customerList.indexWhere((c) => c.id == customerId);
       if (index != -1) {
         customerList[index] = Customer(
@@ -292,11 +300,10 @@ class CustomerController extends GetxController {
               ? selectedImage.value!.path
               : existingImageUrl.value,
         );
-        filteredCustomerList.assignAll(customerList); // Update filtered list
+        filteredCustomerList.assignAll(customerList);
         customerList.refresh();
       }
 
-      // Clear image selection
       selectedImage.value = null;
       existingImageUrl.value = null;
 
@@ -347,7 +354,7 @@ class CustomerController extends GetxController {
   void searchCustomers(String query) {
     isSearching.value = query.isNotEmpty;
     if (query.isEmpty) {
-      filteredCustomerList.assignAll(customerList); // Reset to full list
+      filteredCustomerList.assignAll(customerList);
     } else {
       filteredCustomerList.assignAll(
         customerList
@@ -360,6 +367,6 @@ class CustomerController extends GetxController {
 
   void clearSearch() {
     isSearching.value = false;
-    filteredCustomerList.assignAll(customerList); // Reset to full list
+    filteredCustomerList.assignAll(customerList);
   }
 }
