@@ -139,6 +139,25 @@ class MembershipPackageTab extends StatelessWidget {
   final Customer customer;
   const MembershipPackageTab({super.key, required this.customer});
 
+  Future<List<dynamic>> fetchPackageMembershipData() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}/customers/${customer.id}?salon_id=${loginUser!.salonId}',
+        (json) => json as Map<String, dynamic>,
+      );
+      if (response['message'] == 'Customer fetched successfully') {
+        return response['data']['package_and_membership'] as List<dynamic>;
+      } else {
+        throw Exception('Failed to fetch package and membership data');
+      }
+    } catch (e) {
+      CustomSnackbar.showError(
+          'Error', 'Failed to fetch package and membership data: $e');
+      return [];
+    }
+  }
+
   String _formatDate(String? date) {
     if (date == null) return 'N/A';
     try {
@@ -151,144 +170,188 @@ class MembershipPackageTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (customer.branchPackages.isEmpty && customer.branchMemberships.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.card_membership,
-                size: 80.sp, color: Colors.grey.shade400),
-            SizedBox(height: 20.h),
-            Text(
-              'Membership & Package for ${customer.fullName ?? "Customer"}',
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+    return FutureBuilder<List<dynamic>>(
+      future: fetchPackageMembershipData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.card_membership,
+                    size: 80.sp, color: Colors.grey.shade400),
+                SizedBox(height: 20.h),
+                Text(
+                  'Membership & Package for ${customer.fullName ?? "Customer"}',
+                  style:
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  'Error fetching package and membership data',
+                  style: TextStyle(fontSize: 16.sp, color: Colors.red),
+                ),
+              ],
             ),
-            SizedBox(height: 10.h),
-            Text(
-              'No membership or package data available',
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+          );
+        } else if (snapshot.data!.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.card_membership,
+                    size: 80.sp, color: Colors.grey.shade400),
+                SizedBox(height: 20.h),
+                Text(
+                  'Membership & Package for ${customer.fullName ?? "Customer"}',
+                  style:
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  'No package or membership found',
+                  style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }
+          );
+        } else {
+          final data = snapshot.data!;
+          final packages =
+              data.where((item) => item['branch_package'] != null).toList();
+          final memberships =
+              data.where((item) => item['branch_membership'] != null).toList();
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (customer.branchPackages.isNotEmpty) ...[
-            Text(
-              'Packages',
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.h),
-            ...customer.branchPackages.map((package) => Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.h),
-                  child: Padding(
-                    padding: EdgeInsets.all(12.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildDetailRow(
-                            'Name',
-                            package['branch_package_id']['package_name'] ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Description',
-                            package['branch_package_id']['description'] ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Price',
-                            package['branch_package_id']['package_price']
-                                    ?.toString() ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Bought At', _formatDate(package['bought_at'])),
-                        _buildDetailRow(
-                            'Valid Till', _formatDate(package['valid_till'])),
-                        _buildDetailRow('Status',
-                            package['status']?.toUpperCase() ?? 'N/A'),
-                        if (package['branch_package_id']['package_details'] !=
-                                null &&
-                            package['branch_package_id']['package_details']
-                                .isNotEmpty) ...[
-                          SizedBox(height: 8.h),
-                          Text(
-                            'Services Included:',
-                            style: TextStyle(
-                                fontSize: 16.sp, fontWeight: FontWeight.w600),
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (packages.isNotEmpty) ...[
+                  Text(
+                    'Packages',
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10.h),
+                  ...packages.map((package) => Card(
+                        margin: EdgeInsets.symmetric(vertical: 8.h),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildDetailRow(
+                                  'Name',
+                                  package['branch_package']['package_name'] ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Description',
+                                  package['branch_package']['description'] ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Price',
+                                  package['branch_package']['package_price']
+                                          ?.toString() ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Bought At', _formatDate(package['date'])),
+                              _buildDetailRow('Valid Till',
+                                  _formatDate(package['expiry_date'])),
+                              _buildDetailRow('Status',
+                                  package['status']?.toUpperCase() ?? 'N/A'),
+                              _buildDetailRow('Payment Method',
+                                  package['payment_method'] ?? 'N/A'),
+                              if (package['branch_package']
+                                          ['package_details'] !=
+                                      null &&
+                                  package['branch_package']['package_details']
+                                      .isNotEmpty) ...[
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Services Included:',
+                                  style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                ...package['branch_package']['package_details']
+                                    .map<Widget>((service) => Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 4.h),
+                                          child: Text(
+                                            '• Service ID: ${service['service_id']}, Price: ${service['discounted_price']}, Quantity: ${service['quantity']}',
+                                            style: TextStyle(fontSize: 14.sp),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ],
+                            ],
                           ),
-                          ...package['branch_package_id']['package_details']
-                              .map<Widget>((service) => Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 4.h),
-                                    child: Text(
-                                      '• Service ID: ${service['service_id']}, Price: ${service['discounted_price']}, Quantity: ${service['quantity']}',
-                                      style: TextStyle(fontSize: 14.sp),
-                                    ),
-                                  ))
-                              .toList(),
-                        ],
-                      ],
-                    ),
+                        ),
+                      )),
+                ],
+                if (memberships.isNotEmpty) ...[
+                  SizedBox(height: 20.h),
+                  Text(
+                    'Memberships',
+                    style:
+                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
-                )),
-          ],
-          if (customer.branchMemberships.isNotEmpty) ...[
-            SizedBox(height: 20.h),
-            Text(
-              'Memberships',
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  SizedBox(height: 10.h),
+                  ...memberships.map((membership) => Card(
+                        margin: EdgeInsets.symmetric(vertical: 8.h),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildDetailRow(
+                                  'Name',
+                                  membership['branch_membership']
+                                          ['membership_name'] ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Description',
+                                  membership['branch_membership']
+                                          ['description'] ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Amount',
+                                  membership['branch_membership']
+                                              ['membership_amount']
+                                          ?.toString() ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Discount',
+                                  membership['branch_membership']['discount'] !=
+                                          null
+                                      ? '${membership['branch_membership']['discount']}${membership['branch_membership']['discount_type'] == 'percentage' ? '%' : ''}'
+                                      : 'N/A'),
+                              _buildDetailRow(
+                                  'Subscription Plan',
+                                  membership['branch_membership']
+                                          ['subscription_plan'] ??
+                                      'N/A'),
+                              _buildDetailRow(
+                                  'Bought At', _formatDate(membership['date'])),
+                              _buildDetailRow('Valid Till',
+                                  _formatDate(membership['expiry_date'])),
+                              _buildDetailRow('Status',
+                                  membership['status']?.toUpperCase() ?? 'N/A'),
+                              _buildDetailRow('Payment Method',
+                                  membership['payment_method'] ?? 'N/A'),
+                            ],
+                          ),
+                        ),
+                      )),
+                ],
+              ],
             ),
-            SizedBox(height: 10.h),
-            ...customer.branchMemberships.map((membership) => Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.h),
-                  child: Padding(
-                    padding: EdgeInsets.all(12.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildDetailRow(
-                            'Name',
-                            membership['branch_membership_id']
-                                    ['membership_name'] ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Description',
-                            membership['branch_membership_id']['description'] ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Amount',
-                            membership['branch_membership_id']
-                                        ['membership_amount']
-                                    ?.toString() ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Discount',
-                            membership['branch_membership_id']['discount'] !=
-                                    null
-                                ? '${membership['branch_membership_id']['discount']}${membership['branch_membership_id']['discount_type'] == 'percentage' ? '%' : ''}'
-                                : 'N/A'),
-                        _buildDetailRow(
-                            'Subscription Plan',
-                            membership['branch_membership_id']
-                                    ['subscription_plan'] ??
-                                'N/A'),
-                        _buildDetailRow(
-                            'Bought At', _formatDate(membership['bought_at'])),
-                        _buildDetailRow('Valid Till',
-                            _formatDate(membership['valid_till'])),
-                        _buildDetailRow('Status',
-                            membership['status']?.toUpperCase() ?? 'N/A'),
-                      ],
-                    ),
-                  ),
-                )),
-          ],
-        ],
-      ),
+          );
+        }
+      },
     );
   }
 
