@@ -356,7 +356,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Row(
                         children: [
-                          const Spacer(),
+                          // const Spacer(),
                           Expanded(
                             child: DropdownButtonFormField<String>(
                               value:
@@ -372,38 +372,88 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                               onChanged: (v) {
                                 setState(() => row['method'] = v ?? '');
                               },
-                              hint: const Text('Select Method'),
+                              decoration: InputDecoration(
+                                labelText: 'Payment Method',
+                                labelStyle: TextStyle(color: grey),
+                                border: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: grey,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: primaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: red,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextFormField(
                               keyboardType: TextInputType.number,
-                              decoration:
-                                  const InputDecoration(labelText: 'Amount'),
+                              decoration: InputDecoration(
+                                labelText: 'Amount',
+                                labelStyle: TextStyle(color: grey),
+                                border: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: grey,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: primaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8.0)),
+                                  borderSide: BorderSide(
+                                    color: red,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                              ),
                               initialValue: row['amount'],
                               onChanged: (v) => row['amount'] = v,
                             ),
                           ),
-                          const SizedBox(width: 8),
                           Row(children: [
                             if (index == _splitPayments.length - 1)
-                              ElevatedButton(
-                                onPressed: () => setState(() => _splitPayments
-                                    .add({"method": '', "amount": ''})),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green),
-                                child: const Text('+'),
-                              ),
+                              IconButton(
+                                  onPressed: () => setState(() => _splitPayments
+                                      .add({"method": '', "amount": ''})),
+                                  icon: Icon(Icons.add)),
                             const SizedBox(width: 6),
                             if (_splitPayments.length > 1)
-                              OutlinedButton(
-                                onPressed: () => setState(
-                                    () => _splitPayments.removeAt(index)),
-                                style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.red),
-                                child: const Text('×'),
-                              ),
+                              IconButton(
+                                  onPressed: () => setState(
+                                      () => _splitPayments.removeAt(index)),
+                                  icon: Icon(Icons.cancel)),
                           ]),
                         ],
                       ),
