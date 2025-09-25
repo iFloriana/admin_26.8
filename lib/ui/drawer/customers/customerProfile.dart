@@ -20,30 +20,35 @@ class CustomerProfileScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: customer.fullName ?? 'Customer Profile',
           bottom: TabBar(
-            indicatorColor: secondaryColor,
+            indicatorColor: Colors.white,
             labelColor: Colors.white,
-            splashBorderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(20.0),
-            ),
-            unselectedLabelColor: secondaryColor,
+            unselectedLabelColor: Colors.white70,
             dividerColor: Colors.transparent,
-            labelStyle: TextStyle(fontSize: 14.sp),
+            labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
             unselectedLabelStyle: TextStyle(fontSize: 14.sp),
             tabs: const [
               Tab(text: 'Profile'),
               Tab(text: 'Membership & Package'),
               Tab(text: 'History'),
             ],
-          ),
+          ), title:customer.fullName ?? 'Customer Profile',
         ),
-        body: TabBarView(
-          children: [
-            ProfileTab(customer: customer),
-            MembershipPackageTab(customer: customer),
-            HistoryTab(customer: customer),
-          ],
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.grey.shade100, Colors.white],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: TabBarView(
+            children: [
+              ProfileTab(customer: customer),
+              MembershipPackageTab(customer: customer),
+              HistoryTab(customer: customer),
+            ],
+          ),
         ),
       ),
     );
@@ -62,45 +67,87 @@ class ProfileTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(
-            child: CircleAvatar(
-              radius: 50.r,
-              backgroundColor: Colors.deepPurple.shade100,
-              child: customer.image != null && customer.image!.isNotEmpty
-                  ? ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            '${Apis.pdfUrl}${customer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
-                        fit: BoxFit.cover,
-                        width: 100.w,
-                        height: 100.h,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => const Icon(
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade50],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                child: CircleAvatar(
+                  radius: 60.r,
+                  backgroundColor: Colors.white,
+                  child: customer.image != null && customer.image!.isNotEmpty
+                      ? ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                '${Apis.pdfUrl}${customer.image}?v=${DateTime.now().millisecondsSinceEpoch}',
+                            fit: BoxFit.cover,
+                            width: 120.w,
+                            height: 120.h,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(
+                              color: primaryColor,
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : const Icon(
                           Icons.person,
-                          size: 50,
-                          color: Colors.white,
+                          size: 60,
+                          color: Colors.grey,
                         ),
-                      ),
-                    )
-                  : const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.white,
-                    ),
+                ),
+              ),
             ),
           ),
-          SizedBox(height: 20.h),
-          _buildDetailRow('Name', customer.fullName ?? 'N/A'),
-          _buildDetailRow('Email', customer.email ?? 'N/A'),
-          _buildDetailRow('Phone', customer.phoneNumber ?? 'N/A'),
-          _buildDetailRow('Gender', customer.gender ?? 'N/A'),
-          _buildDetailRow(
-              'Status', customer.status == 1 ? 'Active' : 'Inactive'),
-          _buildDetailRow(
-              'Packages', customer.branchPackage.join(', ') ?? 'N/A'),
-          _buildDetailRow(
-            'Membership',
-            customer.branchMembershipObj?['name']?.toString() ?? 'N/A',
+          SizedBox(height: 24.h),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Personal Details',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  _buildDetailRow('Name', customer.fullName ?? 'N/A'),
+                  _buildDetailRow('Email', customer.email ?? 'N/A'),
+                  _buildDetailRow('Phone', customer.phoneNumber ?? 'N/A'),
+                  _buildDetailRow('Gender', customer.gender ?? 'N/A'),
+                  _buildDetailRow(
+                      'Status', customer.status == 1 ? 'Active' : 'Inactive'),
+                  _buildDetailRow(
+                      'Packages', customer.branchPackage.join(', ') ?? 'N/A'),
+                  _buildDetailRow(
+                    'Membership',
+                    customer.branchMembershipObj?['name']?.toString() ?? 'N/A',
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -120,13 +167,17 @@ class ProfileTab extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16.sp,
+                color: Colors.black87,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 16.sp, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.black54,
+              ),
             ),
           ),
         ],
@@ -174,24 +225,29 @@ class MembershipPackageTab extends StatelessWidget {
       future: fetchPackageMembershipData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: primaryColor),
+          );
         } else if (snapshot.hasError || snapshot.data == null) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.card_membership,
-                    size: 80.sp, color: Colors.grey.shade400),
+                Icon(Icons.error_outline,
+                    size: 80.sp, color: Colors.red.shade300),
                 SizedBox(height: 20.h),
                 Text(
                   'Membership & Package for ${customer.fullName ?? "Customer"}',
-                  style:
-                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                  ),
                 ),
                 SizedBox(height: 10.h),
                 Text(
                   'Error fetching package and membership data',
-                  style: TextStyle(fontSize: 16.sp, color: Colors.red),
+                  style: TextStyle(fontSize: 16.sp, color: Colors.red.shade400),
                 ),
               ],
             ),
@@ -206,13 +262,16 @@ class MembershipPackageTab extends StatelessWidget {
                 SizedBox(height: 20.h),
                 Text(
                   'Membership & Package for ${customer.fullName ?? "Customer"}',
-                  style:
-                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                  ),
                 ),
                 SizedBox(height: 10.h),
                 Text(
                   'No package or membership found',
-                  style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                  style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -232,62 +291,107 @@ class MembershipPackageTab extends StatelessWidget {
                 if (packages.isNotEmpty) ...[
                   Text(
                     'Packages',
-                    style:
-                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 12.h),
                   ...packages.map((package) => Card(
-                        margin: EdgeInsets.symmetric(vertical: 8.h),
-                        child: Padding(
-                          padding: EdgeInsets.all(12.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildDetailRow(
-                                  'Name',
-                                  package['branch_package']['package_name'] ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Description',
-                                  package['branch_package']['description'] ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Price',
-                                  package['branch_package']['package_price']
-                                          ?.toString() ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Bought At', _formatDate(package['date'])),
-                              _buildDetailRow('Valid Till',
-                                  _formatDate(package['expiry_date'])),
-                              _buildDetailRow('Status',
-                                  package['status']?.toUpperCase() ?? 'N/A'),
-                              _buildDetailRow('Payment Method',
-                                  package['payment_method'] ?? 'N/A'),
-                              if (package['branch_package']
-                                          ['package_details'] !=
-                                      null &&
-                                  package['branch_package']['package_details']
-                                      .isNotEmpty) ...[
-                                SizedBox(height: 8.h),
-                                Text(
-                                  'Services Included:',
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                ...package['branch_package']['package_details']
-                                    .map<Widget>((service) => Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 4.h),
-                                          child: Text(
-                                            '• Service ID: ${service['service_id']}, Price: ${service['discounted_price']}, Quantity: ${service['quantity']}',
-                                            style: TextStyle(fontSize: 14.sp),
-                                          ),
-                                        ))
-                                    .toList(),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white,
+                                Colors.grey.shade50,
                               ],
-                            ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.card_giftcard,
+                                        color: secondaryColor, size: 24.sp),
+                                    SizedBox(width: 8.w),
+                                    Text(
+                                      package['branch_package']['package_name'] ??
+                                          'N/A',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8.h),
+                                _buildDetailRow(
+                                    'Description',
+                                    package['branch_package']['description'] ??
+                                        'N/A'),
+                                _buildDetailRow(
+                                    'Price',
+                                    package['branch_package']['package_price']
+                                            ?.toString() ??
+                                        'N/A'),
+                                _buildDetailRow(
+                                    'Bought At', _formatDate(package['date'])),
+                                _buildDetailRow('Valid Till',
+                                    _formatDate(package['expiry_date'])),
+                                _buildDetailRow('Status',
+                                    package['status']?.toUpperCase() ?? 'N/A'),
+                                _buildDetailRow('Payment Method',
+                                    package['payment_method'] ?? 'N/A'),
+                                if (package['branch_package']
+                                            ['package_details'] !=
+                                        null &&
+                                    package['branch_package']['package_details']
+                                        .isNotEmpty) ...[
+                                  SizedBox(height: 12.h),
+                                  Text(
+                                    'Services Included:',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  ...package['branch_package']['package_details']
+                                      .map<Widget>((service) => Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 4.h),
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.circle,
+                                                    size: 8.sp,
+                                                    color: secondaryColor),
+                                                SizedBox(width: 8.w),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Service ID: ${service['service_id']}, Price: ${service['discounted_price']}, Quantity: ${service['quantity']}',
+                                                    style:
+                                                        TextStyle(fontSize: 14.sp),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ))
+                                      .toList(),
+                                ],
+                              ],
+                            ),
                           ),
                         ),
                       )),
@@ -296,53 +400,85 @@ class MembershipPackageTab extends StatelessWidget {
                   SizedBox(height: 20.h),
                   Text(
                     'Memberships',
-                    style:
-                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
                   ),
-                  SizedBox(height: 10.h),
+                  SizedBox(height: 12.h),
                   ...memberships.map((membership) => Card(
-                        margin: EdgeInsets.symmetric(vertical: 8.h),
-                        child: Padding(
-                          padding: EdgeInsets.all(12.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildDetailRow(
-                                  'Name',
-                                  membership['branch_membership']
-                                          ['membership_name'] ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Description',
-                                  membership['branch_membership']
-                                          ['description'] ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Amount',
-                                  membership['branch_membership']
-                                              ['membership_amount']
-                                          ?.toString() ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Discount',
-                                  membership['branch_membership']['discount'] !=
-                                          null
-                                      ? '${membership['branch_membership']['discount']}${membership['branch_membership']['discount_type'] == 'percentage' ? '%' : ''}'
-                                      : 'N/A'),
-                              _buildDetailRow(
-                                  'Subscription Plan',
-                                  membership['branch_membership']
-                                          ['subscription_plan'] ??
-                                      'N/A'),
-                              _buildDetailRow(
-                                  'Bought At', _formatDate(membership['date'])),
-                              _buildDetailRow('Valid Till',
-                                  _formatDate(membership['expiry_date'])),
-                              _buildDetailRow('Status',
-                                  membership['status']?.toUpperCase() ?? 'N/A'),
-                              _buildDetailRow('Payment Method',
-                                  membership['payment_method'] ?? 'N/A'),
-                            ],
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white,
+                                Colors.grey.shade50,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.star,
+                                        color: secondaryColor, size: 24.sp),
+                                    SizedBox(width: 8.w),
+                                    Text(
+                                      membership['branch_membership']
+                                              ['membership_name'] ??
+                                          'N/A',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8.h),
+                                _buildDetailRow(
+                                    'Description',
+                                    membership['branch_membership']
+                                            ['description'] ??
+                                        'N/A'),
+                                _buildDetailRow(
+                                    'Amount',
+                                    membership['branch_membership']
+                                            ['membership_amount']
+                                        ?.toString() ??
+                                        'N/A'),
+                                _buildDetailRow(
+                                    'Discount',
+                                    membership['branch_membership']['discount'] !=
+                                            null
+                                        ? '${membership['branch_membership']['discount']}${membership['branch_membership']['discount_type'] == 'percentage' ? '%' : ''}'
+                                        : 'N/A'),
+                                _buildDetailRow(
+                                    'Subscription Plan',
+                                    membership['branch_membership']
+                                            ['subscription_plan'] ??
+                                        'N/A'),
+                                _buildDetailRow('Bought At',
+                                    _formatDate(membership['date'])),
+                                _buildDetailRow('Valid Till',
+                                    _formatDate(membership['expiry_date'])),
+                                _buildDetailRow('Status',
+                                    membership['status']?.toUpperCase() ?? 'N/A'),
+                                _buildDetailRow('Payment Method',
+                                    membership['payment_method'] ?? 'N/A'),
+                              ],
+                            ),
                           ),
                         ),
                       )),
@@ -357,7 +493,7 @@ class MembershipPackageTab extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -367,14 +503,18 @@ class MembershipPackageTab extends StatelessWidget {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
+                fontSize: 15.sp,
+                color: Colors.black87,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 15.sp,
+                color: Colors.black54,
+              ),
             ),
           ),
         ],
@@ -421,12 +561,31 @@ class HistoryTab extends StatelessWidget {
       future: fetchVisitHistory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: primaryColor),
+          );
         } else if (snapshot.hasError || snapshot.data == null) {
           return Center(
-            child: Text(
-              'Error fetching history',
-              style: TextStyle(fontSize: 16.sp, color: Colors.red),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline,
+                    size: 80.sp, color: Colors.red.shade300),
+                SizedBox(height: 20.h),
+                Text(
+                  'History for ${customer.fullName ?? "Customer"}',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  'Error fetching history',
+                  style: TextStyle(fontSize: 16.sp, color: Colors.red.shade400),
+                ),
+              ],
             ),
           );
         } else if (snapshot.data!.isEmpty) {
@@ -434,17 +593,21 @@ class HistoryTab extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.history, size: 80.sp, color: Colors.grey.shade400),
+                Icon(Icons.history,
+                    size: 80.sp, color: Colors.grey.shade400),
                 SizedBox(height: 20.h),
                 Text(
                   'History for ${customer.fullName ?? "Customer"}',
-                  style:
-                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                  ),
                 ),
                 SizedBox(height: 10.h),
                 Text(
                   'No history data available',
-                  style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                  style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -457,20 +620,51 @@ class HistoryTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final visit = history[index];
               return Card(
-                margin: EdgeInsets.symmetric(vertical: 8.h),
-                child: Padding(
-                  padding: EdgeInsets.all(12.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildDetailRow(
-                          'Visit Date', _formatDate(visit['visit_date'])),
-                      _buildDetailRow('Branch', visit['branch_name'] ?? 'N/A'),
-                      _buildDetailRow(
-                          'Status', visit['status']?.toUpperCase() ?? 'N/A'),
-                      _buildDetailRow('Services',
-                          (visit['services'] as List?)?.join(', ') ?? 'N/A'),
-                    ],
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white,
+                        Colors.grey.shade50,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.history_toggle_off,
+                                color: secondaryColor, size: 24.sp),
+                            SizedBox(width: 8.w),
+                            Text(
+                              _formatDate(visit['visit_date']),
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        _buildDetailRow(
+                            'Branch', visit['branch_name'] ?? 'N/A'),
+                        _buildDetailRow('Status',
+                            visit['status']?.toUpperCase() ?? 'N/A'),
+                        _buildDetailRow('Services',
+                            (visit['services'] as List?)?.join(', ') ?? 'N/A'),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -483,7 +677,7 @@ class HistoryTab extends StatelessWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -493,14 +687,18 @@ class HistoryTab extends StatelessWidget {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
+                fontSize: 15.sp,
+                color: Colors.black87,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 15.sp,
+                color: Colors.black54,
+              ),
             ),
           ),
         ],
