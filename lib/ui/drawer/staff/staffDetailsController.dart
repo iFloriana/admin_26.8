@@ -18,7 +18,7 @@ class GetStaffDetails {
       });
     }
   }
-}
+} 
 
 class Data {
   AssignTime? assignTime;

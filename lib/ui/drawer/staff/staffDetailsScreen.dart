@@ -25,8 +25,6 @@ class Staffdetailsscreen extends StatelessWidget {
         actions: [
           Obx(() {
             final selectedBranchId = controller.selectedBranchId.value;
-
-            // find selected branch name
             final selectedBranch = selectedBranchId.isEmpty
                 ? null
                 : controller.availableBranches
