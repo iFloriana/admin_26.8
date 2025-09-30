@@ -56,7 +56,7 @@ class StaffProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: CustomAppBar(
-        title: "Staff Profile",
+        title: "Profile",
         actions: [
           IconButton(
             onPressed: () {
