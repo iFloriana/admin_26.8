@@ -18,36 +18,71 @@ class AttendanceController extends GetxController {
   var punchInTime = Rx<String?>(null);
   var punchOutTime = Rx<String?>(null);
   var isPunching = false.obs;
-  var staffData = {}.obs; // Store staff data from shared preferences
-  String? staffId = "6889de7f4dfda6dd03c10143";
-  String? salonId = "684011271ee646f27873fddc";
+  var staffData = {}.obs;
   var loading = false.obs;
+  String? staffId;
+  String? salonId;
 
   @override
   void onInit() {
     super.onInit();
-    _loadStaffData();
-    fetchCurrentAttendanceStatus();
+    _initializeController(); // <-- CHANGED: Start the safe initialization process
   }
 
-  // Load staff data from shared preferences
-  Future<void> _loadStaffData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final staffDataString = prefs.getString('staffData');
-    if (staffDataString != null) {
+  // NEW: Helper function to sequence asynchronous calls
+  Future<void> _initializeController() async {
+    await _loadStaffDetails();
+    // After staffId/salonId are set, safely fetch the attendance status
+    await fetchCurrentAttendanceStatus();
+  }
+
+  Future<void> _loadStaffDetails() async {
+    // FIX: Instantiate SharedPreferenceManager to fix the 'prefs' error
+    final data = await prefs.getStaffData();
+
+    if (data != null) {
       try {
-        staffData.value = jsonDecode(staffDataString);
-        staffId = staffData['id']?.toString();
-        salonId = staffData['salon_id']?.toString();
+        final Map<String, dynamic> decodedData = jsonDecode(data);
+        final Map<String, dynamic>? staffJson = decodedData['staff'];
+
+        if (staffJson != null) {
+          // Assign IDs from the staff data
+          staffId = staffJson['_id'] as String?;
+          salonId = staffJson['salon_id'] as String?;
+
+          // Populate the observable map for the UI (StaffProfileScreen)
+          staffData.value = {
+            'full_name': staffJson['full_name'],
+            'image_url': staffJson['image_url'],
+            // Include IDs for consistency, although staffId/salonId vars are used for API
+            '_id': staffJson['_id'],
+            'salon_id': staffJson['salon_id'],
+          };
+
+          print('Loaded Staff ID: $staffId, Salon ID: $salonId');
+        } else {
+          CustomSnackbar.showError(
+              'Error', 'Staff details not found in stored data');
+        }
+      } on FormatException catch (e) {
+        CustomSnackbar.showError(
+            'Error', 'Failed to parse staff data JSON: $e');
       } catch (e) {
-        CustomSnackbar.showError('Error', 'Failed to parse staff data: $e');
+        CustomSnackbar.showError(
+            'Error', 'An unexpected error occurred loading staff data: $e');
       }
+    } else {
+      CustomSnackbar.showError('Error', 'Staff data not found in storage');
     }
   }
 
   Future<void> fetchCurrentAttendanceStatus() async {
+    // Check included in the original logic. Now it runs after loading attempts.
     if (staffId == null || salonId == null) {
-      CustomSnackbar.showError('Error', 'Staff ID or Salon ID not found');
+      // Avoid showing the error here if _loadStaffDetails already showed it
+      if (staffData['full_name'] == null) {
+        CustomSnackbar.showError('Error', 'Staff ID or Salon ID not found');
+      }
       return;
     }
     try {
@@ -118,6 +153,14 @@ class AttendanceController extends GetxController {
     try {
       position = await _getCurrentLocation();
       if (position == null) {
+        return;
+      }
+
+      // Check for IDs again before making the API call
+      if (staffId == null || salonId == null) {
+        CustomSnackbar.showError(
+            'Error', 'Staff ID or Salon ID not available for API call');
+        isPunching.value = false;
         return;
       }
 
@@ -376,7 +419,7 @@ class AttendanceScreen extends StatelessWidget {
             final isPunchedIn = controller.isPunchedIn;
             final activeColor =
                 isPunchedIn ? Colors.green.shade600 : Colors.red.shade600;
-            final inactiveColor = Colors.grey.shade400;
+            // final inactiveColor = Colors.grey.shade400; // Unused variable removed
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -409,7 +452,8 @@ class AttendanceScreen extends StatelessWidget {
                 const SizedBox(height: 40),
                 _buildActionButton(isPunchedIn, primaryColor, activeColor),
                 const SizedBox(height: 20),
-                _buildLocationInfo(inactiveColor),
+                _buildLocationInfo(
+                    Colors.grey.shade400), // inactiveColor used directly
               ],
             );
           }),
@@ -517,7 +561,8 @@ class AttendanceScreen extends StatelessWidget {
                 } else {
                   await controller.punchIn();
                 }
-                await controller.fetchCurrentAttendanceStatus();
+                // Removed redundant call to fetchCurrentAttendanceStatus here,
+                // as it's already called inside _handlePunchAction upon success.
               },
         icon: controller.isPunching.value
             ? const SizedBox(
