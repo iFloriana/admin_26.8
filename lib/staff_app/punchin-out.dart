@@ -1,29 +1,55 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/staff_app/staffprofile.dart';
+import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AttendanceController extends GetxController {
   var punchInTime = Rx<String?>(null);
   var punchOutTime = Rx<String?>(null);
   var isPunching = false.obs;
-  final String staffId = '6889de7f4dfda6dd03c10143';
-  final String salonId = '684011271ee646f27873fddc';
-
-
+  var staffData = {}.obs; // Store staff data from shared preferences
+  String? staffId = "6889de7f4dfda6dd03c10143";
+  String? salonId = "684011271ee646f27873fddc";
+  var loading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
+    _loadStaffData();
     fetchCurrentAttendanceStatus();
   }
 
+  // Load staff data from shared preferences
+  Future<void> _loadStaffData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final staffDataString = prefs.getString('staffData');
+    if (staffDataString != null) {
+      try {
+        staffData.value = jsonDecode(staffDataString);
+        staffId = staffData['id']?.toString();
+        salonId = staffData['salon_id']?.toString();
+      } catch (e) {
+        CustomSnackbar.showError('Error', 'Failed to parse staff data: $e');
+      }
+    }
+  }
+
   Future<void> fetchCurrentAttendanceStatus() async {
+    if (staffId == null || salonId == null) {
+      CustomSnackbar.showError('Error', 'Staff ID or Salon ID not found');
+      return;
+    }
     try {
       final url = '${Apis.baseUrl}/attendance/$staffId/status';
       final response = await dioClient.dio.get(url);
@@ -110,7 +136,8 @@ class AttendanceController extends GetxController {
       final Map<String, dynamic>? record = response.data['record'];
       final String message = response.data['message'] ?? '$action successful';
 
-      if (response.statusCode == 201 && record != null) {
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          record != null) {
         punchInTime.value = record['punch_in'] as String?;
         punchOutTime.value = record['punch_out'] as String?;
         await fetchCurrentAttendanceStatus();
@@ -295,18 +322,52 @@ class AttendanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF1E88E5);
-    const accentColor = Color(0xFFFFC107);
-
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: const Text(
-          'Staff Attendance',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: primaryColor,
-        elevation: 0,
+      appBar: CustomAppBar(
+        title: "fdsfsd",
+        actions: [
+          Container(
+            child: GestureDetector(
+              onTap: () {
+                if (controller.staffId != null && controller.salonId != null) {
+                  Get.to(() => StaffProfileScreen(
+                        staffId: controller.staffId!,
+                        salonId: controller.salonId!,
+                      ));
+                } else {
+                  CustomSnackbar.showError(
+                      'Error', 'Staff or Salon ID missing');
+                }
+              },
+              child: Obx(() => CircleAvatar(
+                    radius: 20.r,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        controller.staffData['image_url'] != null &&
+                                controller.staffData['image_url']
+                                    .toString()
+                                    .isNotEmpty
+                            ? NetworkImage(
+                                "${Apis.pdfUrl}${controller.staffData['image_url']}",
+                              )
+                            : null,
+                    child: controller.staffData['image_url'] == null ||
+                            controller.staffData['image_url'].toString().isEmpty
+                        ? Text(
+                            controller.staffData['full_name']?[0] ?? "?",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                            ),
+                          )
+                        : null,
+                  )),
+            ),
+          ),
+          SizedBox(width: 10),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

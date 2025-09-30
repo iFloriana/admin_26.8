@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 /// Controller without model (using Map only)
 class StaffProfileController extends GetxController {
   var loading = false.obs;
   var staffData = {}.obs;
+  Future<void> onLogoutPress() async {
+    await prefs.onLogout();
+  }
 
   Future<void> fetchStaffProfile(String staffId, String salonId) async {
     loading.value = true;
@@ -52,9 +55,17 @@ class StaffProfileScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: const Text("Staff Profile"),
-        backgroundColor: Colors.deepPurple,
+      appBar: CustomAppBar(
+        title: "Staff Profile",
+        actions: [
+          IconButton(
+            onPressed: () {
+              controller.onLogoutPress();
+            },
+            icon: Icon(Icons.logout_outlined),
+            color: white,
+          )
+        ],
       ),
       body: Obx(() {
         if (controller.loading.value) {

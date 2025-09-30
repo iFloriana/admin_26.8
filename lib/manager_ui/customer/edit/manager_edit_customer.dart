@@ -12,7 +12,6 @@ import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'dart:io';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/loading.dart';
 import '../manager_get_customer_controller.dart';

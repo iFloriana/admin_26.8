@@ -13,7 +13,6 @@ class managerDashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // getChartData();
     getDashbordData();
   }
 

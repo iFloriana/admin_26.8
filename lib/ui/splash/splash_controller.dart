@@ -1,19 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/manager_ui/manager_summry.dart';
 import 'package:flutter_template/network/network_const.dart';
-import 'package:flutter_template/manager_ui/manager_expence.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/admin_expence.dart';
 
 class SplashController extends GetxController {
-  // State to track if update is required
   RxBool isUpdateRequired = false.obs;
   RxBool isForceUpdate = false.obs;
 
@@ -23,21 +20,17 @@ class SplashController extends GetxController {
     _checkAppVersion();
   }
 
-  /// Check app version from API
   Future<void> _checkAppVersion() async {
     try {
-      // 📱 Current installed app version
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
       debugPrint("📱 Current Version: $currentVersion");
 
-      // 🌐 API call to get latest version info
       final response =
           await dioClient.dio.get("${Apis.baseUrl}/version-control");
 
       if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
         final data = response.data;
-
         final latestVersion = data['latest_version'] ?? "";
         final forceUpdate = data['force_update'] ?? false;
         final playStoreUrl = data['play_store_url'] ?? "";
@@ -46,26 +39,22 @@ class SplashController extends GetxController {
         debugPrint(
             "🌐 Latest Version: $latestVersion | Force Update: $forceUpdate");
 
-        // ⚠️ Check if update is required
         if (_isVersionLower(currentVersion, latestVersion)) {
           isUpdateRequired.value = true;
           isForceUpdate.value = forceUpdate;
-
           _showUpdateDialog(
               forceUpdate, latestVersion, playStoreUrl, appStoreUrl);
-          return; // stop navigation
+          return;
         }
       }
 
-      // ✅ If up-to-date → navigate
       navigateToNextScreen();
     } catch (e) {
       debugPrint("⚠️ Version check failed: $e");
-      navigateToNextScreen(); // fallback
+      navigateToNextScreen();
     }
   }
 
-  /// Compare current and latest version
   bool _isVersionLower(String current, String latest) {
     final currentParts = current.split('.').map(int.tryParse).toList();
     final latestParts = latest.split('.').map(int.tryParse).toList();
@@ -73,18 +62,17 @@ class SplashController extends GetxController {
     for (int i = 0; i < latestParts.length; i++) {
       final c = (i < currentParts.length ? currentParts[i] : 0) ?? 0;
       final l = latestParts[i] ?? 0;
-      if (c < l) return true; // needs update
-      if (c > l) return false; // already newer
+      if (c < l) return true;
+      if (c > l) return false;
     }
-    return false; // equal
+    return false;
   }
 
-  /// Show update dialog
   void _showUpdateDialog(bool forceUpdate, String latestVersion,
       String playStoreUrl, String appStoreUrl) {
     Get.dialog(
       WillPopScope(
-        onWillPop: () async => !forceUpdate, // block back button if forced
+        onWillPop: () async => !forceUpdate,
         child: Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -118,7 +106,7 @@ class SplashController extends GetxController {
                         child: OutlinedButton(
                           onPressed: () {
                             Get.back();
-                            navigateToNextScreen(); // navigate only if not forced
+                            navigateToNextScreen();
                           },
                           child: const Text("Later"),
                         ),
@@ -164,14 +152,18 @@ class SplashController extends GetxController {
 
       final user = await prefs.getUser();
       final managerUser = await prefs.getManagerUser();
+      final staffData = await prefs.getStaffData();
 
       String? accessToken = user?.token;
       String? managerAccessToken = managerUser?.token;
+      String? staffAccessToken = staffData != null ? jsonDecode(staffData)['token'] : null;
 
       if (accessToken != null && accessToken.isNotEmpty) {
         Get.offNamed(Routes.dashboardScreen);
       } else if (managerAccessToken != null && managerAccessToken.isNotEmpty) {
         Get.offNamed(Routes.managerDashboard);
+      } else if (staffAccessToken != null && staffAccessToken.isNotEmpty) {
+        Get.offNamed(Routes.attendanceScreen);
       } else {
         Get.offNamed(Routes.loginScreen);
       }

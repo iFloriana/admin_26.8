@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/network/model/getAdminDetails.dart';
@@ -18,16 +17,20 @@ class LoginController extends GetxController {
   var passController = TextEditingController();
   var showPass = false.obs;
   var selectedRole = "".obs;
-  final List<String> dropdownItems = [
-    'Admin',
-    'Manager',
-  ];
+  var loading = false.obs;
+  final List<String> dropdownItems = ['Admin', 'Manager', 'Staff'];
 
   void toggleShowPass() {
     showPass.value = !showPass.value;
   }
 
+  void setSelectedRole(String role) {
+    selectedRole.value = role;
+  }
+
   Future onLoginPress() async {
+    if (loading.value) return;
+    loading.value = true;
     Map<String, dynamic> loginData = {
       'email': emailController.text,
       'password': passController.text,
@@ -51,27 +54,26 @@ class LoginController extends GetxController {
       Get.offNamed(Routes.dashboardScreen);
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
+    } finally {
+      loading.value = false;
     }
   }
 
   Future onLoginPressManager() async {
-    ApiService api = ApiService();
-
+    if (loading.value) return;
+    loading.value = true;
     try {
-      var response = await api.postRequest(
+      var response = await dioClient.dio.post(
         "${Apis.baseUrl}/managers/login",
-        {
+        data: {
           'email': emailController.text,
           'password': passController.text,
         },
       );
 
-      if (response != null && response['manager'] != null) {
-        final managerUser = ManagerLogin.fromJson(response);
-
-        
+      if (response.statusCode == 200 && response.data['manager'] != null) {
+        final managerUser = ManagerLogin.fromJson(response.data);
         await prefs.setManagerUser(managerUser);
-
         CustomSnackbar.showSuccess("Success", "Manager Login Successfully");
         Get.offAllNamed(Routes.managerDashboard);
       } else {
@@ -79,6 +81,34 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  Future onLoginPressStaff() async {
+    if (loading.value) return;
+    loading.value = true;
+    try {
+      var response = await dioClient.dio.post(
+        "${Apis.baseUrl}/staffs/login",
+        data: {
+          'email': emailController.text,
+          'password': passController.text,
+        },
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        await prefs.setStaffData(jsonEncode(response.data));
+        CustomSnackbar.showSuccess("Success", "Staff Login Successfully");
+        Get.offAllNamed(Routes.attendanceScreen);
+      } else {
+        CustomSnackbar.showError("Error", "Invalid response from server");
+      }
+    } catch (e) {
+      CustomSnackbar.showError("Error", e.toString());
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -95,4 +125,3 @@ class LoginController extends GetxController {
     }
   }
 }
-// 

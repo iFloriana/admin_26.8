@@ -13,7 +13,8 @@ class SharedPreferenceManager {
   static const String _keySignup = "signup_user";
   static const String _keySalonDetails = "salon_details";
   static const String _keySalonUpdate = "salon_update";
-  static const String _keyManagerUser = "manager_user"; // NEW KEY
+  static const String _keyManagerUser = "manager_user";
+  static const String _keyStaffData = "staff_data";
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
@@ -34,7 +35,26 @@ class SharedPreferenceManager {
     }
   }
 
-  /// Get login user details
+  // Future<void> setStaffData(String? staffData) async {
+  //   if (staffData != null) {
+  //     await storage.write(key: _keyStaffData, value: staffData);
+  //     print("========done========");
+  //   } else {
+  //     await storage.delete(key: _keyStaffData);
+  //   }
+  // }
+  Future<void> setStaffData(String? staffData) async {
+    if (staffData != null) {
+      await storage.write(key: _keyStaffData, value: staffData);
+      final savedData = await storage.read(key: _keyStaffData);
+      print("Staff Data stored: $savedData");
+    } else {
+      await storage.delete(key: _keyStaffData);
+      print("Staff Data deleted");
+    }
+  }
+
+
   Future<Login_model?> getUser() async {
     String? data = await storage.read(key: _keyUser);
     if (data == null || data.isEmpty || data == "null") {
@@ -49,6 +69,14 @@ class SharedPreferenceManager {
       return null;
     }
     return ManagerLogin.fromJson(jsonDecode(data));
+  }
+
+  Future<String?> getStaffData() async {
+    String? data = await storage.read(key: _keyStaffData);
+    if (data == null || data.isEmpty || data == "null") {
+      return null;
+    }
+    return data;
   }
 
   Future<void> setRegisterdetails(GetAdminDetails? getRegisterDetails) async {
@@ -66,22 +94,20 @@ class SharedPreferenceManager {
     if (data == null || data.isEmpty || data == "null") {
       return null;
     }
-    print("===> get register  details : $data");
+    print("===> get register details : $data");
     return GetAdminDetails.fromJson(jsonDecode(data));
   }
 
-  // / Save signup details
   Future<void> setSalonDetails(UpdateSalonModel? getsalonDetails) async {
     if (getsalonDetails != null) {
       await storage.write(
           key: _keySalonUpdate, value: jsonEncode(getsalonDetails.toJson()));
       print("===> salon details saved: ${getsalonDetails.toJson()}");
     } else {
-      await storage.delete(key: _keySignup);
+      await storage.delete(key: _keySalonUpdate);
     }
   }
 
-  /// Get signup details
   Future<UpdateSalonModel?> getSalonDetails() async {
     String? data = await storage.read(key: _keySalonUpdate);
     if (data == null || data.isEmpty || data == "null") {
@@ -110,19 +136,22 @@ class SharedPreferenceManager {
 
   Future<String?> getToken() async {
     var user = await getUser();
-    return user?.token ?? "";
+    var managerUser = await getManagerUser();
+    var staffData = await getStaffData();
+    String? staffToken =
+        staffData != null ? jsonDecode(staffData)['token'] : null;
+    return user?.token ?? managerUser?.token ?? staffToken ?? "";
   }
 
-  /// Logout and clear data
   Future<void> onLogout() async {
     await setUser(null);
     await setManagerUser(null);
+    await setStaffData(null);
     await setSalonDetails(null);
     await Future.delayed(const Duration(seconds: 2));
     Get.offAllNamed(Routes.loginScreen);
   }
 
-  /// Call this after login success to redirect after 2 seconds
   Future<void> redirectToDrawerScreen() async {
     await Future.delayed(const Duration(seconds: 2));
     Get.offNamed(Routes.drawerScreen);

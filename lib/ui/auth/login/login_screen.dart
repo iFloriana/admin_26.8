@@ -19,8 +19,7 @@ class LoginScreen extends StatelessWidget {
 
   final LoginController getController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
-  bool isAdminSelected = false;
-  bool isManagerSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +29,8 @@ class LoginScreen extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(AppImages.loginbg), 
-            fit: BoxFit.cover, 
+            image: AssetImage(AppImages.loginbg),
+            fit: BoxFit.cover,
           ),
         ),
         child: Form(
@@ -66,7 +65,6 @@ class LoginScreen extends StatelessWidget {
   Widget Role() {
     return Obx(() {
       return Row(
-        spacing: 15,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // 🔹 Admin Card
@@ -124,7 +122,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-
+          SizedBox(width: 15.w),
           // 🔹 Manager Card
           Expanded(
             child: GestureDetector(
@@ -180,6 +178,62 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(width: 15.w),
+          // 🔹 Staff Card
+          Expanded(
+            child: GestureDetector(
+              onTap: () => getController.selectedRole("Staff"),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+                height: getController.selectedRole.value == "Staff" ? 70 : 60,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: getController.selectedRole.value == "Staff"
+                        ? [Colors.grey.shade200, secondaryColor]
+                        : [Colors.grey.shade200, secondaryColor],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: getController.selectedRole.value == "Staff"
+                          ? secondaryColor
+                          : Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(2, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.person_outline,
+                      size: 28,
+                      color: getController.selectedRole.value == "Staff"
+                          ? primaryColor
+                          : primaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Staff",
+                      style: TextStyle(
+                        fontSize: getController.selectedRole.value == "Staff"
+                            ? 16
+                            : 14,
+                        fontWeight: FontWeight.bold,
+                        color: getController.selectedRole.value == "Staff"
+                            ? Colors.black
+                            : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       );
     });
@@ -205,30 +259,34 @@ class LoginScreen extends StatelessWidget {
             if (value == null || value.isEmpty) {
               return 'Please enter your password';
             }
-            return null; // Return null if the input is valid
+            return null;
           },
         ));
   }
 
   Widget Btn_Login() {
-    return ElevatedButtonExample(
-      text: "Login",
-      onPressed: () {
-        if (_formKey.currentState?.validate() ?? false) {
-          if (getController.selectedRole.value == 'Admin') {
-            getController.onLoginPress();
-          } else if (getController.selectedRole.value == 'Manager') {
-            getController.onLoginPressManager();
-          } else {
-            CustomSnackbar.showError(
-                'Role Error', 'Please select a valid role');
-          }
-        } else {
-          CustomSnackbar.showError(
-              'Validation Error', 'Please fill in all fields correctly');
-        }
-      },
-    );
+    return Obx(() => ElevatedButtonExample(
+          text: "Login",
+          onPressed: getController.loading.value
+              ? () {}
+              : () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    if (getController.selectedRole.value == 'Admin') {
+                      getController.onLoginPress();
+                    } else if (getController.selectedRole.value == 'Manager') {
+                      getController.onLoginPressManager();
+                    } else if (getController.selectedRole.value == 'Staff') {
+                      getController.onLoginPressStaff();
+                    } else {
+                      CustomSnackbar.showError(
+                          'Role Error', 'Please select a valid role');
+                    }
+                  } else {
+                    CustomSnackbar.showError('Validation Error',
+                        'Please fill in all fields correctly');
+                  }
+                },
+        ));
   }
 
   Widget login_screen_header() {
@@ -236,10 +294,6 @@ class LoginScreen extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
-        Semantics(
-          label: 'Submit button',
-          child: ElevatedButton(onPressed: () {}, child: Text('Submit')),
-        ),
         Container(
           height: 150.h,
           width: double.infinity,
@@ -278,13 +332,11 @@ class LoginScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        spacing: 10.h,
         children: [
           SizedBox(height: 5),
           Image.asset(
             "${AppImages.happlogo}",
             height: 100,
-            // width: 50,
           ),
           CustomTextWidget(
             text: 'Welcome Back!',
@@ -343,8 +395,8 @@ class LoginScreen extends StatelessWidget {
 
   Widget Login_screen() {
     return Column(
-      spacing: 35.h,
       children: [
+        // login_screen_header(),
         login_screen_body(),
       ],
     );
