@@ -12,7 +12,6 @@ import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AttendanceController extends GetxController {
   var punchInTime = Rx<String?>(null);
@@ -23,13 +22,18 @@ class AttendanceController extends GetxController {
   String? staffId;
   String? salonId;
 
+  String? staffname;
+
+  // New computed property to easily access the staff name
+  // String get staffName => staffData['full_name'] ?? 'Staff';
+
   @override
   void onInit() {
     super.onInit();
-    _initializeController(); // <-- CHANGED: Start the safe initialization process
+    _initializeController();
   }
 
-  // NEW: Helper function to sequence asynchronous calls
+  // Helper function to sequence asynchronous calls
   Future<void> _initializeController() async {
     await _loadStaffDetails();
     // After staffId/salonId are set, safely fetch the attendance status
@@ -49,6 +53,7 @@ class AttendanceController extends GetxController {
           // Assign IDs from the staff data
           staffId = staffJson['_id'] as String?;
           salonId = staffJson['salon_id'] as String?;
+          staffname = staffJson['full_name'] as String?;
 
           // Populate the observable map for the UI (StaffProfileScreen)
           staffData.value = {
@@ -77,9 +82,7 @@ class AttendanceController extends GetxController {
   }
 
   Future<void> fetchCurrentAttendanceStatus() async {
-    // Check included in the original logic. Now it runs after loading attempts.
     if (staffId == null || salonId == null) {
-      // Avoid showing the error here if _loadStaffDetails already showed it
       if (staffData['full_name'] == null) {
         CustomSnackbar.showError('Error', 'Staff ID or Salon ID not found');
       }
@@ -367,50 +370,56 @@ class AttendanceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: CustomAppBar(
-        title: "fdsfsd",
-        actions: [
-          Container(
-            child: GestureDetector(
-              onTap: () {
-                if (controller.staffId != null && controller.salonId != null) {
-                  Get.to(() => StaffProfileScreen(
-                        staffId: controller.staffId!,
-                        salonId: controller.salonId!,
-                      ));
-                } else {
-                  CustomSnackbar.showError(
-                      'Error', 'Staff or Salon ID missing');
-                }
-              },
-              child: Obx(() => CircleAvatar(
-                    radius: 20.r,
-                    backgroundColor: Colors.white,
-                    backgroundImage:
-                        controller.staffData['image_url'] != null &&
-                                controller.staffData['image_url']
-                                    .toString()
-                                    .isNotEmpty
-                            ? NetworkImage(
-                                "${Apis.pdfUrl}${controller.staffData['image_url']}",
-                              )
-                            : null,
-                    child: controller.staffData['image_url'] == null ||
-                            controller.staffData['image_url'].toString().isEmpty
-                        ? Text(
-                            controller.staffData['full_name']?[0] ?? "?",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
-                            ),
-                          )
-                        : null,
-                  )),
-            ),
-          ),
-          SizedBox(width: 10),
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70.h),
+        child: Obx(() => CustomAppBar(
+              title: controller.staffData['full_name']?.toString() ?? 'Buddy',
+              actions: [
+                Container(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (controller.staffId != null &&
+                          controller.salonId != null) {
+                        Get.to(() => StaffProfileScreen(
+                              staffId: controller.staffId!,
+                              salonId: controller.salonId!,
+                            ));
+                      } else {
+                        CustomSnackbar.showError(
+                            'Error', 'Staff or Salon ID missing');
+                      }
+                    },
+                    child: Obx(() => CircleAvatar(
+                          radius: 20.r,
+                          backgroundColor: Colors.white,
+                          backgroundImage:
+                              controller.staffData['image_url'] != null &&
+                                      controller.staffData['image_url']
+                                          .toString()
+                                          .isNotEmpty
+                                  ? NetworkImage(
+                                      "${Apis.pdfUrl}${controller.staffData['image_url']}",
+                                    )
+                                  : null,
+                          child: controller.staffData['image_url'] == null ||
+                                  controller.staffData['image_url']
+                                      .toString()
+                                      .isEmpty
+                              ? Text(
+                                  controller.staffData['full_name']?[0] ?? "?",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple,
+                                  ),
+                                )
+                              : null,
+                        )),
+                  ),
+                ),
+                SizedBox(width: 10),
+              ],
+            )),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -419,7 +428,6 @@ class AttendanceScreen extends StatelessWidget {
             final isPunchedIn = controller.isPunchedIn;
             final activeColor =
                 isPunchedIn ? Colors.green.shade600 : Colors.red.shade600;
-            // final inactiveColor = Colors.grey.shade400; // Unused variable removed
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -452,8 +460,7 @@ class AttendanceScreen extends StatelessWidget {
                 const SizedBox(height: 40),
                 _buildActionButton(isPunchedIn, primaryColor, activeColor),
                 const SizedBox(height: 20),
-                _buildLocationInfo(
-                    Colors.grey.shade400), // inactiveColor used directly
+                _buildLocationInfo(Colors.grey.shade400),
               ],
             );
           }),
@@ -561,8 +568,6 @@ class AttendanceScreen extends StatelessWidget {
                 } else {
                   await controller.punchIn();
                 }
-                // Removed redundant call to fetchCurrentAttendanceStatus here,
-                // as it's already called inside _handlePunchAction upon success.
               },
         icon: controller.isPunching.value
             ? const SizedBox(
