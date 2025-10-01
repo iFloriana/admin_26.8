@@ -84,6 +84,15 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   }
 
   String _getDayStatus(DateTime day) {
+    // Check if the day is in the future
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selected = DateTime(day.year, day.month, day.day);
+
+    if (selected.isAfter(today)) {
+      return 'future';
+    }
+
     final events = _getEventsForDay(day);
     if (events.isEmpty) {
       return 'absent';
@@ -98,9 +107,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       case 'missing_punch':
         return Colors.orange;
       case 'missing_punch_out':
-        return Colors.yellow; // New status color
+        return Colors.yellow;
       case 'on_leave':
         return Colors.blue;
+      case 'future':
+        return Colors.grey; // Color for future dates
       case 'absent':
       default:
         return Colors.red;
@@ -109,6 +120,9 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -147,11 +161,12 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildLegendItem('Present', Colors.green),
-                            // _buildLegendItem('Missing Punch', Colors.orange),
-                            _buildLegendItem('Missing Punch Out',
-                                Colors.yellow), // New legend item
+                            _buildLegendItem(
+                                'Missing Punch Out', Colors.yellow),
                             _buildLegendItem('On Leave', Colors.blue),
                             _buildLegendItem('Absent', Colors.red),
+                            _buildLegendItem(
+                                'Future', Colors.grey), // New legend item
                           ],
                         ),
                       ),
@@ -160,18 +175,28 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     Expanded(
                       child: TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2030, 12, 31),
+                        lastDay: today, // Restrict calendar to today
                         focusedDay: _focusedDay,
                         selectedDayPredicate: (day) =>
                             isSameDay(_selectedDay, day),
                         onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _selectedDay = selectedDay;
-                          });
+                          // Only allow selection of non-future dates
+                          final selected = DateTime(selectedDay.year,
+                              selectedDay.month, selectedDay.day);
+                          if (!selected.isAfter(today)) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                            });
+                          }
                         },
                         onPageChanged: (focusedDay) {
-                          _focusedDay = focusedDay;
-                          _fetchAttendanceData(focusedDay);
+                          // Only fetch data if the focused day is not in the future
+                          final focused = DateTime(focusedDay.year,
+                              focusedDay.month, focusedDay.day);
+                          if (!focused.isAfter(today)) {
+                            _focusedDay = focusedDay;
+                            _fetchAttendanceData(focusedDay);
+                          }
                         },
                         calendarFormat: CalendarFormat.month,
                         startingDayOfWeek: StartingDayOfWeek.monday,
@@ -186,11 +211,12 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                           defaultBuilder: (context, date, _) {
                             final status = _getDayStatus(date);
                             final color = _getStatusColor(status);
+                            final isFuture = status == 'future';
                             return Container(
                               margin: EdgeInsets.all(4.0),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: color.withOpacity(0.3),
+                                color: color.withOpacity(isFuture ? 0.1 : 0.3),
                                 shape: BoxShape.circle,
                               ),
                               child: Text(
@@ -200,7 +226,8 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                   fontWeight: status == 'present'
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: color,
+                                  color:
+                                      color.withOpacity(isFuture ? 0.5 : 1.0),
                                 ),
                               ),
                             );
