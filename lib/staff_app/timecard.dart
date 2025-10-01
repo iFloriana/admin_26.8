@@ -143,10 +143,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          spacing: 10,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildLegendItem('Present', Colors.green),
-                            _buildLegendItem('Missing Punch', Colors.orange),
+                            // _buildLegendItem('Missing Punch', Colors.orange),
                             _buildLegendItem('Missing Punch Out',
                                 Colors.yellow), // New legend item
                             _buildLegendItem('On Leave', Colors.blue),
