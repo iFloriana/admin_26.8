@@ -5,6 +5,10 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class AttendanceCalendarScreen extends StatefulWidget {
+  final String staffId;
+
+  AttendanceCalendarScreen({required this.staffId});
+
   @override
   _AttendanceCalendarScreenState createState() =>
       _AttendanceCalendarScreenState();
@@ -28,6 +32,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     setState(() {
       _isLoading = true;
       _error = null;
+      _recordsByDate.clear();
     });
 
     try {
@@ -35,7 +40,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       final month = date.month.toString().padLeft(2, '0');
 
       final response = await dioClient.dio.get(
-        '${Apis.baseUrl}/attendance/6889de7f4dfda6dd03c10143/report/timecard',
+        '${Apis.baseUrl}/attendance/${widget.staffId}/report/timecard',
         queryParameters: {'year': year, 'month': month},
       );
 
@@ -81,7 +86,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   String _getDayStatus(DateTime day) {
     final events = _getEventsForDay(day);
     if (events.isEmpty) {
-      return 'absent'; // No record = absent
+      return 'absent';
     }
     return events.first['status'] as String;
   }
@@ -92,6 +97,8 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
         return Colors.green;
       case 'missing_punch':
         return Colors.orange;
+      case 'missing_punch_out':
+        return Colors.yellow; // New status color
       case 'on_leave':
         return Colors.blue;
       case 'absent':
@@ -104,7 +111,8 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attendance Calendar'),
+        title: Text(
+            'Attendance Calendar - ${DateFormat('MMMM yyyy').format(_focusedDay)}'),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -132,21 +140,26 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     // Legend
                     Container(
                       padding: EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildLegendItem('Present', Colors.green),
-                          _buildLegendItem('Missing Punch', Colors.orange),
-                          _buildLegendItem('Absent', Colors.red),
-                          _buildLegendItem('On Leave', Colors.blue),
-                        ],
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildLegendItem('Present', Colors.green),
+                            _buildLegendItem('Missing Punch', Colors.orange),
+                            _buildLegendItem('Missing Punch Out',
+                                Colors.yellow), // New legend item
+                            _buildLegendItem('On Leave', Colors.blue),
+                            _buildLegendItem('Absent', Colors.red),
+                          ],
+                        ),
                       ),
                     ),
                     // Calendar
                     Expanded(
                       child: TableCalendar(
-                        firstDay: DateTime.utc(2020, 1, 1), // Reasonable start
-                        lastDay: DateTime.utc(2030, 12, 31), // Reasonable end
+                        firstDay: DateTime.utc(2020, 1, 1),
+                        lastDay: DateTime.utc(2030, 12, 31),
                         focusedDay: _focusedDay,
                         selectedDayPredicate: (day) =>
                             isSameDay(_selectedDay, day),
@@ -156,7 +169,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                           });
                         },
                         onPageChanged: (focusedDay) {
-                          // Auto-fetch when month changes
                           _focusedDay = focusedDay;
                           _fetchAttendanceData(focusedDay);
                         },
@@ -165,6 +177,9 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         headerStyle: HeaderStyle(
                           formatButtonVisible: false,
                           titleCentered: true,
+                        ),
+                        calendarStyle: CalendarStyle(
+                          outsideDaysVisible: false,
                         ),
                         calendarBuilders: CalendarBuilders(
                           defaultBuilder: (context, date, _) {
@@ -184,6 +199,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                   fontWeight: status == 'present'
                                       ? FontWeight.bold
                                       : FontWeight.normal,
+                                  color: color,
                                 ),
                               ),
                             );
@@ -192,8 +208,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       ),
                     ),
                     // Details Panel
-                    if (_selectedDay != null &&
-                        _getEventsForDay(_selectedDay!).isNotEmpty)
+                    if (_selectedDay != null)
                       Expanded(
                         child: Card(
                           margin: EdgeInsets.all(8),
@@ -209,47 +224,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                 ),
                                 SizedBox(height: 8),
                                 Expanded(
-                                  child: ListView.builder(
-                                    itemCount:
-                                        _getEventsForDay(_selectedDay!).length,
-                                    itemBuilder: (context, index) {
-                                      final event = _getEventsForDay(
-                                          _selectedDay!)[index];
-                                      return Card(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 4),
-                                        child: ListTile(
-                                          leading: CircleAvatar(
-                                            backgroundColor: _getStatusColor(
-                                                event['status']),
-                                            child: Text('${index + 1}'),
-                                          ),
-                                          title: Text(
-                                              'Status: ${event['status'].toUpperCase()}'),
-                                          subtitle: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                  'Punch In: ${event['punch_in']}'),
-                                              Text(
-                                                  'Punch Out: ${event['punch_out']}'),
-                                              Text(
-                                                  'Working Hours: ${event['working_hours']}'),
-                                              if (event['warnings'] != null &&
-                                                  (event['warnings'] as List)
-                                                      .isNotEmpty)
-                                                Text(
-                                                  'Warnings: ${(event['warnings'] as List).join(', ')}',
-                                                  style: TextStyle(
-                                                      color: Colors.orange),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  child: _buildDetailsContent(_selectedDay!),
                                 ),
                               ],
                             ),
@@ -258,6 +233,61 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       ),
                   ],
                 ),
+    );
+  }
+
+  // Details content (handles absent vs. present)
+  Widget _buildDetailsContent(DateTime selectedDate) {
+    final events = _getEventsForDay(selectedDate);
+    if (events.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.block, size: 64, color: Colors.red),
+            SizedBox(height: 16),
+            Text(
+              'No attendance record',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(
+              'Status: Absent',
+              style: TextStyle(color: Colors.red, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        final event = events[index];
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 4),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: _getStatusColor(event['status']),
+              child: Text('${index + 1}'),
+            ),
+            title: Text('Status: ${event['status'].toUpperCase()}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Punch In: ${event['punch_in']}'),
+                Text('Punch Out: ${event['punch_out']}'),
+                Text('Working Hours: ${event['working_hours']}'),
+                if (event['warnings'] != null &&
+                    (event['warnings'] as List).isNotEmpty)
+                  Text(
+                    'Warnings: ${(event['warnings'] as List).join(', ')}',
+                    style: TextStyle(color: Colors.orange),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

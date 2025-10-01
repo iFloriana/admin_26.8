@@ -379,7 +379,9 @@ class AttendanceScreen extends StatelessWidget {
                     onTap: () {
                       if (controller.staffId != null &&
                           controller.salonId != null) {
-                        Get.to(AttendanceCalendarScreen());
+                        Get.to(AttendanceCalendarScreen(
+                          staffId: controller.staffId!,
+                        ));
                         // Get.to(() => StaffProfileScreen(
                         //       staffId: controller.staffId!,
                         //       salonId: controller.salonId!,
