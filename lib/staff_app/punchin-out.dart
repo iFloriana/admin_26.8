@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/staff_app/staffprofile.dart';
+import 'package:flutter_template/staff_app/timecard.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
@@ -59,12 +60,10 @@ class AttendanceController extends GetxController {
           staffData.value = {
             'full_name': staffJson['full_name'],
             'image_url': staffJson['image_url'],
-            // Include IDs for consistency, although staffId/salonId vars are used for API
             '_id': staffJson['_id'],
             'salon_id': staffJson['salon_id'],
           };
 
-          print('Loaded Staff ID: $staffId, Salon ID: $salonId');
         } else {
           CustomSnackbar.showError(
               'Error', 'Staff details not found in stored data');
@@ -194,8 +193,8 @@ class AttendanceController extends GetxController {
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         final errorMessage = e.response?.data['error'] as String?;
-        if (errorMessage == 'Reason for early punch-out is required' ||
-            errorMessage == 'Reason for off-site punch-in is required') {
+        if (errorMessage == 'Reason for early/off-site punch-out is required' ||
+            errorMessage == 'Reason for late/off-site punch-in is required') {
           Get.bottomSheet(
             _buildReasonBottomSheet(action),
             isScrollControlled: true,
@@ -380,10 +379,11 @@ class AttendanceScreen extends StatelessWidget {
                     onTap: () {
                       if (controller.staffId != null &&
                           controller.salonId != null) {
-                        Get.to(() => StaffProfileScreen(
-                              staffId: controller.staffId!,
-                              salonId: controller.salonId!,
-                            ));
+                        Get.to(AttendanceCalendarScreen());
+                        // Get.to(() => StaffProfileScreen(
+                        //       staffId: controller.staffId!,
+                        //       salonId: controller.salonId!,
+                        //     ));
                       } else {
                         CustomSnackbar.showError(
                             'Error', 'Staff or Salon ID missing');
