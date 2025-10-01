@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 class AttendanceCalendarScreen extends StatefulWidget {
   @override
@@ -10,9 +11,8 @@ class AttendanceCalendarScreen extends StatefulWidget {
 }
 
 class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
-  // final Dio _dio = Dio();
   Map<String, List<Map<String, dynamic>>> _recordsByDate = {};
-  DateTime _focusedDay = DateTime(2025, 9, 1);
+  DateTime _focusedDay = DateTime.now(); // Default to today
   DateTime? _selectedDay;
   bool _isLoading = true;
   String? _error;
@@ -20,14 +20,23 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchAttendanceData();
+    _selectedDay = _focusedDay;
+    _fetchAttendanceData(_focusedDay); // Fetch current month on start
   }
 
-  Future<void> _fetchAttendanceData() async {
+  Future<void> _fetchAttendanceData(DateTime date) async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
+      final year = date.year.toString();
+      final month = date.month.toString().padLeft(2, '0');
+
       final response = await dioClient.dio.get(
         '${Apis.baseUrl}/attendance/6889de7f4dfda6dd03c10143/report/timecard',
-        queryParameters: {'year': '2025', 'month': '09'},
+        queryParameters: {'year': year, 'month': month},
       );
 
       if (response.statusCode == 200) {
@@ -74,7 +83,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     if (events.isEmpty) {
       return 'absent'; // No record = absent
     }
-    // Use the status from the first record (you can customize logic for multiple records if needed)
     return events.first['status'] as String;
   }
 
@@ -84,7 +92,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
         return Colors.green;
       case 'missing_punch':
         return Colors.orange;
-      case 'on_leave': // If you have leave status in future data
+      case 'on_leave':
         return Colors.blue;
       case 'absent':
       default:
@@ -96,11 +104,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attendance Calendar - September 2025'),
+        title: Text('Attendance Calendar'),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: _fetchAttendanceData, // Refresh button
+            onPressed: () => _fetchAttendanceData(_focusedDay),
           ),
         ],
       ),
@@ -113,7 +121,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     children: [
                       Text(_error!),
                       ElevatedButton(
-                        onPressed: _fetchAttendanceData,
+                        onPressed: () => _fetchAttendanceData(_focusedDay),
                         child: Text('Retry'),
                       ),
                     ],
@@ -121,7 +129,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                 )
               : Column(
                   children: [
-                    // Legend for colors
+                    // Legend
                     Container(
                       padding: EdgeInsets.all(8),
                       child: Row(
@@ -134,20 +142,30 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ],
                       ),
                     ),
+                    // Calendar
                     Expanded(
                       child: TableCalendar(
-                        firstDay: DateTime(2025, 9, 1),
-                        lastDay: DateTime(2025, 9, 30),
+                        firstDay: DateTime.utc(2020, 1, 1), // Reasonable start
+                        lastDay: DateTime.utc(2030, 12, 31), // Reasonable end
                         focusedDay: _focusedDay,
-                        calendarFormat: CalendarFormat.month,
                         selectedDayPredicate: (day) =>
                             isSameDay(_selectedDay, day),
                         onDaySelected: (selectedDay, focusedDay) {
                           setState(() {
                             _selectedDay = selectedDay;
-                            _focusedDay = focusedDay;
                           });
                         },
+                        onPageChanged: (focusedDay) {
+                          // Auto-fetch when month changes
+                          _focusedDay = focusedDay;
+                          _fetchAttendanceData(focusedDay);
+                        },
+                        calendarFormat: CalendarFormat.month,
+                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        headerStyle: HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                        ),
                         calendarBuilders: CalendarBuilders(
                           defaultBuilder: (context, date, _) {
                             final status = _getDayStatus(date);
@@ -156,8 +174,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                               margin: EdgeInsets.all(4.0),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: color.withOpacity(
-                                    0.3), // Semi-transparent for better readability
+                                color: color.withOpacity(0.3),
                                 shape: BoxShape.circle,
                               ),
                               child: Text(
@@ -174,6 +191,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                       ),
                     ),
+                    // Details Panel
                     if (_selectedDay != null &&
                         _getEventsForDay(_selectedDay!).isNotEmpty)
                       Expanded(
@@ -185,7 +203,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Details for ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
+                                  'Details for ${DateFormat('dd MMM yyyy').format(_selectedDay!)}',
                                   style:
                                       Theme.of(context).textTheme.headlineSmall,
                                 ),
