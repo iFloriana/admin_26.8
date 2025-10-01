@@ -12,7 +12,7 @@ class AttendanceCalendarScreen extends StatefulWidget {
 
 class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   Map<String, List<Map<String, dynamic>>> _recordsByDate = {};
-  DateTime _focusedDay = DateTime.now(); // Default to today
+  DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   bool _isLoading = true;
   String? _error;
@@ -21,7 +21,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
-    _fetchAttendanceData(_focusedDay); // Fetch current month on start
+    _fetchAttendanceData(_focusedDay);
   }
 
   Future<void> _fetchAttendanceData(DateTime date) async {
