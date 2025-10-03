@@ -67,7 +67,7 @@ dependencies:
   package_info_plus: ^8.3.1
   flutter_slidable: ^4.0.1
   table_calendar: ^3.2.0
-
+  animate_do: ^4.2.0
 
 #NAME  :  Dhairya Soni
 #PASS : Ifloriana@25
