@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -532,9 +533,8 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     final today = DateTime(now.year, now.month, now.day);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            'Attendance Calendar - ${DateFormat('MMMM yyyy').format(_focusedDay)}'),
+      appBar: CustomAppBar(
+        title: 'Timecard',
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -572,7 +572,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                 'Missing Punch Out', Colors.yellow),
                             _buildLegendItem('On Leave', Colors.blue),
                             _buildLegendItem('Absent', Colors.red),
-                            // _buildLegendItem('Future', Colors.grey),
                           ],
                         ),
                       ),
