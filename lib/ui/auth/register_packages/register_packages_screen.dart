@@ -20,23 +20,6 @@ class PackagesScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         title: "Preferable Package",
-        // actions: [
-        //   PopupMenuButton<String>(
-        //     onSelected: (String value) {
-        //       getController.selectedFilter.value = value;
-        //       getController.filterPackages();
-        //     },
-        //     itemBuilder: (BuildContext context) {
-        //       return {'All', 'Monthly', 'Quarterly', 'Half-Yearly', 'Yearly'}
-        //           .map((String choice) {
-        //         return PopupMenuItem<String>(
-        //           value: choice,
-        //           child: Text(choice),
-        //         );
-        //       }).toList();
-        //     },
-        //   ),
-        // ],
       ),
       body: RefreshIndicator(
         color: primaryColor,

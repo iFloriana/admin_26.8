@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/utils/colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:dio/dio.dart';
 
 class AttendanceCalendarScreen extends StatefulWidget {
   final String staffId;
@@ -84,7 +86,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   }
 
   String _getDayStatus(DateTime day) {
-    // Check if the day is in the future
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final selected = DateTime(day.year, day.month, day.day);
@@ -104,18 +105,318 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     switch (status) {
       case 'present':
         return Colors.green;
-      case 'missing_punch':
-        return Colors.orange;
       case 'missing_punch_out':
         return Colors.yellow;
       case 'on_leave':
         return Colors.blue;
       case 'future':
-        return Colors.grey; // Color for future dates
+        return Colors.grey;
       case 'absent':
       default:
         return Colors.red;
     }
+  }
+
+  Future<void> _showAttendanceRequestBottomSheet(DateTime selectedDate) async {
+    TimeOfDay? punchInTime;
+    TimeOfDay? punchOutTime;
+    final reasonController = TextEditingController();
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 20,
+                right: 20,
+                top: 12,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Small drag handle
+                    Center(
+                      child: Container(
+                        height: 5,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Title
+                    Text(
+                      'Attendance Request',
+                    ),
+                    Text(
+                      DateFormat('dd MMM yyyy').format(selectedDate),
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(height: 20),
+
+                    TextField(
+                      controller: reasonController,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        labelText: 'Reason',
+                        labelStyle: TextStyle(color: Colors.grey.shade700),
+                        filled: true,
+                        fillColor: Colors.white, // keep background clean
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors
+                                .grey.shade400, // border color when not focused
+                            width: 1.2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: primaryColor, // border color on focus
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Punch In / Out Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green.shade600,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                            ),
+                            onPressed: () async {
+                              final time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (time != null) {
+                                setModalState(() {
+                                  punchInTime = time;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.login),
+                            label: Text(
+                              punchInTime == null
+                                  ? 'Punch In'
+                                  : punchInTime!.format(context),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade600,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                            ),
+                            onPressed: () async {
+                              final time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (time != null) {
+                                setModalState(() {
+                                  punchOutTime = time;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.logout),
+                            label: Text(
+                              punchOutTime == null
+                                  ? 'Punch Out'
+                                  : punchOutTime!.format(context),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 4,
+                        ),
+                        onPressed: (punchInTime != null &&
+                                punchOutTime != null &&
+                                reasonController.text.isNotEmpty)
+                            ? () async {
+                                try {
+                                  final requestDate = DateTime(
+                                    selectedDate.year,
+                                    selectedDate.month,
+                                    selectedDate.day,
+                                  );
+
+                                  final response = await dioClient.dio.post(
+                                    '${Apis.baseUrl}/attendance/${widget.staffId}/request/full_day_attendance',
+                                    data: {
+                                      'date': DateFormat('yyyy-MM-dd')
+                                          .format(requestDate),
+                                      'punch_in_time':
+                                          punchInTime!.format(context),
+                                      'punch_out_time':
+                                          punchOutTime!.format(context),
+                                      'reason': reasonController.text,
+                                    },
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Request submitted successfully 🎉'),
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                    await _fetchAttendanceData(_focusedDay);
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Error submitting request: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
+                        child: const Text(
+                          'Submit Request',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showLeaveRequestBottomSheet(DateTime selectedDate) async {
+    final reasonController = TextEditingController();
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Request Leave for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: reasonController,
+                    decoration: InputDecoration(
+                      labelText: 'Reason',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: reasonController.text.isNotEmpty
+                        ? () async {
+                            try {
+                              // Use DateTime with midnight to avoid timezone shift
+                              final requestDate = DateTime(selectedDate.year,
+                                  selectedDate.month, selectedDate.day);
+                              final response = await dioClient.dio.post(
+                                '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
+                                data: {
+                                  'date': DateFormat('yyyy-MM-dd')
+                                      .format(requestDate),
+                                  'reason': reasonController.text,
+                                },
+                              );
+                              if (response.statusCode == 200) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Request submitted successfully')),
+                                );
+                                Navigator.pop(context);
+                                await _fetchAttendanceData(_focusedDay);
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('Error submitting request: $e')),
+                              );
+                            }
+                          }
+                        : null,
+                    child: Text('Submit Request'),
+                  ),
+                  SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -165,8 +466,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                 'Missing Punch Out', Colors.yellow),
                             _buildLegendItem('On Leave', Colors.blue),
                             _buildLegendItem('Absent', Colors.red),
-                            _buildLegendItem(
-                                'Future', Colors.grey), // New legend item
+                            _buildLegendItem('Future', Colors.grey),
                           ],
                         ),
                       ),
@@ -175,12 +475,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     Expanded(
                       child: TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: today, // Restrict calendar to today
+                        lastDay: today,
                         focusedDay: _focusedDay,
                         selectedDayPredicate: (day) =>
                             isSameDay(_selectedDay, day),
                         onDaySelected: (selectedDay, focusedDay) {
-                          // Only allow selection of non-future dates
                           final selected = DateTime(selectedDay.year,
                               selectedDay.month, selectedDay.day);
                           if (!selected.isAfter(today)) {
@@ -190,7 +489,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                           }
                         },
                         onPageChanged: (focusedDay) {
-                          // Only fetch data if the focused day is not in the future
                           final focused = DateTime(focusedDay.year,
                               focusedDay.month, focusedDay.day);
                           if (!focused.isAfter(today)) {
@@ -264,7 +562,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     );
   }
 
-  // Details content (handles absent vs. present)
   Widget _buildDetailsContent(DateTime selectedDate) {
     final events = _getEventsForDay(selectedDate);
     if (events.isEmpty) {
@@ -272,16 +569,55 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.block, size: 64, color: Colors.red),
-            SizedBox(height: 16),
-            Text(
-              'No attendance record',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            Text(
-              'Status: Absent',
-              style: TextStyle(color: Colors.red, fontSize: 16),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                    ),
+                    onPressed: () =>
+                        _showAttendanceRequestBottomSheet(selectedDate),
+                    icon: const Icon(Icons.access_time), // ⏱️ attendance
+                    label: const Text(
+                      'Request Attendance',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange.shade600,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                    ),
+                    onPressed: () => _showLeaveRequestBottomSheet(selectedDate),
+                    icon: const Icon(Icons.beach_access),
+                    label: const Text(
+                      'Request Leave',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       );
