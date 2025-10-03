@@ -1,19 +1,28 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 
 class StaffReportController extends GetxController
     with SingleGetTickerProviderMixin {
-  final Dio _dio = Dio();
   var isLoading = true.obs;
   var staffReportData = {}.obs;
   var staffEarningsData = {}.obs;
   late TabController tabController;
-
-  final String staffReportUrl =
-      'http://192.168.29.132:5000/api/appointments/staff-report?salon_id=684011271ee646f27873fddc&staff_id=6881fe017e277962d2370dd4';
-  final String staffEarningsUrl =
-      'http://192.168.29.132:5000/api/staffEarnings/by-staff/6854e87f552c461e11b487dd?salon_id=684011271ee646f27873fddc';
+  String? staffId;
+  String? salonId;
+  var staffData = {}.obs;
+  String? staffname;
+  // late final String staffReportUrl =
+  //     '${Apis.baseUrl}/appointments/staff-report?salon_id=$salonId&staff_id=$staffId';
+  // late final String staffEarningsUrl =
+  //     '${Apis.baseUrl}/staffEarnings/by-staff/$staffId?salon_id=$salonId';
 
   @override
   void onInit() {
@@ -22,11 +31,56 @@ class StaffReportController extends GetxController
     fetchData();
   }
 
+  // Helper function to sequence asynchronous calls
+  Future<void> _initializeController() async {
+    await _loadStaffDetails();
+  }
+
+  Future<void> _loadStaffDetails() async {
+    // FIX: Instantiate SharedPreferenceManager to fix the 'prefs' error
+    final data = await prefs.getStaffData();
+
+    if (data != null) {
+      try {
+        final Map<String, dynamic> decodedData = jsonDecode(data);
+        final Map<String, dynamic>? staffJson = decodedData['staff'];
+
+        if (staffJson != null) {
+          // Assign IDs from the staff data
+          staffId = staffJson['_id'] as String?;
+          salonId = staffJson['salon_id'] as String?;
+          staffname = staffJson['full_name'] as String?;
+
+          // Populate the observable map for the UI (StaffProfileScreen)
+          staffData.value = {
+            'full_name': staffJson['full_name'],
+            'image_url': staffJson['image_url'],
+            '_id': staffJson['_id'],
+            'salon_id': staffJson['salon_id'],
+          };
+        } else {
+          CustomSnackbar.showError(
+              'Error', 'Staff details not found in stored data');
+        }
+      } on FormatException catch (e) {
+        CustomSnackbar.showError(
+            'Error', 'Failed to parse staff data JSON: $e');
+      } catch (e) {
+        CustomSnackbar.showError(
+            'Error', 'An unexpected error occurred loading staff data: $e');
+      }
+    } else {
+      CustomSnackbar.showError('Error', 'Staff data not found in storage');
+    }
+  }
+
   void fetchData() async {
     try {
       isLoading(true);
-      final staffReportResponse = await _dio.get(staffReportUrl);
-      final staffEarningsResponse = await _dio.get(staffEarningsUrl);
+      final staffReportResponse = await dioClient.dio.get(
+          '${Apis.baseUrl}/appointments/staff-report?salon_id=684011271ee646f27873fddc&staff_id=6881fe017e277962d2370dd4');
+      final staffEarningsResponse = await dioClient.dio.get(
+          '${Apis.baseUrl}/staffEarnings/by-staff/6854e87f552c461e11b487dd?salon_id=684011271ee646f27873fddc');
 
       if (staffReportResponse.data['success']) {
         staffReportData.value = staffReportResponse.data['data'];
@@ -52,10 +106,17 @@ class StaffReportScreen extends StatelessWidget {
     final controller = Get.put(StaffReportController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Staff Report'),
+      appBar: CustomAppBar(
+        title: 'Staff Report',
         bottom: TabBar(
           controller: controller.tabController,
+          indicatorColor: secondaryColor,
+          labelColor: Colors.white,
+          splashBorderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20.0),
+          ),
+          unselectedLabelColor: secondaryColor,
+            dividerColor: Colors.transparent,
           tabs: [
             Tab(text: 'Appointments'),
             Tab(text: 'Earnings'),

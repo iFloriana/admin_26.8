@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/staff_app/reports.dart';
 import 'package:flutter_template/staff_app/staffprofile.dart';
 import 'package:flutter_template/staff_app/timecard.dart';
 import 'package:flutter_template/utils/colors.dart';
@@ -378,9 +379,10 @@ class AttendanceScreen extends StatelessWidget {
                     onTap: () {
                       if (controller.staffId != null &&
                           controller.salonId != null) {
-                        Get.to(AttendanceCalendarScreen(
-                          staffId: controller.staffId!,
-                        ));
+                        Get.to(StaffReportScreen());
+                        // Get.to(AttendanceCalendarScreen(
+                        //   staffId: controller.staffId!,
+                        // ));
                         // Get.to(() => StaffProfileScreen(
                         //       staffId: controller.staffId!,
                         //       salonId: controller.salonId!,
