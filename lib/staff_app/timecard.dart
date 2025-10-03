@@ -116,15 +116,14 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     switch (status) {
       case 'present':
         return Colors.green;
-      case 'missing_punch_out':
-        return Colors.yellow;
-      case 'on_leave':
-        return Colors.blue;
-      case 'future':
-        return Colors.grey;
       case 'absent':
-      default:
         return Colors.red;
+      case 'leave':
+        return Colors.blue;
+      case 'missing_punch':
+        return Colors.yellow;
+      default:
+        return Colors.grey;
     }
   }
 
@@ -565,14 +564,15 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          spacing: 10,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _buildLegendItem('Present', Colors.green),
                             _buildLegendItem(
                                 'Missing Punch Out', Colors.yellow),
                             _buildLegendItem('On Leave', Colors.blue),
                             _buildLegendItem('Absent', Colors.red),
-                            _buildLegendItem('Future', Colors.grey),
+                            // _buildLegendItem('Future', Colors.grey),
                           ],
                         ),
                       ),
