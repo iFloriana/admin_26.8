@@ -24,12 +24,13 @@ class StaffReportController extends GetxController
   void onInit() {
     super.onInit();
     tabController = TabController(length: 2, vsync: this);
-    fetchData();
+    _initializeController();
   }
 
   // Helper function to sequence asynchronous calls
   Future<void> _initializeController() async {
     await _loadStaffDetails();
+    await fetchData();
   }
 
   Future<void> _loadStaffDetails() async {
@@ -67,13 +68,19 @@ class StaffReportController extends GetxController
     }
   }
 
-  void fetchData() async {
+  Future<void> fetchData() async {
+    if (staffId == null || salonId == null) {
+      CustomSnackbar.showError('Error', 'Staff ID or Salon ID not found');
+      isLoading(false);
+      return;
+    }
+
     try {
       isLoading(true);
       final staffReportResponse = await dioClient.dio.get(
-          '${Apis.baseUrl}/appointments/staff-report?salon_id=684011271ee646f27873fddc&staff_id=6881fe017e277962d2370dd4');
+          '${Apis.baseUrl}/appointments/staff-report?salon_id=$salonId&staff_id=$staffId');
       final staffEarningsResponse = await dioClient.dio.get(
-          '${Apis.baseUrl}/staffEarnings/by-staff/6854e87f552c461e11b487dd?salon_id=684011271ee646f27873fddc');
+          '${Apis.baseUrl}/staffEarnings/by-staff/$staffId?salon_id=$salonId');
 
       if (staffReportResponse.data['success']) {
         staffReportData.value = staffReportResponse.data['data'];
