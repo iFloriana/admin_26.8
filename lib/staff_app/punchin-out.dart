@@ -5,8 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
-import 'package:flutter_template/staff_app/reports.dart';
-import 'package:flutter_template/staff_app/staffprofile.dart';
 import 'package:flutter_template/staff_app/timecard.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
@@ -94,6 +92,20 @@ class AttendanceController extends GetxController {
         final data = response.data;
         punchInTime.value = data['punch_in'] as String?;
         punchOutTime.value = data['punch_out'] as String? ?? null;
+
+        // Check if punch_in is from a previous day when punch_out is null
+        if (punchInTime.value != null && punchOutTime.value == null) {
+          final punchInDate = DateTime.parse(punchInTime.value!).toLocal();
+          final today = DateTime.now();
+          if (punchInDate.year != today.year ||
+              punchInDate.month != today.month ||
+              punchInDate.day != today.day) {
+            punchInTime.value = null;
+            CustomSnackbar.showError('Warning',
+                'You forgot to punch out on the previous day. Starting fresh for today.');
+          }
+        }
+
         print(
           'Fetched Status: punchInTime = ${punchInTime.value}, punchOutTime = ${punchOutTime.value}',
         );

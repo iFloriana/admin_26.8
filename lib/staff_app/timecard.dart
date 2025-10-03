@@ -476,6 +476,176 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     );
   }
 
+  Future<void> _showPunchOutRequestBottomSheet(DateTime selectedDate) async {
+    TimeOfDay? punchOutTime;
+    final reasonController = TextEditingController();
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 20,
+                right: 20,
+                top: 12,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        height: 5,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text('Punch Out Request'),
+                    Text(
+                      DateFormat('dd MMM yyyy').format(selectedDate),
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: reasonController,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        labelText: 'Reason',
+                        labelStyle: TextStyle(color: Colors.grey.shade700),
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                            width: 1.2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade600,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 3,
+                      ),
+                      onPressed: () async {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (time != null) {
+                          setModalState(() {
+                            punchOutTime = time;
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.logout),
+                      label: Text(
+                        punchOutTime == null
+                            ? 'Punch Out Time'
+                            : punchOutTime!.format(context),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 15),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 4,
+                        ),
+                        onPressed: (punchOutTime != null &&
+                                reasonController.text.isNotEmpty)
+                            ? () async {
+                                try {
+                                  final requestDate = DateTime(
+                                    selectedDate.year,
+                                    selectedDate.month,
+                                    selectedDate.day,
+                                  );
+
+                                  final response = await dioClient.dio.post(
+                                    '${Apis.baseUrl}/attendance/${widget.staffId}/request/punch_out',
+                                    data: {
+                                      'date': DateFormat('yyyy-MM-dd')
+                                          .format(requestDate),
+                                      'punch_out_time':
+                                          punchOutTime!.format(context),
+                                      'reason': reasonController.text,
+                                    },
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Punch out request submitted successfully 🎉'),
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                    await _fetchAttendanceData(_focusedDay);
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Error submitting request: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
+                        child: const Text(
+                          'Submit Request',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> _showDetailsBottomSheet(DateTime selectedDate) async {
     await showModalBottomSheet(
       context: context,
@@ -777,35 +947,63 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       );
     }
 
+    final status = events.isNotEmpty ? events.first['status'] : '';
+
     return Column(
-      children: events.asMap().entries.map((entry) {
-        final index = entry.key;
-        final event = entry.value;
-        return Card(
-          margin: EdgeInsets.symmetric(vertical: 4),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: _getStatusColor(event['status']),
-              child: Text('${index + 1}'),
+      children: [
+        ...events.asMap().entries.map((entry) {
+          final index = entry.key;
+          final event = entry.value;
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 4),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: _getStatusColor(event['status']),
+                child: Text('${index + 1}'),
+              ),
+              title: Text('Status: ${event['status'].toUpperCase()}'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Punch In: ${event['punch_in']}'),
+                  Text('Punch Out: ${event['punch_out']}'),
+                  Text('Working Hours: ${event['working_hours']}'),
+                  if (event['warnings'] != null &&
+                      (event['warnings'] as List).isNotEmpty)
+                    Text(
+                      'Warnings: ${(event['warnings'] as List).join(', ')}',
+                      style: TextStyle(color: Colors.orange),
+                    ),
+                ],
+              ),
             ),
-            title: Text('Status: ${event['status'].toUpperCase()}'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Punch In: ${event['punch_in']}'),
-                Text('Punch Out: ${event['punch_out']}'),
-                Text('Working Hours: ${event['working_hours']}'),
-                if (event['warnings'] != null &&
-                    (event['warnings'] as List).isNotEmpty)
-                  Text(
-                    'Warnings: ${(event['warnings'] as List).join(', ')}',
-                    style: TextStyle(color: Colors.orange),
+          );
+        }).toList(),
+        if (status == 'missing_punch')
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade600,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-              ],
+                  elevation: 4,
+                ),
+                onPressed: () => _showPunchOutRequestBottomSheet(selectedDate),
+                icon: const Icon(Icons.logout),
+                label: const Text(
+                  'Request Punch Out',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ),
-        );
-      }).toList(),
+      ],
     );
   }
 
