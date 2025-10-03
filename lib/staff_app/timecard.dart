@@ -481,31 +481,36 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
             right: 20,
             top: 12,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  height: 5,
-                  width: 50,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(12),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      height: 5,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Details for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildDetailsContent(selectedDate),
+                  const SizedBox(height: 16),
+                ],
               ),
-              Text(
-                'Details for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 8),
-              Flexible(
-                child: _buildDetailsContent(selectedDate),
-              ),
-              const SizedBox(height: 16),
-            ],
+            ),
           ),
         );
       },
@@ -550,7 +555,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          spacing: 10,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildLegendItem('Present', Colors.green),
@@ -691,10 +695,10 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       );
     }
 
-    return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (context, index) {
-        final event = events[index];
+    return Column(
+      children: events.asMap().entries.map((entry) {
+        final index = entry.key;
+        final event = entry.value;
         return Card(
           margin: EdgeInsets.symmetric(vertical: 4),
           child: ListTile(
@@ -719,7 +723,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
             ),
           ),
         );
-      },
+      }).toList(),
     );
   }
 
