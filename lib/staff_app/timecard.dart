@@ -5,7 +5,6 @@ import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:dio/dio.dart';
 
 class AttendanceCalendarScreen extends StatefulWidget {
   final String staffId;
@@ -23,6 +22,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
   DateTime? _selectedDay;
   bool _isLoading = true;
   String? _error;
+  int _totalDaysPresent = 0;
+  int _totalDaysAbsent = 0;
+  int _totalDaysOnLeave = 0;
+  String _totalHoursWorked = "0.00";
+  Map<String, int> _warnings = {};
 
   @override
   void initState() {
@@ -48,9 +52,15 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       );
 
       if (response.statusCode == 200) {
-        final data = response.data['report']['records'] as List<dynamic>;
+        final report = response.data['report'];
+        final data = report['records'] as List<dynamic>;
         setState(() {
           _recordsByDate = _groupRecordsByDate(data);
+          _totalDaysPresent = report['total_days_present'] ?? 0;
+          _totalDaysAbsent = report['total_days_absent'] ?? 0;
+          _totalDaysOnLeave = report['total_days_on_leave'] ?? 0;
+          _totalHoursWorked = report['total_hours_worked'] ?? "0.00";
+          _warnings = Map<String, int>.from(report['warnings'] ?? {});
           _isLoading = false;
         });
       } else {
@@ -629,8 +639,81 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                       ),
                     ),
+                    _buildSummary(),
                   ],
                 ),
+    );
+  }
+
+  Widget _buildSummary() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  _buildSummaryRow(
+                      "✅ Total Days Present", "$_totalDaysPresent"),
+                  _buildSummaryRow("❌ Total Days Absent", "$_totalDaysAbsent"),
+                  _buildSummaryRow(
+                      "📝 Total Days On Leave", "$_totalDaysOnLeave"),
+                  _buildSummaryRow(
+                      "⏱ Total Hours Worked", "$_totalHoursWorked"),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Warnings section
+          Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "⚠️ Warnings",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildSummaryRow("Late In", "${_warnings['late_in'] ?? 0}"),
+                  _buildSummaryRow(
+                      "Early Out", "${_warnings['early_out'] ?? 0}"),
+                  _buildSummaryRow(
+                      "Missing Punch", "${_warnings['missing_punch'] ?? 0}"),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 14)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 
