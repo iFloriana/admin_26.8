@@ -144,7 +144,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Small drag handle
                     Center(
                       child: Container(
                         height: 5,
@@ -156,17 +155,12 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-
-                    // Title
-                    Text(
-                      'Attendance Request',
-                    ),
+                    Text('Attendance Request'),
                     Text(
                       DateFormat('dd MMM yyyy').format(selectedDate),
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                     const SizedBox(height: 20),
-
                     TextField(
                       controller: reasonController,
                       maxLines: 2,
@@ -174,28 +168,24 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         labelText: 'Reason',
                         labelStyle: TextStyle(color: Colors.grey.shade700),
                         filled: true,
-                        fillColor: Colors.white, // keep background clean
+                        fillColor: Colors.white,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(
-                            color: Colors
-                                .grey.shade400, // border color when not focused
+                            color: Colors.grey.shade400,
                             width: 1.2,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(
-                            color: primaryColor, // border color on focus
+                            color: primaryColor,
                             width: 1.5,
                           ),
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // Punch In / Out Buttons
                     Row(
                       children: [
                         Expanded(
@@ -266,8 +256,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
-
-                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -311,7 +299,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                             'Request submitted successfully 🎉'),
                                       ),
                                     );
-                                   Get.back();
+                                    Get.back();
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -367,7 +355,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Drag Handle
                     Center(
                       child: Container(
                         height: 5,
@@ -379,18 +366,12 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                       ),
                     ),
-
-                    // Title
-                    Text(
-                      'Leave Request',
-                    ),
+                    Text('Leave Request'),
                     Text(
                       DateFormat('dd MMM yyyy').format(selectedDate),
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                     const SizedBox(height: 20),
-
-                    // Reason Field
                     TextField(
                       controller: reasonController,
                       maxLines: 3,
@@ -416,8 +397,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-
-                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -487,6 +466,52 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     );
   }
 
+  Future<void> _showDetailsBottomSheet(DateTime selectedDate) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 12,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  height: 5,
+                  width: 50,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              Text(
+                'Details for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 8),
+              Flexible(
+                child: _buildDetailsContent(selectedDate),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -520,7 +545,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                 )
               : Column(
                   children: [
-                    // Legend
                     Container(
                       padding: EdgeInsets.all(8),
                       child: SingleChildScrollView(
@@ -539,7 +563,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                       ),
                     ),
-                    // Calendar
                     Expanded(
                       child: TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
@@ -554,6 +577,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                             setState(() {
                               _selectedDay = selectedDay;
                             });
+                            _showDetailsBottomSheet(selectedDay);
                           }
                         },
                         onPageChanged: (focusedDay) {
@@ -601,30 +625,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                       ),
                     ),
-                    // Details Panel
-                    if (_selectedDay != null)
-                      Expanded(
-                        child: Card(
-                          margin: EdgeInsets.all(8),
-                          child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Details for ${DateFormat('dd MMM yyyy').format(_selectedDay!)}',
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                SizedBox(height: 8),
-                                Expanded(
-                                  child: _buildDetailsContent(_selectedDay!),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
     );
@@ -654,7 +654,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     ),
                     onPressed: () =>
                         _showAttendanceRequestBottomSheet(selectedDate),
-                    icon: const Icon(Icons.access_time), // ⏱️ attendance
+                    icon: const Icon(Icons.access_time),
                     label: const Text(
                       'Request Attendance',
                       style:

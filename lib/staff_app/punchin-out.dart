@@ -193,8 +193,8 @@ class AttendanceController extends GetxController {
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
         final errorMessage = e.response?.data['error'] as String?;
-        if (errorMessage == 'Reason for early/off-site punch-out is required' ||
-            errorMessage == 'Reason for late/off-site punch-in is required') {
+        if (errorMessage == 'Early or off-site punch-out requires a reason' ||
+            errorMessage == 'Late punch-in or off-site requires a reason') {
           Get.bottomSheet(
             _buildReasonBottomSheet(action),
             isScrollControlled: true,
@@ -382,7 +382,7 @@ class AttendanceScreen extends StatelessWidget {
                         // Get.to(StaffReportScreen());
                         Get.to(AttendanceCalendarScreen(
                           staffId: controller.staffId!,
-                        )); 
+                        ));
                         // Get.to(() => StaffProfileScreen(
                         //       staffId: controller.staffId!,
                         //       salonId: controller.salonId!,
