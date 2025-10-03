@@ -101,33 +101,19 @@ class StaffReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Staff Report',
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.9),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: TabBar(
-              controller: controller.tabController,
-              indicatorColor: secondaryColor,
-              indicatorWeight: 4,
-              labelColor: Colors.white,
-              unselectedLabelColor: secondaryColor.withOpacity(0.7),
-              labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              unselectedLabelStyle: TextStyle(fontSize: 14),
-              tabs: [
-                Tab(text: 'Appointments'),
-                Tab(text: 'Earnings'),
-              ],
-            ),
+        bottom: TabBar(
+          controller: controller.tabController,
+          indicatorColor: secondaryColor,
+          labelColor: Colors.white,
+          splashBorderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20.0),
           ),
+          unselectedLabelColor: secondaryColor,
+          dividerColor: Colors.transparent,
+          tabs: [
+            Tab(text: 'Appointments'),
+            Tab(text: 'Earnings'),
+          ],
         ),
       ),
       body: Obx(
