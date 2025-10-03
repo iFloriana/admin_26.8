@@ -348,69 +348,136 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom,
-                left: 16,
-                right: 16,
-                top: 16,
+                left: 20,
+                right: 20,
+                top: 12,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Request Leave for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: reasonController,
-                    decoration: InputDecoration(
-                      labelText: 'Reason',
-                      border: OutlineInputBorder(),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Drag Handle
+                    Center(
+                      child: Container(
+                        height: 5,
+                        width: 50,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: reasonController.text.isNotEmpty
-                        ? () async {
-                            try {
-                              // Use DateTime with midnight to avoid timezone shift
-                              final requestDate = DateTime(selectedDate.year,
-                                  selectedDate.month, selectedDate.day);
-                              final response = await dioClient.dio.post(
-                                '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
-                                data: {
-                                  'date': DateFormat('yyyy-MM-dd')
-                                      .format(requestDate),
-                                  'reason': reasonController.text,
-                                },
-                              );
-                              if (response.statusCode == 200) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          'Request submitted successfully')),
-                                );
-                                Navigator.pop(context);
-                                await _fetchAttendanceData(_focusedDay);
+
+                    // Title
+                    Text(
+                      'Leave Request',
+                    ),
+                    Text(
+                      DateFormat('dd MMM yyyy').format(selectedDate),
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Reason Field
+                    TextField(
+                      controller: reasonController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: 'Reason',
+                        labelStyle: TextStyle(color: Colors.grey.shade700),
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Colors.grey.shade400,
+                            width: 1.2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: primaryColor,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Submit Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 4,
+                        ),
+                        onPressed: reasonController.text.isNotEmpty
+                            ? () async {
+                                try {
+                                  final requestDate = DateTime(
+                                    selectedDate.year,
+                                    selectedDate.month,
+                                    selectedDate.day,
+                                  );
+
+                                  final response = await dioClient.dio.post(
+                                    '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
+                                    data: {
+                                      'date': DateFormat('yyyy-MM-dd')
+                                          .format(requestDate),
+                                      'reason': reasonController.text,
+                                    },
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Leave request submitted 🎉'),
+                                      ),
+                                    );
+                                    Navigator.pop(context);
+                                    await _fetchAttendanceData(_focusedDay);
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Error submitting request: $e'),
+                                    ),
+                                  );
+                                }
                               }
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Error submitting request: $e')),
-                              );
-                            }
-                          }
-                        : null,
-                    child: Text('Submit Request'),
-                  ),
-                  SizedBox(height: 16),
-                ],
+                            : null,
+                        icon: const Icon(Icons.send),
+                        label: const Text(
+                          'Submit Request',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             );
           },

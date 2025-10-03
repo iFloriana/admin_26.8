@@ -63,7 +63,6 @@ class AttendanceController extends GetxController {
             '_id': staffJson['_id'],
             'salon_id': staffJson['salon_id'],
           };
-
         } else {
           CustomSnackbar.showError(
               'Error', 'Staff details not found in stored data');
