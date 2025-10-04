@@ -208,6 +208,7 @@ class AttendanceController extends GetxController {
       if (e.response?.statusCode == 400) {
         final errorMessage = e.response?.data['error'] as String?;
         if (errorMessage == 'Early or off-site punch-out requires a reason' ||
+            errorMessage == 'Reason required for early/off-site punch-out' ||
             errorMessage == 'Late punch-in or off-site requires a reason' ||
             errorMessage == 'Reason required for late/off-site punch-in') {
           Get.bottomSheet(
@@ -305,6 +306,7 @@ class AttendanceController extends GetxController {
           // Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
+            spacing: 10,
             children: [
               ElevatedButton(
                 onPressed: () => Get.back(),

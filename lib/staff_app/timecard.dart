@@ -387,13 +387,9 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     TextField(
                       controller: reasonController,
                       maxLines: 3,
-                      // *** ADDED THIS onChanged CALLBACK ***
                       onChanged: (text) {
-                        // Call setModalState to rebuild the bottom sheet
-                        // and re-evaluate the button's onPressed condition.
                         setModalState(() {});
                       },
-                      // **********************************
                       decoration: InputDecoration(
                         labelText: 'Reason',
                         labelStyle: TextStyle(color: Colors.grey.shade700),
@@ -409,7 +405,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(
-                            // Assuming primaryColor is defined somewhere globally or in the surrounding class
                             color: primaryColor,
                             width: 1.5,
                           ),
@@ -421,7 +416,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          // Assuming primaryColor is defined
                           backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -432,7 +426,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                         onPressed: reasonController.text.isNotEmpty
                             ? () async {
-                                // Your submit logic remains the same
                                 try {
                                   final requestDate = DateTime(
                                     selectedDate.year,
@@ -440,7 +433,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     selectedDate.day,
                                   );
 
-                                  // Assuming dioClient and Apis are defined
                                   final response = await dioClient.dio.post(
                                     '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
                                     data: {
@@ -459,8 +451,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     );
                                     Navigator.of(context)
                                         .popUntil((route) => route.isFirst);
-                                    // Navigator.pop(context);
-                                    // Assuming _focusedDay and _fetchAttendanceData are accessible/defined
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -472,7 +462,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                   );
                                 }
                               }
-                            : null, // Button is disabled if reasonController.text.isNotEmpty is false
+                            : null,
                         icon: const Icon(Icons.send),
                         label: const Text(
                           'Submit Request',
@@ -633,7 +623,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     );
                                     Navigator.of(context)
                                         .popUntil((route) => route.isFirst);
-                                    // Navigator.pop(context);
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -656,6 +645,214 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     ),
                     const SizedBox(height: 16),
                   ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showLeaveRequestDialog() async {
+    DateTime? selectedDate = DateTime.now();
+    final reasonController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 8,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: 400,
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'New Leave Request',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: primaryColor,
+                            ),
+                          ),
+                          IconButton(
+                            icon:
+                                Icon(Icons.close, color: Colors.grey.shade600),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Select Date',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: () async {
+                          final pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: selectedDate ?? DateTime.now(),
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: primaryColor,
+                                    onPrimary: Colors.white,
+                                    surface: Colors.white,
+                                  ),
+                                  dialogTheme: DialogThemeData(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (pickedDate != null) {
+                            setModalState(() {
+                              selectedDate = pickedDate;
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 1.2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DateFormat('dd MMM yyyy').format(selectedDate!),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                              Icon(Icons.calendar_today,
+                                  color: primaryColor, size: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: reasonController,
+                        maxLines: 3,
+                        onChanged: (text) {
+                          setModalState(() {});
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Reason for Leave',
+                          labelStyle: TextStyle(color: Colors.grey.shade700),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade400,
+                              width: 1.2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: primaryColor,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                          ),
+                          onPressed: reasonController.text.isNotEmpty &&
+                                  selectedDate != null
+                              ? () async {
+                                  try {
+                                    final response = await dioClient.dio.post(
+                                      '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
+                                      data: {
+                                        'date': DateFormat('yyyy-MM-dd')
+                                            .format(selectedDate!),
+                                        'reason': reasonController.text,
+                                      },
+                                    );
+
+                                    if (response.statusCode == 201) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Leave request submitted successfully 🎉'),
+                                        ),
+                                      );
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                      await _fetchAttendanceData(_focusedDay);
+                                    }
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Error submitting request: $e'),
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
+                          icon: const Icon(Icons.send),
+                          label: const Text(
+                            'Submit Leave Request',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -830,6 +1027,14 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     ],
                   ),
                 ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showLeaveRequestDialog(),
+        backgroundColor: primaryColor,
+        child: const Icon(
+          Icons.add,
+          color: white,
+        ),
+      ),
     );
   }
 
