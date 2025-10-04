@@ -99,7 +99,7 @@ class StaffProfileScreen extends StatelessWidget {
                     Container(
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.deepPurple, Colors.purpleAccent],
+                          colors: [primaryColor, secondaryColor],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -109,7 +109,7 @@ class StaffProfileScreen extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.all(20),
                       width: double.infinity,
-                      child: Column(
+                      child: Column(  
                         children: [
                           CircleAvatar(
                             radius: 40,
@@ -127,7 +127,7 @@ class StaffProfileScreen extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.deepPurple,
+                                      color: primaryColor,
                                     ),
                                   )
                                 : null,
@@ -158,21 +158,21 @@ class StaffProfileScreen extends StatelessWidget {
                           ListTile(
                             leading: const Icon(
                               Icons.email,
-                              color: Colors.deepPurple,
+                              color: primaryColor,
                             ),
                             title: Text(staff['email'] ?? ""),
                           ),
                           ListTile(
                             leading: const Icon(
                               Icons.phone,
-                              color: Colors.deepPurple,
+                              color: primaryColor,
                             ),
                             title: Text(staff['phone_number'] ?? ""),
                           ),
                           ListTile(
                             leading: const Icon(
                               Icons.person,
-                              color: Colors.deepPurple,
+                              color: primaryColor,
                             ),
                             title: Text("Gender: ${staff['gender'] ?? '-'}"),
                           ),
@@ -211,7 +211,7 @@ class StaffProfileScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(
                         Icons.access_time,
-                        color: Colors.deepPurple,
+                        color: primaryColor,
                       ),
                       title: const Text("Shift Time"),
                       subtitle: Text(
@@ -221,7 +221,7 @@ class StaffProfileScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(
                         Icons.lunch_dining,
-                        color: Colors.deepPurple,
+                        color: primaryColor,
                       ),
                       title: const Text("Lunch Break"),
                       subtitle: Text(
@@ -287,7 +287,7 @@ class StaffProfileScreen extends StatelessWidget {
                           child: ListTile(
                             leading: const Icon(
                               Icons.cut,
-                              color: Colors.deepPurple,
+                              color: primaryColor,
                             ),
                             title: Text(service['name'] ?? "Unnamed"),
                             subtitle: Text(

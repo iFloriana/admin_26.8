@@ -872,7 +872,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          // Warnings section
           Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -500,7 +500,7 @@ class AttendanceScreen extends StatelessWidget {
                           elevation: 0,
                         ),
                         child: const Text(
-                          'Button 1',
+                          'Time Card',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -508,7 +508,7 @@ class AttendanceScreen extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                           Get.to(StaffReportScreen());
+                          Get.to(StaffReportScreen());
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(
@@ -523,7 +523,7 @@ class AttendanceScreen extends StatelessWidget {
                           elevation: 0,
                         ),
                         child: const Text(
-                          'Button 1',
+                          'Reports',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),

@@ -280,7 +280,7 @@ class AppointmentsTab extends StatelessWidget {
                     SizedBox(height: 2),
                     // Total Amount
                     Text(
-                      'Total: \$${total}',
+                      'Total: \₹${total}',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
