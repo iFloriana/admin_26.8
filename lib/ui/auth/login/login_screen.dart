@@ -289,51 +289,52 @@ class LoginScreen extends StatelessWidget {
         ));
   }
 
-  Widget login_screen_header() {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        Container(
-          height: 150.h,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20.r),
-              bottomRight: Radius.circular(20.r),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -50,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: secondaryColor, spreadRadius: 6)
-              ],
-            ),
-            child: CircleAvatar(
-              radius: 70,
-              backgroundColor: primaryColor,
-              foregroundImage: AssetImage(
-                AppImages.applogo,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget login_screen_header() {
+  //   return Stack(
+  //     clipBehavior: Clip.none,
+  //     alignment: Alignment.center,
+  //     children: [
+  //       Container(
+  //         height: 150.h,
+  //         width: double.infinity,
+  //         decoration: BoxDecoration(
+  //           color: primaryColor,
+  //           borderRadius: BorderRadius.only(
+  //             bottomLeft: Radius.circular(20.r),
+  //             bottomRight: Radius.circular(20.r),
+  //           ),
+  //         ),
+  //       ),
+  //       Positioned(
+  //         bottom: -50,
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             shape: BoxShape.circle,
+  //             boxShadow: [
+  //               BoxShadow(
+  //                   blurRadius: 10, color: secondaryColor, spreadRadius: 6)
+  //             ],
+  //           ),
+  //           child: CircleAvatar(
+  //             radius: 70,
+  //             backgroundColor: primaryColor,
+  //             foregroundImage: AssetImage(
+  //               AppImages.applogo,
+  //             ),
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget login_screen_body() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
+        spacing: 10,
         children: [
-          SizedBox(height: 5),
+          SizedBox(height: 25),
           Image.asset(
             "${AppImages.happlogo}",
             height: 100,
@@ -370,6 +371,7 @@ class LoginScreen extends StatelessWidget {
               : SizedBox.shrink()),
           SizedBox(height: 5.h),
           Btn_Login(),
+          SizedBox(height: 10.h),
           Obx(() => getController.selectedRole.value == 'Admin'
               ? GestureDetector(
                   onTap: () => Get.to(RegisterScreen()),
@@ -381,7 +383,7 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             color: white),
                         child: CustomTextWidget(
-                            text: "Create new account",
+                            text: "Create New account",
                             textStyle: CustomTextStyles.textFontBold(
                                 size: 14.sp,
                                 color: primaryColor,
@@ -397,6 +399,7 @@ class LoginScreen extends StatelessWidget {
     return Column(
       children: [
         // login_screen_header(),
+        SizedBox(height: 30.h),
         login_screen_body(),
       ],
     );
