@@ -122,7 +122,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       case 'leave':
         return Colors.blue;
       case 'missing_punch':
-        return Colors.yellow;
+        return const Color.fromARGB(255, 158, 135, 32);
       default:
         return Colors.grey;
     }
@@ -302,14 +302,16 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     },
                                   );
 
-                                  if (response.statusCode == 200) {
+                                  if (response.statusCode == 201) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
                                             'Request submitted successfully 🎉'),
                                       ),
                                     );
-                                    Get.back();
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -385,6 +387,13 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     TextField(
                       controller: reasonController,
                       maxLines: 3,
+                      // *** ADDED THIS onChanged CALLBACK ***
+                      onChanged: (text) {
+                        // Call setModalState to rebuild the bottom sheet
+                        // and re-evaluate the button's onPressed condition.
+                        setModalState(() {});
+                      },
+                      // **********************************
                       decoration: InputDecoration(
                         labelText: 'Reason',
                         labelStyle: TextStyle(color: Colors.grey.shade700),
@@ -400,6 +409,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(
+                            // Assuming primaryColor is defined somewhere globally or in the surrounding class
                             color: primaryColor,
                             width: 1.5,
                           ),
@@ -411,6 +421,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
+                          // Assuming primaryColor is defined
                           backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -421,6 +432,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                         ),
                         onPressed: reasonController.text.isNotEmpty
                             ? () async {
+                                // Your submit logic remains the same
                                 try {
                                   final requestDate = DateTime(
                                     selectedDate.year,
@@ -428,6 +440,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     selectedDate.day,
                                   );
 
+                                  // Assuming dioClient and Apis are defined
                                   final response = await dioClient.dio.post(
                                     '${Apis.baseUrl}/attendance/${widget.staffId}/request/leave',
                                     data: {
@@ -437,14 +450,17 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     },
                                   );
 
-                                  if (response.statusCode == 200) {
+                                  if (response.statusCode == 201) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content:
                                             Text('Leave request submitted 🎉'),
                                       ),
                                     );
-                                    Navigator.pop(context);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    // Navigator.pop(context);
+                                    // Assuming _focusedDay and _fetchAttendanceData are accessible/defined
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -456,7 +472,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                   );
                                 }
                               }
-                            : null,
+                            : null, // Button is disabled if reasonController.text.isNotEmpty is false
                         icon: const Icon(Icons.send),
                         label: const Text(
                           'Submit Request',
@@ -547,7 +563,8 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -607,14 +624,16 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                                     },
                                   );
 
-                                  if (response.statusCode == 200) {
+                                  if (response.statusCode == 201) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
                                             'Punch out request submitted successfully 🎉'),
                                       ),
                                     );
-                                    Navigator.pop(context);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    // Navigator.pop(context);
                                     await _fetchAttendanceData(_focusedDay);
                                   }
                                 } catch (e) {
@@ -683,7 +702,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                   const SizedBox(height: 12),
                   Text(
                     'Details for ${DateFormat('dd MMM yyyy').format(selectedDate)}',
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
                   _buildDetailsContent(selectedDate),
@@ -727,27 +746,27 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                     ],
                   ),
                 )
-              : Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 10,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildLegendItem('Present', Colors.green),
-                            _buildLegendItem(
-                                'Missing Punch Out', Colors.yellow),
-                            _buildLegendItem('On Leave', Colors.blue),
-                            _buildLegendItem('Absent', Colors.red),
-                          ],
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 10,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildLegendItem('Present', Colors.green),
+                              _buildLegendItem('Missing Punch Out',
+                                  const Color.fromARGB(255, 158, 135, 32)),
+                              _buildLegendItem('On Leave', Colors.blue),
+                              _buildLegendItem('Absent', Colors.red),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: TableCalendar(
+                      TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
                         lastDay: today,
                         focusedDay: _focusedDay,
@@ -807,9 +826,9 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
                           },
                         ),
                       ),
-                    ),
-                    _buildSummary(),
-                  ],
+                      _buildSummary(),
+                    ],
+                  ),
                 ),
     );
   }
@@ -820,28 +839,39 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  _buildSummaryRow(
-                      "✅ Total Days Present", "$_totalDaysPresent"),
-                  _buildSummaryRow("❌ Total Days Absent", "$_totalDaysAbsent"),
-                  _buildSummaryRow(
-                      "📝 Total Days On Leave", "$_totalDaysOnLeave"),
-                  _buildSummaryRow(
-                      "⏱ Total Hours Worked", "$_totalHoursWorked"),
-                ],
+          Row(
+            children: [
+              _buildSummaryCard(
+                "Present Days",
+                _totalDaysPresent.toString(),
+                Colors.green[600]!,
+                Icons.calendar_today,
               ),
-            ),
+              _buildSummaryCard(
+                "Absent Days",
+                _totalDaysAbsent.toString(),
+                Colors.red[600]!,
+                Icons.calendar_today,
+              ),
+            ],
           ),
-
+          Row(
+            children: [
+              _buildSummaryCard(
+                "Days On Leave",
+                _totalDaysOnLeave.toString(),
+                Colors.blue[600]!,
+                Icons.calendar_today,
+              ),
+              _buildSummaryCard(
+                "Hours Worked",
+                _totalHoursWorked,
+                Colors.teal[600]!,
+                Icons.access_time,
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
-
           // Warnings section
           Card(
             shape:
@@ -869,6 +899,41 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryCard(
+      String label, String value, Color color, IconData icon) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -986,7 +1051,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow.shade600,
+                  backgroundColor: const Color.fromARGB(255, 158, 135, 32),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

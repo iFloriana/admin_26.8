@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/staff_app/reports.dart';
+import 'package:flutter_template/staff_app/staffprofile.dart';
 import 'package:flutter_template/staff_app/timecard.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
@@ -206,7 +208,8 @@ class AttendanceController extends GetxController {
       if (e.response?.statusCode == 400) {
         final errorMessage = e.response?.data['error'] as String?;
         if (errorMessage == 'Early or off-site punch-out requires a reason' ||
-            errorMessage == 'Late punch-in or off-site requires a reason') {
+            errorMessage == 'Late punch-in or off-site requires a reason' ||
+            errorMessage == 'Reason required for late/off-site punch-in') {
           Get.bottomSheet(
             _buildReasonBottomSheet(action),
             isScrollControlled: true,
@@ -244,7 +247,7 @@ class AttendanceController extends GetxController {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF4FC3F7), Color(0xFF0288D1)],
+          colors: [secondaryColor, primaryColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -263,7 +266,7 @@ class AttendanceController extends GetxController {
                 color: Colors.white,
                 size: 30,
               ),
-              SizedBox(width: 10),
+              // SizedBox(width: 10),
               Text(
                 action == 'punch-in'
                     ? 'Reason for Off-Site Punch-In'
@@ -277,7 +280,7 @@ class AttendanceController extends GetxController {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          // SizedBox(height: 20),
           // Text Input
           Card(
             elevation: 5,
@@ -298,7 +301,7 @@ class AttendanceController extends GetxController {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          // SizedBox(height: 20),
           // Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -315,7 +318,7 @@ class AttendanceController extends GetxController {
                 ),
                 child: Text('Cancel'),
               ),
-              SizedBox(width: 10),
+              // SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () async {
                   if (reasonController.text.isNotEmpty) {
@@ -333,9 +336,9 @@ class AttendanceController extends GetxController {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (states) {
                       if (states.contains(MaterialState.pressed)) {
-                        return Color(0xFF0288D1).withOpacity(0.8);
+                        return secondaryColor;
                       }
-                      return Color(0xFF0288D1);
+                      return primaryColor;
                     },
                   ),
                   foregroundColor: MaterialStateProperty.all(Colors.white),
@@ -391,14 +394,10 @@ class AttendanceScreen extends StatelessWidget {
                     onTap: () {
                       if (controller.staffId != null &&
                           controller.salonId != null) {
-                        // Get.to(StaffReportScreen());
-                        Get.to(AttendanceCalendarScreen(
-                          staffId: controller.staffId!,
-                        ));
-                        // Get.to(() => StaffProfileScreen(
-                        //       staffId: controller.staffId!,
-                        //       salonId: controller.salonId!,
-                        //     ));
+                        Get.to(() => StaffProfileScreen(
+                              staffId: controller.staffId!,
+                              salonId: controller.salonId!,
+                            ));
                       } else {
                         CustomSnackbar.showError(
                             'Error', 'Staff or Salon ID missing');
@@ -432,7 +431,7 @@ class AttendanceScreen extends StatelessWidget {
                         )),
                   ),
                 ),
-                SizedBox(width: 10),
+                // SizedBox(width: 10),
               ],
             )),
       ),
@@ -445,11 +444,13 @@ class AttendanceScreen extends StatelessWidget {
                 isPunchedIn ? Colors.green.shade600 : Colors.red.shade600;
 
             return Column(
+              spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _buildStatusCard(isPunchedIn, activeColor),
-                const SizedBox(height: 30),
+                // const SizedBox(height: 30),
                 Row(
+                  spacing: 5,
                   children: [
                     Expanded(
                       child: _buildTimeLogCard(
@@ -460,7 +461,7 @@ class AttendanceScreen extends StatelessWidget {
                         isActive: controller.punchInTime.value != null,
                       ),
                     ),
-                    const SizedBox(width: 15),
+                    // const SizedBox(width: 15),
                     Expanded(
                       child: _buildTimeLogCard(
                         title: 'Punch Out',
@@ -472,10 +473,63 @@ class AttendanceScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40),
-                _buildActionButton(isPunchedIn, primaryColor, activeColor),
                 const SizedBox(height: 20),
+                _buildActionButton(isPunchedIn, primaryColor, activeColor),
+                // const SizedBox(height: 20),
                 _buildLocationInfo(Colors.grey.shade400),
+                const SizedBox(height: 20),
+
+                Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(AttendanceCalendarScreen(
+                            staffId: controller.staffId!,
+                          ));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEFE8F9),
+                          foregroundColor: const Color(0xFF5D3F8D),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Button 1',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                           Get.to(StaffReportScreen());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(
+                              0xFFEFE8F9), // Light purple background
+                          foregroundColor:
+                              const Color(0xFF5D3F8D), // Dark purple text color
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            // *** UPDATED RADIUS HERE ***
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Button 1',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
               ],
             );
           }),
@@ -512,7 +566,7 @@ class AttendanceScreen extends StatelessWidget {
             size: 35,
             color: Colors.white,
           ),
-          const SizedBox(width: 15),
+          // const SizedBox(width: 15),
           Text(
             isPunchedIn ? 'STATUS: ACTIVE' : 'STATUS: AWAY',
             style: const TextStyle(
@@ -543,7 +597,7 @@ class AttendanceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, color: iconColor, size: 30),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Text(
               title,
               style: TextStyle(
@@ -552,7 +606,7 @@ class AttendanceScreen extends StatelessWidget {
                 color: Colors.grey.shade600,
               ),
             ),
-            const SizedBox(height: 5),
+            // const SizedBox(height: 5),
             Text(
               time,
               style: TextStyle(
@@ -630,7 +684,7 @@ class AttendanceScreen extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.location_on_outlined, color: inactiveColor, size: 28),
-          const SizedBox(width: 10),
+          // const SizedBox(width: 10),
           Expanded(
             child: Text(
               'Your location is required for clocking. Please ensure GPS is enabled.',
