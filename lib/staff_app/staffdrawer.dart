@@ -6,7 +6,9 @@ import 'package:flutter_template/staff_app/punchin-out.dart'; // Import Attendan
 import 'package:flutter_template/staff_app/timecard.dart'; // Import AttendanceCalendarScreen
 import 'package:flutter_template/staff_app/reports.dart'; // Import StaffReportScreen
 import 'package:flutter_template/staff_app/staffprofile.dart'; // Import StaffProfileScreen
+import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class DashboardController extends GetxController {
   RxInt currentIndex = 0.obs;
@@ -61,6 +63,7 @@ class StaffDashboard extends StatelessWidget {
         );
       }
 
+      // List of screens for the tabs
       final List<Widget> screens = [
         AttendanceScreen(), // From punchin-out.dart (default tab)
         AttendanceCalendarScreen(staffId: controller.staffId!),
@@ -69,22 +72,55 @@ class StaffDashboard extends StatelessWidget {
             staffId: controller.staffId!, salonId: controller.salonId!),
       ];
 
-      return Scaffold(
-        body: screens[controller.currentIndex.value],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: controller.currentIndex.value,
-          onTap: (index) => controller.currentIndex.value = index,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.deepPurple, // Customize as per your theme
-          unselectedItemColor: Colors.grey,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Punch'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today), label: 'Timecard'),
-            BottomNavigationBarItem(icon: Icon(Icons.report), label: 'Reports'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
+      // List of navigation bar items for Style13
+      final List<PersistentBottomNavBarItem> items = [
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.timer),
+          title: 'Punch',
+          activeColorPrimary: primaryColor,
+          inactiveColorPrimary: Colors.grey,
         ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.calendar_today),
+          title: 'Timecard',
+          activeColorPrimary: primaryColor,
+          inactiveColorPrimary: Colors.grey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.report),
+          title: 'Reports',
+          activeColorPrimary: primaryColor,
+          inactiveColorPrimary: Colors.grey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.person),
+          title: 'Profile',
+          activeColorPrimary: primaryColor,
+          inactiveColorPrimary: Colors.grey,
+        ),
+      ];
+
+      return PersistentTabView(
+        context,
+        controller: PersistentTabController(
+            initialIndex: controller.currentIndex.value),
+        screens: screens,
+        items: items,
+        navBarStyle: NavBarStyle.style9, // Use Style13 as specified
+        backgroundColor: Colors.white, // Background color of the nav bar
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true,
+        stateManagement: true, // Enable state management with GetX
+        hideNavigationBarWhenKeyboardAppears: true,
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Colors.white,
+        ),
+        navBarHeight: 60.0, // Adjust height if needed
+        onItemSelected: (index) {
+          controller.currentIndex.value =
+              index; // Update current index in GetX controller
+        },
       );
     });
   }
