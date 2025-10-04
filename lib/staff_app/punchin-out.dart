@@ -390,6 +390,7 @@ class AttendanceScreen extends StatelessWidget {
               title: controller.staffData['full_name']?.toString() ?? 'Buddy',
               actions: [
                 Container(
+                  margin: EdgeInsets.only(right: 10.w),
                   child: GestureDetector(
                     onTap: () {
                       if (controller.staffId != null &&
@@ -478,58 +479,6 @@ class AttendanceScreen extends StatelessWidget {
                 // const SizedBox(height: 20),
                 _buildLocationInfo(Colors.grey.shade400),
                 const SizedBox(height: 20),
-
-                Row(
-                  spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Get.to(AttendanceCalendarScreen(
-                            staffId: controller.staffId!,
-                          ));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFEFE8F9),
-                          foregroundColor: const Color(0xFF5D3F8D),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Time Card',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Get.to(StaffReportScreen());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                              0xFFEFE8F9), // Light purple background
-                          foregroundColor:
-                              const Color(0xFF5D3F8D), // Dark purple text color
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            // *** UPDATED RADIUS HERE ***
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Reports',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
               ],
             );
           }),

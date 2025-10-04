@@ -101,7 +101,7 @@ class LoginController extends GetxController {
       if (response.statusCode == 200 && response.data != null) {
         await prefs.setStaffData(jsonEncode(response.data));
         CustomSnackbar.showSuccess("Success", "Staff Login Successfully");
-        Get.offAllNamed(Routes.attendanceScreen);
+        Get.offAllNamed(Routes.StaffDashboard);
       } else {
         CustomSnackbar.showError("Error", "Invalid response from server");
       }
