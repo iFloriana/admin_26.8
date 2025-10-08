@@ -237,10 +237,16 @@ class FinanceController extends GetxController {
         double debit = 0;
         filteredMap.forEach((date, transactions) {
           for (var t in transactions) {
-            if (t["type"] == "receive_from_owner_account") {
+            // Updated logic to handle new credit types
+            if (t["type"] == "receive_from_owner_account" ||
+                t["type"] == "services" ||
+                t["type"] == "products" ||
+                t["type"] == "memberships" ||
+                t["type"] == "packages") {
               credit += (t["amount"] ?? 0).toDouble();
             } else if (t["type"] == "vendor_pay" ||
-                t["type"] == "deposit_to_owner_account") {
+                t["type"] == "deposit_to_owner_account" ||
+                t["type"] == "add_expense") {
               debit += (t["amount"] ?? 0).toDouble();
             }
           }
@@ -945,9 +951,14 @@ class FinancePage extends StatelessWidget {
                         children: List.generate(transactions.length, (index) {
                           final txn = transactions[index];
                           bool isCredit =
-                              txn["type"] == "receive_from_owner_account";
+                              txn["type"] == "receive_from_owner_account" ||
+                                  txn["type"] == "services" ||
+                                  txn["type"] == "products" ||
+                                  txn["type"] == "memberships" ||
+                                  txn["type"] == "packages";
                           bool isDebit = txn["type"] == "vendor_pay" ||
-                              txn["type"] == "deposit_to_owner_account";
+                              txn["type"] == "deposit_to_owner_account" ||
+                              txn["type"] == "add_expense";
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: isCredit
@@ -1392,7 +1403,7 @@ class FinancePage extends StatelessWidget {
     );
   }
 
-// 3. Vendor Pay Dialog
+  // 3. Vendor Pay Dialog
   void _showVendorPayDialog(Color color) {
     Get.dialog(
       Dialog(
@@ -1507,7 +1518,7 @@ class FinancePage extends StatelessWidget {
     );
   }
 
-// 4. Receive from Owner Dialog
+  // 4. Receive from Owner Dialog
   void _showReceiveDialog(Color color) {
     Get.dialog(
       Dialog(
