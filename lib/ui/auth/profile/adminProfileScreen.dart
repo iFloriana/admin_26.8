@@ -13,7 +13,7 @@ import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart'; // Add for date formatting
 import '../../../wiget/loading.dart';
 
 class Adminprofilescreen extends StatelessWidget {
@@ -82,168 +82,349 @@ class Adminprofilescreen extends StatelessWidget {
                   child: Column(
                     spacing: 10,
                     children: [
+                      // Profile Details Section
                       GestureDetector(
                         onTap: getController.expand_details,
-                        child: Obx(() => GestureDetector(
-                              onTap: getController.expand_details,
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: secondaryColor.withOpacity(0.2),
-                                      spreadRadius: 1,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: AnimatedSize(
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                  child: Column(
-                                    spacing: 10,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
+                        child: Obx(() => Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: secondaryColor.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: AnimatedSize(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child: Column(
+                                  spacing: 10,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          getController.isExpanded_Details.value
+                                              ? "Update Profile Details"
+                                              : "Profile Details",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18),
+                                        ),
+                                        FaIcon(
                                             getController
                                                     .isExpanded_Details.value
-                                                ? "Update Profile Details"
-                                                : "Profile Details",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          FaIcon(
-                                              getController
-                                                      .isExpanded_Details.value
-                                                  ? FontAwesomeIcons.angleUp
-                                                  : FontAwesomeIcons.angleDown,
-                                              color: primaryColor,
-                                              size: 20.sp),
-                                        ],
-                                      ),
-                                      if (getController
-                                          .isExpanded_Details.value)
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 12.0),
-                                          child: Column(
-                                            spacing: 10,
-                                            children: [
-                                              SizedBox(height: 1.h),
-                                              InputTxtfield_fullName(),
-                                              InputTxtfield_Email(),
-                                              InputTxtfield_Phone(),
-                                              InputTxtfield_saloneName(),
-                                              InputTxtfield_add(),
-                                              CustomTextFormField(
-                                                controller: getController.gst,
-                                                labelText: 'GST',
-                                                keyboardType:
-                                                    TextInputType.text,
-                                                validator: (value) =>
-                                                    Validation.validateAddress(
-                                                        value),
-                                              ),
-                                              SizedBox(height: 20.h),
-                                              ElevatedButtonExample(
-                                                onPressed: () {
-                                                  getController
-                                                      .onProdileUpdate();
-                                                },
-                                                text: "Update",
-                                              ),
-                                            ],
-                                          ),
+                                                ? FontAwesomeIcons.angleUp
+                                                : FontAwesomeIcons.angleDown,
+                                            color: primaryColor,
+                                            size: 20.sp),
+                                      ],
+                                    ),
+                                    if (getController.isExpanded_Details.value)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 12.0),
+                                        child: Column(
+                                          spacing: 10,
+                                          children: [
+                                            SizedBox(height: 1.h),
+                                            InputTxtfield_fullName(),
+                                            InputTxtfield_Email(),
+                                            InputTxtfield_Phone(),
+                                            InputTxtfield_saloneName(),
+                                            InputTxtfield_add(),
+                                            CustomTextFormField(
+                                              controller: getController.gst,
+                                              labelText: 'GST',
+                                              keyboardType: TextInputType.text,
+                                              validator: (value) =>
+                                                  Validation.validateAddress(
+                                                      value),
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            ElevatedButtonExample(
+                                              onPressed: () {
+                                                getController.onProdileUpdate();
+                                              },
+                                              text: "Update",
+                                            ),
+                                          ],
                                         ),
-                                    ],
-                                  ),
+                                      ),
+                                  ],
                                 ),
                               ),
                             )),
                       ),
+                      // Password Update Section
                       GestureDetector(
                         onTap: getController.expand_pass,
-                        child: Obx(() => GestureDetector(
-                              onTap: getController.expand_pass,
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: secondaryColor.withOpacity(0.2),
-                                      spreadRadius: 1,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 3),
+                        child: Obx(() => Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: secondaryColor.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: AnimatedSize(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          getController.isExpanded_pass.value
+                                              ? "Update Password"
+                                              : "Update Password",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18),
+                                        ),
+                                        FaIcon(
+                                            getController.isExpanded_pass.value
+                                                ? FontAwesomeIcons.angleUp
+                                                : FontAwesomeIcons.angleDown,
+                                            color: primaryColor,
+                                            size: 20.sp),
+                                      ],
                                     ),
+                                    if (getController.isExpanded_pass.value)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 12.0),
+                                        child: Column(
+                                          spacing: 10,
+                                          children: [
+                                            SizedBox(height: 1.h),
+                                            InputTxtfield_Oldpassword(),
+                                            InputTxtfield_password(),
+                                            InputTxtfield_confirmPassword(),
+                                            SizedBox(height: 20.h),
+                                            ElevatedButtonExample(
+                                              onPressed: () {
+                                                getController
+                                                    .onChangePAssword();
+                                              },
+                                              text: "Change Password",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                   ],
                                 ),
-                                child: AnimatedSize(
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            getController.isExpanded_pass.value
-                                                ? "Update Password"
-                                                : "Update Password",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18),
-                                          ),
-                                          FaIcon(
-                                              getController
-                                                      .isExpanded_pass.value
-                                                  ? FontAwesomeIcons.angleUp
-                                                  : FontAwesomeIcons.angleDown,
-                                              color: primaryColor,
-                                              size: 20.sp),
-                                        ],
-                                      ),
-                                      if (getController.isExpanded_pass.value)
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 12.0),
-                                          child: Column(
-                                            spacing: 10,
-                                            children: [
-                                              SizedBox(height: 1.h),
-                                              InputTxtfield_Oldpassword(),
-                                              InputTxtfield_password(),
-                                              InputTxtfield_confirmPassword(),
-                                              SizedBox(height: 20.h),
-                                              ElevatedButtonExample(
-                                                onPressed: () {
-                                                  getController
-                                                      .onChangePAssword();
-                                                },
-                                                text: "Change Password",
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                    ],
+                              ),
+                            )),
+                      ),
+                      // Package Details Section
+                      GestureDetector(
+                        onTap: getController.expand_packages,
+                        child: Obx(() => Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: secondaryColor.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
                                   ),
+                                ],
+                              ),
+                              child: AnimatedSize(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          getController
+                                                  .isExpanded_packages.value
+                                              ? "Package Details"
+                                              : "Package Details",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18),
+                                        ),
+                                        FaIcon(
+                                            getController
+                                                    .isExpanded_packages.value
+                                                ? FontAwesomeIcons.angleUp
+                                                : FontAwesomeIcons.angleDown,
+                                            color: primaryColor,
+                                            size: 20.sp),
+                                      ],
+                                    ),
+                                    if (getController.isExpanded_packages.value)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 12.0),
+                                        child: Obx(() {
+                                          final profileDetails = getController
+                                              .profileDetails.value;
+                                          final packages = profileDetails
+                                                  ?.admin?.packageId ??
+                                              [];
+                                          if (packages.isEmpty) {
+                                            return Text(
+                                              'No package details available',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14.sp),
+                                            );
+                                          }
+                                          return SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: DataTable(
+                                              columnSpacing: 10.w,
+                                              columns: [
+                                                DataColumn(
+                                                  label: Text('Package Name',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Description',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Price',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Plan',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Start Date',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Expiration',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                                DataColumn(
+                                                  label: Text('Status',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12.sp)),
+                                                ),
+                                              ],
+                                              rows: packages.map((package) {
+                                                final packageDetails =
+                                                    package.packageId;
+                                                return DataRow(cells: [
+                                                  DataCell(Text(
+                                                      packageDetails
+                                                              ?.packageName ??
+                                                          'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      packageDetails
+                                                              ?.description ??
+                                                          'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      packageDetails?.price
+                                                              ?.toString() ??
+                                                          'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      packageDetails
+                                                              ?.subscriptionPlan ??
+                                                          'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      package.packageStartDate !=
+                                                              null
+                                                          ? DateFormat(
+                                                                  'yyyy-MM-dd')
+                                                              .format(DateTime
+                                                                  .parse(package
+                                                                      .packageStartDate!))
+                                                          : 'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      package.packageExpirationDate !=
+                                                              null
+                                                          ? DateFormat(
+                                                                  'yyyy-MM-dd')
+                                                              .format(DateTime
+                                                                  .parse(package
+                                                                      .packageExpirationDate!))
+                                                          : 'N/A',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp))),
+                                                  DataCell(Text(
+                                                      package.status == 1
+                                                          ? 'Active'
+                                                          : 'Inactive',
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          color: package
+                                                                      .status ==
+                                                                  1
+                                                              ? Colors.green
+                                                              : Colors.red))),
+                                                ]);
+                                              }).toList(),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                  ],
                                 ),
                               ),
                             )),

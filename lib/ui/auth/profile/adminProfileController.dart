@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/model/getAdminDetails.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
@@ -26,6 +27,19 @@ class Adminprofilecontroller extends GetxController {
   var showPassword = false.obs;
   var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
+  var pincodeController = TextEditingController();
+  var country = ''.obs;
+  var state = ''.obs;
+  var district = ''.obs;
+  var block = ''.obs;
+  var isLoading = false.obs;
+  var error = ''.obs;
+  var salonImageUrl = ''.obs;
+  var isExpanded_Details = false.obs;
+  var isExpanded_pass = false.obs;
+  var isExpanded_packages = false.obs; // New variable for package section
+  final Rx<GetAdminDetails?> profileDetails =
+      Rx<GetAdminDetails?>(null); // Store profile details
 
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
@@ -39,23 +53,16 @@ class Adminprofilecontroller extends GetxController {
     showOldPassword.value = !showOldPassword.value;
   }
 
-  var pincodeController = TextEditingController();
-  var country = ''.obs;
-  var state = ''.obs;
-  var district = ''.obs;
-  var block = ''.obs;
-  var isLoading = false.obs;
-  var error = ''.obs;
-  var salonImageUrl = ''.obs;
-  var isExpanded_Details = false.obs;
-  var isExpanded_pass = false.obs;
-
   void expand_details() {
     isExpanded_Details.value = !isExpanded_Details.value;
   }
 
   void expand_pass() {
     isExpanded_pass.value = !isExpanded_pass.value;
+  }
+
+  void expand_packages() {
+    isExpanded_packages.value = !isExpanded_packages.value;
   }
 
   @override
@@ -124,14 +131,15 @@ class Adminprofilecontroller extends GetxController {
 
         // Encode to JPEG with quality control
         final jpegBytes = img.encodeJpg(image, quality: 85);
-        
+
         // Save to a temporary file with .jpg extension
         final tempDir = await getTemporaryDirectory();
-        final tempPath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final tempPath =
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
         processedFile = File(tempPath)..writeAsBytesSync(jpegBytes);
       } else if (mimeType == 'image/jpeg' ||
-                 mimeType == 'image/jpg' ||
-                 mimeType == 'image/png') {
+          mimeType == 'image/jpg' ||
+          mimeType == 'image/png') {
         processedFile = file; // Use original file for valid formats
       } else {
         CustomSnackbar.showError(
@@ -152,6 +160,8 @@ class Adminprofilecontroller extends GetxController {
 
   void getProfileData() async {
     final profileDetails = await prefs.getRegisterdetails();
+    this.profileDetails.value =
+        profileDetails; // Store the full profile details
     fullnameController.text = profileDetails?.admin?.fullName ?? '';
     salonNameController.text = profileDetails?.salonDetails?.salonName ?? '';
     addressController.text = profileDetails?.admin?.address ?? '';
@@ -184,7 +194,8 @@ class Adminprofilecontroller extends GetxController {
         final imageMultipart = await MultipartFile.fromFile(
           singleImage.value!.path,
           filename: fileName,
-          contentType: MediaType('image', fileExtension == 'png' ? 'png' : 'jpeg'),
+          contentType:
+              MediaType('image', fileExtension == 'png' ? 'png' : 'jpeg'),
         );
 
         final formData = FormData.fromMap({
