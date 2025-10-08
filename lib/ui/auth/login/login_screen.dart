@@ -65,12 +65,13 @@ class LoginScreen extends StatelessWidget {
   Widget Role() {
     return Obx(() {
       return Row(
+        spacing: 5,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // 🔹 Admin Card
           Expanded(
             child: GestureDetector(
-              onTap: () => getController.selectedRole("Admin"),
+              onTap: () => getController.setSelectedRole("Admin"),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
@@ -78,8 +79,8 @@ class LoginScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: getController.selectedRole.value == "Admin"
-                        ? [Colors.grey.shade200, secondaryColor]
-                        : [Colors.grey.shade200, secondaryColor],
+                        ? [secondaryColor, primaryColor]
+                        : [Colors.grey.shade200, Colors.grey.shade400],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -87,12 +88,15 @@ class LoginScreen extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: getController.selectedRole.value == "Admin"
-                          ? secondaryColor
+                          ? primaryColor.withOpacity(0.5)
                           : Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(2, 4),
                     ),
                   ],
+                  border: getController.selectedRole.value == "Admin"
+                      ? Border.all(color: primaryColor, width: 2)
+                      : null,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +105,7 @@ class LoginScreen extends StatelessWidget {
                       Icons.admin_panel_settings,
                       size: 28,
                       color: getController.selectedRole.value == "Admin"
-                          ? primaryColor
+                          ? Colors.white
                           : primaryColor,
                     ),
                     const SizedBox(width: 8),
@@ -113,7 +117,7 @@ class LoginScreen extends StatelessWidget {
                             : 14,
                         fontWeight: FontWeight.bold,
                         color: getController.selectedRole.value == "Admin"
-                            ? Colors.black
+                            ? Colors.white
                             : Colors.black87,
                       ),
                     ),
@@ -122,11 +126,11 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 15.w),
+          // SizedBox(width: 15.w),
           // 🔹 Manager Card
           Expanded(
             child: GestureDetector(
-              onTap: () => getController.selectedRole("Manager"),
+              onTap: () => getController.setSelectedRole("Manager"),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
@@ -134,8 +138,8 @@ class LoginScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: getController.selectedRole.value == "Manager"
-                        ? [Colors.grey.shade200, secondaryColor]
-                        : [Colors.grey.shade200, secondaryColor],
+                        ? [secondaryColor, primaryColor]
+                        : [Colors.grey.shade200, Colors.grey.shade400],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -143,12 +147,15 @@ class LoginScreen extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: getController.selectedRole.value == "Manager"
-                          ? secondaryColor
+                          ? primaryColor.withOpacity(0.5)
                           : Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(2, 4),
                     ),
                   ],
+                  border: getController.selectedRole.value == "Manager"
+                      ? Border.all(color: primaryColor, width: 2)
+                      : null,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -157,7 +164,7 @@ class LoginScreen extends StatelessWidget {
                       Icons.business_center,
                       size: 28,
                       color: getController.selectedRole.value == "Manager"
-                          ? primaryColor
+                          ? Colors.white
                           : primaryColor,
                     ),
                     const SizedBox(width: 8),
@@ -169,7 +176,7 @@ class LoginScreen extends StatelessWidget {
                             : 14,
                         fontWeight: FontWeight.bold,
                         color: getController.selectedRole.value == "Manager"
-                            ? Colors.black
+                            ? Colors.white
                             : Colors.black87,
                       ),
                     ),
@@ -178,11 +185,11 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 15.w),
+          // SizedBox(width: 15.w),
           // 🔹 Staff Card
           Expanded(
             child: GestureDetector(
-              onTap: () => getController.selectedRole("Staff"),
+              onTap: () => getController.setSelectedRole("Staff"),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
@@ -190,8 +197,8 @@ class LoginScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: getController.selectedRole.value == "Staff"
-                        ? [Colors.grey.shade200, secondaryColor]
-                        : [Colors.grey.shade200, secondaryColor],
+                        ? [secondaryColor, primaryColor]
+                        : [Colors.grey.shade200, Colors.grey.shade400],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -199,12 +206,15 @@ class LoginScreen extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: getController.selectedRole.value == "Staff"
-                          ? secondaryColor
+                          ? primaryColor.withOpacity(0.5)
                           : Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(2, 4),
                     ),
                   ],
+                  border: getController.selectedRole.value == "Staff"
+                      ? Border.all(color: primaryColor, width: 2)
+                      : null,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -213,7 +223,7 @@ class LoginScreen extends StatelessWidget {
                       Icons.person_outline,
                       size: 28,
                       color: getController.selectedRole.value == "Staff"
-                          ? primaryColor
+                          ? Colors.white
                           : primaryColor,
                     ),
                     const SizedBox(width: 8),
@@ -225,7 +235,7 @@ class LoginScreen extends StatelessWidget {
                             : 14,
                         fontWeight: FontWeight.bold,
                         color: getController.selectedRole.value == "Staff"
-                            ? Colors.black
+                            ? Colors.white
                             : Colors.black87,
                       ),
                     ),
@@ -271,12 +281,15 @@ class LoginScreen extends StatelessWidget {
               ? () {}
               : () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    if (getController.selectedRole.value == 'Admin') {
-                      getController.onLoginPress();
-                    } else if (getController.selectedRole.value == 'Manager') {
-                      getController.onLoginPressManager();
-                    } else if (getController.selectedRole.value == 'Staff') {
-                      getController.onLoginPressStaff();
+                    if (getController.selectedRole.value.isNotEmpty) {
+                      if (getController.selectedRole.value == 'Admin') {
+                        getController.onLoginPress();
+                      } else if (getController.selectedRole.value ==
+                          'Manager') {
+                        getController.onLoginPressManager();
+                      } else if (getController.selectedRole.value == 'Staff') {
+                        getController.onLoginPressStaff();
+                      }
                     } else {
                       CustomSnackbar.showError(
                           'Role Error', 'Please select a valid role');
@@ -289,50 +302,11 @@ class LoginScreen extends StatelessWidget {
         ));
   }
 
-  // Widget login_screen_header() {
-  //   return Stack(
-  //     clipBehavior: Clip.none,
-  //     alignment: Alignment.center,
-  //     children: [
-  //       Container(
-  //         height: 150.h,
-  //         width: double.infinity,
-  //         decoration: BoxDecoration(
-  //           color: primaryColor,
-  //           borderRadius: BorderRadius.only(
-  //             bottomLeft: Radius.circular(20.r),
-  //             bottomRight: Radius.circular(20.r),
-  //           ),
-  //         ),
-  //       ),
-  //       Positioned(
-  //         bottom: -50,
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             shape: BoxShape.circle,
-  //             boxShadow: [
-  //               BoxShadow(
-  //                   blurRadius: 10, color: secondaryColor, spreadRadius: 6)
-  //             ],
-  //           ),
-  //           child: CircleAvatar(
-  //             radius: 70,
-  //             backgroundColor: primaryColor,
-  //             foregroundImage: AssetImage(
-  //               AppImages.applogo,
-  //             ),
-  //           ),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
   Widget login_screen_body() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        spacing: 10,
+        spacing: 5,
         children: [
           SizedBox(height: 25),
           Image.asset(
@@ -350,10 +324,11 @@ class LoginScreen extends StatelessWidget {
             textStyle:
                 CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
           Role(),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
           InputTxtfield_Email(),
+          SizedBox(height: 5),
           InputTxtfield_Pass(),
           Obx(() => getController.selectedRole.value == 'Admin'
               ? GestureDetector(
@@ -398,7 +373,6 @@ class LoginScreen extends StatelessWidget {
   Widget Login_screen() {
     return Column(
       children: [
-        // login_screen_header(),
         SizedBox(height: 30.h),
         login_screen_body(),
       ],

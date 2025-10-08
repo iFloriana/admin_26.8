@@ -53,7 +53,6 @@ dependencies:
   image_picker: ^1.1.2
   file_picker: ^10.1.9
   step_progress: ^2.5.0
-  font_awesome_flutter: ^10.8.0
   geolocator: ^11.0.0
   geocoding: ^2.1.0
   multi_dropdown: ^3.0.1
@@ -68,6 +67,7 @@ dependencies:
   flutter_slidable: ^4.0.1
   table_calendar: ^3.2.0
   persistent_bottom_nav_bar: ^6.2.1
+  font_awesome_flutter: ^10.10.0
 #NAME  :  Dhairya Soni
 #PASS : Ifloriana@25
 #COMPANEY NAME :  IFLORAINFOPVTLTD

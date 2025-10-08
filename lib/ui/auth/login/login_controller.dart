@@ -16,9 +16,15 @@ class LoginController extends GetxController {
   var emailController = TextEditingController();
   var passController = TextEditingController();
   var showPass = false.obs;
-  var selectedRole = "".obs;
+  var selectedRole = "Admin".obs; // Set default role to Admin
   var loading = false.obs;
   final List<String> dropdownItems = ['Admin', 'Manager', 'Staff'];
+
+  @override
+  void onInit() {
+    super.onInit();
+    selectedRole.value = "Admin"; // Ensure Admin is set on initialization
+  }
 
   void toggleShowPass() {
     showPass.value = !showPass.value;

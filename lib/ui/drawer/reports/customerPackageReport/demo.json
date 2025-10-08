@@ -1,0 +1,2418 @@
+{
+  "message": "Customers fetched successfully",
+  "data": [
+    {
+      "_id": "6874a0d301e2c8a5fb52667a",
+      "full_name": "Lalit Lalw",
+      "email": "ll@gmail.com",
+      "phone_number": "911234667878",
+      "password": "123456789",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "status": 1,
+      "createdAt": "2025-07-14T06:04:27.321Z",
+      "updatedAt": "2025-09-25T10:32:56.362Z",
+      "__v": 4,
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "6842b21bab15a78f9544f10c",
+            "branch_id": [
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              }
+            ],
+            "package_name": "Package 2",
+            "description": "I Love This One",
+            "start_date": "2025-06-10T00:00:00.000Z",
+            "end_date": "2026-07-26T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "68424eef9d0576de75cccb7e",
+                  "name": "Anti-tan Facial",
+                  "service_duration": 120,
+                  "regular_price": 5500,
+                  "description": ""
+                },
+                "discounted_price": 100,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c7",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 20,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c8",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424f239d0576de75cccb8c",
+                  "name": "Blow Dry",
+                  "service_duration": 30,
+                  "regular_price": 550,
+                  "description": ""
+                },
+                "discounted_price": 500,
+                "quantity": 1,
+                "_id": "6884a05736b62c88b65e80c9",
+                "remaining_quantity": 1
+              }
+            ],
+            "package_price": 1100,
+            "salon_id": "684011271ee646f27873fddc",
+            "createdAt": "2025-06-06T09:17:15.628Z",
+            "updatedAt": "2025-07-26T09:31:03.681Z",
+            "__v": 0
+          },
+          "date": "2025-09-25T10:32:56.360Z",
+          "_id": "68d51a581ee1cc5ae8324428",
+          "expiry_date": "2026-07-26T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "6863b4f03dd0493efa22a388",
+            "membership_name": "Smart",
+            "description": "Sart",
+            "subscription_plan": "12-months",
+            "discount": 20,
+            "discount_type": "percentage",
+            "membership_amount": 50000
+          },
+          "date": "2025-09-25T10:32:56.361Z",
+          "_id": "68d51a581ee1cc5ae832442a",
+          "expiry_date": "2026-09-25T10:32:56.361Z",
+          "status": "active"
+        }
+      ],
+      "payment_split": [],
+      "image_url": null
+    },
+    {
+      "_id": "687749adac3523d4b540bee5",
+      "full_name": "Weew1",
+      "email": "wewew@gmial.com",
+      "phone_number": "1234567890",
+      "password": "1234567890",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "6842b11aeff87e046a4718e9"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-16T06:41:49.303Z",
+      "updatedAt": "2025-08-04T11:55:07.159Z",
+      "__v": 0,
+      "branch_membership": "682c6f7e4ce7c8c219b5a514",
+      "branch_membership_bought_at": "2025-08-04T11:55:07.158Z",
+      "branch_membership_valid_till": "2026-08-04T11:55:07.158Z",
+      "branch_package_bought_at": "2025-08-04T11:55:07.155Z",
+      "branch_package_valid_till": "2025-06-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "687761c9b44ab95d1f6a9d00",
+      "full_name": "Rrd Dfsd",
+      "email": "rd@gmail.com",
+      "phone_number": "915645446556",
+      "password": "123456789",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-16T08:24:41.985Z",
+      "updatedAt": "2025-07-16T08:44:37.787Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-07-16T08:44:37.784Z",
+      "branch_membership_valid_till": "2026-01-16T08:44:37.784Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6878939be90fa8b8513684f3",
+      "full_name": "New",
+      "email": "newCustomer@gmail.com",
+      "phone_number": "4567891235",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "6842b21bab15a78f9544f10c"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-17T06:09:31.369Z",
+      "updatedAt": "2025-08-04T11:55:00.461Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-04T11:55:00.456Z",
+      "branch_package_valid_till": "2026-07-26T00:00:00.000Z",
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-08-04T11:55:00.460Z",
+      "branch_membership_valid_till": "2026-02-04T11:55:00.460Z",
+      "package_and_membership": [],
+      "payment_split": [],
+      "image_url": null
+    },
+    {
+      "_id": "6878d183a8b7d0ff6cdf9497",
+      "full_name": "Nomnopkg",
+      "email": "df@gmail.com",
+      "phone_number": "915455656565",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-17T10:33:39.784Z",
+      "updatedAt": "2025-07-18T05:56:13.502Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-07-18T05:56:13.501Z",
+      "branch_membership_valid_till": "2026-01-18T05:56:13.501Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6878d263a8b7d0ff6cdf95ec",
+      "full_name": "Hffjhfjhjfhjfhjfhf",
+      "phone_number": "915451215454",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-17T10:37:23.853Z",
+      "updatedAt": "2025-07-18T04:52:58.963Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-07-18T04:52:58.956Z",
+      "branch_membership_valid_till": "2026-01-18T04:52:58.956Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68806b9db8aa690e6a9ec986",
+      "full_name": "Bhavik Raval",
+      "phone_number": "918989898989",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-23T04:57:01.103Z",
+      "updatedAt": "2025-08-15T09:59:18.526Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-15T09:59:18.521Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-08-15T09:59:18.524Z",
+      "branch_membership_valid_till": "2026-02-15T09:59:18.524Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688070003e62089fab06c113",
+      "full_name": "weonakd",
+      "email": "weo@gmail.com",
+      "phone_number": "1234567898",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-23T05:15:44.398Z",
+      "updatedAt": "2025-08-08T10:05:15.327Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6880d6d41cc4da3f63008d6a",
+      "full_name": "New New New New",
+      "phone_number": "913232322256",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "status": 1,
+      "branch_membership_valid_till": "2026-01-23T12:34:28.581Z",
+      "branch_membership_bought_at": "2025-07-23T12:34:28.583Z",
+      "createdAt": "2025-07-23T12:34:28.585Z",
+      "updatedAt": "2025-07-23T12:34:28.585Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68832830f4cbae779b94da9f",
+      "full_name": "xyz",
+      "email": "xyz@gmail.com",
+      "phone_number": "8976565434",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-25T06:46:08.913Z",
+      "updatedAt": "2025-07-25T06:46:08.913Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688328b2f4cbae779b94df50",
+      "full_name": "Abc",
+      "email": "abc@gmail.com",
+      "phone_number": "915416548998",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-25T06:48:18.237Z",
+      "updatedAt": "2025-07-25T06:48:18.237Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68834704bbe574253a1344dd",
+      "full_name": "Alfa Customer",
+      "email": "ac@gmail.com",
+      "phone_number": "917894561312",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-25T08:57:40.187Z",
+      "updatedAt": "2025-07-25T08:57:40.187Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68834fb21ccf85404426efe1",
+      "full_name": "Qwerty",
+      "email": "qwerty@gmail.com",
+      "phone_number": "919898989898",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "6842b11aeff87e046a4718e9"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-25T09:34:42.871Z",
+      "updatedAt": "2025-08-04T11:54:36.173Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-04T11:54:36.171Z",
+      "branch_package_valid_till": "2025-06-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688352241ccf85404426f17b",
+      "full_name": "Bbb",
+      "email": "bbbb@gmail.com",
+      "phone_number": "912323323232",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "6842b21bab15a78f9544f10c"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-25T09:45:08.258Z",
+      "updatedAt": "2025-09-09T06:10:43.355Z",
+      "__v": 0,
+      "branch_package_bought_at": "2025-09-09T06:10:43.349Z",
+      "branch_package_valid_till": "2026-07-26T00:00:00.000Z",
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-09-09T06:10:43.355Z",
+      "branch_membership_valid_till": "2026-03-09T06:10:43.354Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688477c94d2934611ba1f56d",
+      "full_name": "dhdhu",
+      "email": "dyrurri@gmail.com",
+      "phone_number": "1264565460",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-07-26T06:38:01.253Z",
+      "updatedAt": "2025-08-08T10:51:06.310Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-08-08T10:51:06.309Z",
+      "branch_membership_valid_till": "2026-02-08T10:51:06.309Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68847a4a4d2934611ba1f58b",
+      "full_name": "Gdmgjsdj",
+      "email": "gddgjt@gmail.com",
+      "phone_number": "5957565666",
+      "gender": "female",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-26T06:48:42.721Z",
+      "updatedAt": "2025-08-05T11:14:43.521Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-05T11:14:43.518Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68847be24d2934611ba1f5d1",
+      "full_name": "Fggt",
+      "email": "uyggg@gmail.com",
+      "phone_number": "4546464213",
+      "gender": "female",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-26T06:55:30.497Z",
+      "updatedAt": "2025-08-04T11:54:25.035Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-04T11:54:25.033Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68849888ba2e92fbbc469752",
+      "full_name": "Dbwntsy",
+      "email": "sheheme@gmail.com",
+      "phone_number": "7845466465",
+      "gender": "female",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-26T08:57:44.071Z",
+      "updatedAt": "2025-08-05T11:14:39.724Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-05T11:14:39.723Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68884fd2fc2b3f3605c4166b",
+      "full_name": "Admin",
+      "email": "admin@salon.com",
+      "phone_number": "1234567890",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-29T04:36:34.254Z",
+      "updatedAt": "2025-08-05T11:14:36.333Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-05T11:14:36.330Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688850d2fc2b3f3605c41874",
+      "full_name": "Sgksgkdky",
+      "email": "zzgstks@gmail.com",
+      "phone_number": "45455454545",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-29T04:40:50.993Z",
+      "updatedAt": "2025-08-05T11:14:32.692Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-08-05T11:14:32.688Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6888696f6b1ae06873b7fab5",
+      "full_name": "Dhairya Soni",
+      "email": "Dhairya@gmail.com",
+      "phone_number": "427512845",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03"
+      ],
+      "status": 1,
+      "createdAt": "2025-07-29T06:25:51.718Z",
+      "updatedAt": "2025-08-05T11:14:28.855Z",
+      "__v": 0,
+      "branch_package_bought_at": "2025-08-05T11:14:28.853Z",
+      "branch_package_valid_till": "2025-08-31T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688db512ef37569c430e351b",
+      "full_name": "Vcvcvc",
+      "email": "cvc@gmail.com",
+      "phone_number": "912323223232",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "createdAt": "2025-08-02T06:49:54.608Z",
+      "updatedAt": "2025-08-15T09:46:35.965Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-08-15T09:46:35.963Z",
+      "branch_membership_valid_till": "2026-02-15T09:46:35.962Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "688dd8ce8c8f3ef4856f5dc8",
+      "full_name": "Osex",
+      "email": "demo@gmail.com",
+      "phone_number": "1245783542",
+      "gender": "female",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03",
+        "6842b11aeff87e046a4718e9",
+        "6842b21bab15a78f9544f10c",
+        "6884a395a6efcefdc5f85f2b",
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "branch_membership": "682c6f7e4ce7c8c219b5a514",
+      "status": 1,
+      "branch_package_valid_till": "2025-06-30T00:00:00.000Z",
+      "branch_membership_valid_till": "2026-08-05T11:14:20.642Z",
+      "branch_package_bought_at": "2025-08-05T11:14:20.634Z",
+      "branch_membership_bought_at": "2025-08-05T11:14:20.642Z",
+      "createdAt": "2025-08-02T09:22:22.533Z",
+      "updatedAt": "2025-08-05T11:14:20.643Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6891a0c01428b7282e2d5e57",
+      "full_name": "Vshhdwui",
+      "email": "fdf@gmail.com",
+      "phone_number": "919985421544",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03"
+      ],
+      "status": 1,
+      "createdAt": "2025-08-05T06:12:16.712Z",
+      "updatedAt": "2025-08-05T06:12:37.790Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-08-05T06:12:37.789Z",
+      "branch_membership_valid_till": "2026-02-05T06:12:37.789Z",
+      "branch_package_bought_at": "2025-08-05T06:12:37.781Z",
+      "branch_package_valid_till": "2025-08-31T00:00:00.000Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6891a19e027d21553b4a1489",
+      "full_name": "Xsqexz Ara",
+      "email": "dfds@gmail.com",
+      "phone_number": "911215657854",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "6842b21bab15a78f9544f10c"
+      ],
+      "status": 1,
+      "createdAt": "2025-08-05T06:15:58.906Z",
+      "updatedAt": "2025-09-09T05:52:20.270Z",
+      "__v": 0,
+      "branch_package_bought_at": "2025-09-09T05:52:20.263Z",
+      "branch_package_valid_till": "2026-07-26T00:00:00.000Z",
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-09-09T05:52:20.270Z",
+      "branch_membership_valid_till": "2026-03-09T05:52:20.268Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "6891a67d027d21553b4a1728",
+      "full_name": "Viraj",
+      "email": "vv@gmail.com",
+      "phone_number": "916544444444",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03"
+      ],
+      "status": 1,
+      "branch_package_valid_till": "2025-08-31T00:00:00.000Z",
+      "branch_package_bought_at": "2025-08-08T09:28:36.524Z",
+      "createdAt": "2025-08-05T06:36:45.842Z",
+      "updatedAt": "2025-08-08T09:28:36.527Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68ac28b8c8beb6e1b3a1a85a",
+      "full_name": "wef sfg",
+      "email": "wef@gmail.com",
+      "phone_number": "98247629016",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "payment_method": "Card",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "branch_package_bought_at": "2025-08-25T09:11:20.600Z",
+      "payment_split": [],
+      "createdAt": "2025-08-25T09:11:20.608Z",
+      "updatedAt": "2025-08-25T09:11:20.608Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68ac2e2f0ce02da940c37658",
+      "full_name": "whgf qhef",
+      "email": "whgf@gmail.com",
+      "phone_number": "98247629013",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "branch_membership": "6863b4f03dd0493efa22a388",
+      "status": 1,
+      "payment_method": "Cash",
+      "branch_membership_valid_till": "2026-08-25T09:34:39.724Z",
+      "branch_membership_bought_at": "2025-08-25T09:34:39.724Z",
+      "payment_split": [],
+      "createdAt": "2025-08-25T09:34:39.731Z",
+      "updatedAt": "2025-08-25T09:34:39.731Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68ac367122d292446b537321",
+      "full_name": "srh srh",
+      "email": "srh@gmail.com",
+      "phone_number": "98247659013",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-08-25T10:09:53.175Z",
+      "updatedAt": "2025-08-25T10:09:53.175Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68aee7e9cd1f9476df5ac515",
+      "full_name": "akjdfh jssf",
+      "email": "akjdfh@gmail.com",
+      "phone_number": "98247659011",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-08-27T11:11:37.879Z",
+      "updatedAt": "2025-09-09T05:24:23.272Z",
+      "__v": 0,
+      "branch_membership": "684bf3649a80137c2c89029a",
+      "branch_membership_bought_at": "2025-09-09T05:24:23.272Z",
+      "branch_membership_valid_till": "2026-03-09T05:24:23.266Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68aeed7257f4bce5b696dcc8",
+      "full_name": "ssklruhf hu",
+      "email": "hu@gmail.com",
+      "phone_number": "98647659011",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688c7d69bf8029df5f5d15b1"
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-08-27T11:35:14.061Z",
+      "updatedAt": "2025-08-27T11:36:38.142Z",
+      "__v": 0,
+      "branch_package_bought_at": "2025-08-27T11:36:38.131Z",
+      "branch_package_valid_till": "2025-08-30T00:00:00.000Z",
+      "branch_membership": "6863b4f03dd0493efa22a388",
+      "branch_membership_bought_at": "2025-08-27T11:36:38.142Z",
+      "branch_membership_valid_till": "2026-08-27T11:36:38.140Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68afeb95e694509dcb45bc6a",
+      "full_name": "fjhef efjw",
+      "email": "fjhef@gmail.com",
+      "phone_number": "98647669011",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-08-28T05:39:33.783Z",
+      "updatedAt": "2025-09-07T11:54:24.285Z",
+      "__v": 0,
+      "branch_membership": "6863b4f03dd0493efa22a388",
+      "branch_membership_bought_at": "2025-09-07T11:54:24.284Z",
+      "branch_membership_valid_till": "2026-09-07T11:54:24.275Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68bff682dab367b18c7fde24",
+      "full_name": "af swwed",
+      "phone_number": "98647769071",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03"
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-09T09:42:26.041Z",
+      "updatedAt": "2025-09-09T09:42:47.513Z",
+      "__v": 0,
+      "branch_package_bought_at": "2025-09-09T09:42:47.508Z",
+      "branch_package_valid_till": "2026-08-31T00:00:00.000Z",
+      "branch_membership": "6863b4f03dd0493efa22a388",
+      "branch_membership_bought_at": "2025-09-09T09:42:47.513Z",
+      "branch_membership_valid_till": "2026-09-09T09:42:47.511Z",
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68c00b32fb8861fa31843828",
+      "full_name": "ehtn ryj",
+      "phone_number": "99647769071",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "branch_package": [
+        "688dd8ad8c8f3ef4856f5d03"
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-09T11:10:42.835Z",
+      "updatedAt": "2025-09-10T12:16:50.040Z",
+      "__v": 1,
+      "branch_package_bought_at": "2025-09-09T12:05:26.491Z",
+      "branch_package_valid_till": "2026-08-31T00:00:00.000Z",
+      "branch_membership": "6863b4f03dd0493efa22a388",
+      "branch_membership_bought_at": "2025-09-09T12:05:26.501Z",
+      "branch_membership_valid_till": "2026-09-09T12:05:26.498Z",
+      "branch_memberships": [
+        {
+          "branch_membership_id": "684fe53a6e9923a79dd7a48b",
+          "bought_at": "2025-09-10T12:16:50.035Z",
+          "valid_till": "2025-10-10T12:16:50.035Z",
+          "status": "active",
+          "_id": "68c16c3244bbfb2ef4667ee4"
+        }
+      ],
+      "branch_packages": [
+        {
+          "branch_package_id": "6884a395a6efcefdc5f85f2b",
+          "bought_at": "2025-09-10T12:16:50.030Z",
+          "valid_till": "2026-07-26T00:00:00.000Z",
+          "status": "active",
+          "_id": "68c16c3244bbfb2ef4667ee2"
+        }
+      ],
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68cbaa0ce3fd447042700882",
+      "full_name": "adhf ahsfb",
+      "email": "sdv@gmail.com",
+      "phone_number": "98667669071",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "status": 1,
+      "payment_method": "Cash",
+      "branch_packages": [],
+      "branch_memberships": [],
+      "payment_split": [],
+      "createdAt": "2025-09-18T06:43:24.408Z",
+      "updatedAt": "2025-09-18T06:43:24.408Z",
+      "__v": 0,
+      "package_and_membership": [],
+      "image_url": null
+    },
+    {
+      "_id": "68cbe98a80870a4ab7434306",
+      "full_name": "dbhztdehz",
+      "email": "srg@gmail.com",
+      "phone_number": "98666669071",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "6884a395a6efcefdc5f85f2b",
+            "branch_id": [
+              {
+                "_id": "684915d33e71ee76709f2aa1",
+                "name": "Ashirwad 3",
+                "address": "Dasdsa",
+                "state": "Ahmeadabad",
+                "city": "Ahmedaa"
+              }
+            ],
+            "package_name": "Package 3",
+            "description": "Dsfa",
+            "start_date": "2025-07-26T00:00:00.000Z",
+            "end_date": "2026-07-26T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "684194299db5063a0234b471",
+                  "name": "Full Hand Wax",
+                  "service_duration": 20,
+                  "regular_price": 150,
+                  "description": "Fdsfsafsa"
+                },
+                "discounted_price": 160,
+                "quantity": 1,
+                "_id": "6884a395a6efcefdc5f85f2c",
+                "remaining_quantity": 1
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 50,
+                "quantity": 1,
+                "_id": "6884a395a6efcefdc5f85f2d",
+                "remaining_quantity": 1
+              }
+            ],
+            "package_price": 210,
+            "salon_id": "684011271ee646f27873fddc",
+            "used_services": [],
+            "createdAt": "2025-07-26T09:44:53.531Z",
+            "updatedAt": "2025-07-26T09:44:53.531Z",
+            "__v": 0
+          },
+          "payment_method": "Card",
+          "date": "2025-09-18T11:28:19.463Z",
+          "_id": "68cbecd36bfb15dda14dc739",
+          "expiry_date": "2026-07-26T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "684fe53a6e9923a79dd7a48b",
+            "membership_name": "Dimond Membership",
+            "description": "Besdt Ever",
+            "subscription_plan": "1-month",
+            "discount": 90,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "payment_method": "UPI",
+          "date": "2025-09-18T11:30:10.764Z",
+          "_id": "68cbed426bfb15dda14dc745",
+          "expiry_date": "2025-10-18T11:30:10.764Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-18T11:14:18.199Z",
+      "updatedAt": "2025-09-18T11:30:10.765Z",
+      "__v": 3,
+      "image_url": null
+    },
+    {
+      "_id": "68d129a97b30004b49e45f2b",
+      "full_name": "dufbaaefh",
+      "email": "fh@gmail.com",
+      "phone_number": "5489760891",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_membership": {
+            "_id": "684fe53a6e9923a79dd7a48b",
+            "membership_name": "Dimond Membership",
+            "description": "Besdt Ever",
+            "subscription_plan": "1-month",
+            "discount": 90,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "payment_method": "Cash",
+          "date": "2025-09-25T05:56:46.924Z",
+          "_id": "68d4d99ebfd9246d5203bdd1",
+          "expiry_date": "2025-10-25T05:56:46.924Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-22T10:49:13.233Z",
+      "updatedAt": "2025-09-25T05:56:46.927Z",
+      "__v": 7,
+      "image_url": null
+    },
+    {
+      "_id": "68d4e8a2fcefdb9e6f60bd07",
+      "full_name": "fhsadjfhjk",
+      "email": "demo01@gmail.com",
+      "phone_number": "5464567897",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "status": 1,
+      "package_and_membership": [],
+      "payment_split": [],
+      "createdAt": "2025-09-25T07:00:50.275Z",
+      "updatedAt": "2025-09-25T07:00:50.275Z",
+      "__v": 0,
+      "image_url": null
+    },
+    {
+      "_id": "68d5228dcbd06d5ba42795fb",
+      "full_name": "dsfdsafds",
+      "email": "fdsafdsaff@gmail.com",
+      "phone_number": "4567498789",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "6884a395a6efcefdc5f85f2b",
+            "branch_id": [
+              {
+                "_id": "684915d33e71ee76709f2aa1",
+                "name": "Ashirwad 3",
+                "address": "Dasdsa",
+                "state": "Ahmeadabad",
+                "city": "Ahmedaa"
+              }
+            ],
+            "package_name": "Package 3",
+            "description": "Dsfa",
+            "start_date": "2025-07-26T00:00:00.000Z",
+            "end_date": "2026-07-26T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "684194299db5063a0234b471",
+                  "name": "Full Hand Wax",
+                  "service_duration": 20,
+                  "regular_price": 150,
+                  "description": "Fdsfsafsa"
+                },
+                "discounted_price": 160,
+                "quantity": 1,
+                "_id": "6884a395a6efcefdc5f85f2c",
+                "remaining_quantity": 1
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 50,
+                "quantity": 1,
+                "_id": "6884a395a6efcefdc5f85f2d",
+                "remaining_quantity": 1
+              }
+            ],
+            "package_price": 210,
+            "salon_id": "684011271ee646f27873fddc",
+            "used_services": [],
+            "createdAt": "2025-07-26T09:44:53.531Z",
+            "updatedAt": "2025-07-26T09:44:53.531Z",
+            "__v": 0
+          },
+          "date": "2025-09-25T11:08:26.851Z",
+          "_id": "68d522aacbd06d5ba427960a",
+          "expiry_date": "2026-07-26T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "682c6f7e4ce7c8c219b5a514",
+            "membership_name": "Elite Access",
+            "description": "aufg akuye",
+            "subscription_plan": "12-months",
+            "discount": 20,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "date": "2025-09-25T11:08:26.852Z",
+          "_id": "68d522aacbd06d5ba427960c",
+          "expiry_date": "2026-09-25T11:08:26.852Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-25T11:07:57.314Z",
+      "updatedAt": "2025-09-25T11:08:26.854Z",
+      "__v": 1,
+      "image_url": null
+    },
+    {
+      "_id": "68d536a14c1cb83399c79bc3",
+      "full_name": "wrgwr",
+      "email": "wr@gmail.com",
+      "phone_number": "49666669072",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "688dd8ad8c8f3ef4856f5d03",
+            "branch_id": [
+              {
+                "_id": "6840fc497e25fa65885e3edd",
+                "name": "Ashirwad 1",
+                "address": "Block 7, 1st Floor Dakshini",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "684915d33e71ee76709f2aa1",
+                "name": "Ashirwad 3",
+                "address": "Dasdsa",
+                "state": "Ahmeadabad",
+                "city": "Ahmedaa"
+              }
+            ],
+            "package_name": "Package9035860928776",
+            "description": "Asdbvhbsg",
+            "start_date": "2025-08-01T00:00:00.000Z",
+            "end_date": "2026-08-31T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "684194299db5063a0234b471",
+                  "name": "Full Hand Wax",
+                  "service_duration": 20,
+                  "regular_price": 150,
+                  "description": "Fdsfsafsa"
+                },
+                "discounted_price": 100,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d04",
+                "remaining_quantity": 494
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 50,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d05",
+                "remaining_quantity": 500
+              }
+            ],
+            "package_price": 75000,
+            "salon_id": "684011271ee646f27873fddc",
+            "used_services": [
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:49:19.560Z",
+                "_id": "68e4a9df91c5480b979955d0"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:51:15.629Z",
+                "_id": "68e4aa5391c5480b979955fb"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:36:22.349Z",
+                "_id": "68e4b4e6415021afb8d28b31"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:41:52.186Z",
+                "_id": "68e4b63085d9c38d57886479"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:53:48.898Z",
+                "_id": "68e4b8fc7533108ae83ce714"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T07:22:14.287Z",
+                "_id": "68e4bfa67bd146f880b989c7"
+              }
+            ],
+            "createdAt": "2025-08-02T09:21:49.672Z",
+            "updatedAt": "2025-10-07T07:22:14.287Z",
+            "__v": 0
+          },
+          "payment_method": "Cash",
+          "date": "2025-09-25T12:33:37.155Z",
+          "_id": "68d536a14c1cb83399c79bc4",
+          "expiry_date": "2026-08-31T00:00:00.000Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-09-25T12:33:37.162Z",
+      "updatedAt": "2025-09-25T12:33:37.162Z",
+      "__v": 0,
+      "image_url": null
+    },
+    {
+      "_id": "68dbc4abfc128e4d8a8cf9d8",
+      "full_name": "This Dbdbdndn",
+      "email": "djekejedjfn@gmail.com",
+      "phone_number": "1234526434",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "status": 1,
+      "package_and_membership": [
+        {
+          "branch_membership": {
+            "_id": "684fe53a6e9923a79dd7a48b",
+            "membership_name": "Dimond Membership",
+            "description": "Besdt Ever",
+            "subscription_plan": "1-month",
+            "discount": 90,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "date": "2025-10-01T09:47:20.552Z",
+          "_id": "68dcf8a83fbbb6ba3f612814",
+          "expiry_date": "2025-11-01T09:47:20.552Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "684fe53a6e9923a79dd7a48b",
+            "membership_name": "Dimond Membership",
+            "description": "Besdt Ever",
+            "subscription_plan": "1-month",
+            "discount": 90,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "payment_method": null,
+          "date": "2025-10-07T06:56:02.778Z",
+          "_id": "68e4b9827533108ae83ce7b7",
+          "expiry_date": "2025-11-07T06:56:02.778Z",
+          "status": "active"
+        }
+      ],
+      "payment_split": [],
+      "createdAt": "2025-09-30T11:53:15.157Z",
+      "updatedAt": "2025-10-07T06:56:02.781Z",
+      "__v": 3,
+      "image_url": null
+    },
+    {
+      "_id": "68dcf1d2abafbc2ddca2d895",
+      "full_name": "101customer",
+      "email": "101customer@gmail.com",
+      "phone_number": "911010101010",
+      "gender": "other",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "6842b21bab15a78f9544f10c",
+            "branch_id": [
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              }
+            ],
+            "package_name": "Package 2",
+            "description": "I Love This One",
+            "start_date": "2025-06-10T00:00:00.000Z",
+            "end_date": "2026-07-26T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "68424eef9d0576de75cccb7e",
+                  "name": "Anti-tan Facial",
+                  "service_duration": 120,
+                  "regular_price": 5500,
+                  "description": ""
+                },
+                "discounted_price": 100,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c7",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 20,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c8",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424f239d0576de75cccb8c",
+                  "name": "Blow Dry",
+                  "service_duration": 30,
+                  "regular_price": 550,
+                  "description": ""
+                },
+                "discounted_price": 500,
+                "quantity": 1,
+                "_id": "6884a05736b62c88b65e80c9",
+                "remaining_quantity": 1
+              }
+            ],
+            "package_price": 1100,
+            "salon_id": "684011271ee646f27873fddc",
+            "createdAt": "2025-06-06T09:17:15.628Z",
+            "updatedAt": "2025-07-26T09:31:03.681Z",
+            "__v": 0
+          },
+          "payment_method": "Cash",
+          "date": "2025-10-01T09:18:10.900Z",
+          "_id": "68dcf1d2abafbc2ddca2d896",
+          "expiry_date": "2026-07-26T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "684bf3649a80137c2c89029a",
+            "membership_name": "Membership New",
+            "description": "Loved This",
+            "subscription_plan": "6-months",
+            "discount": 20,
+            "discount_type": "percentage",
+            "membership_amount": 5500
+          },
+          "payment_method": "Cash",
+          "date": "2025-10-01T09:18:10.901Z",
+          "_id": "68dcf1d2abafbc2ddca2d897",
+          "expiry_date": "2026-04-01T09:18:10.901Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-10-01T09:18:10.904Z",
+      "updatedAt": "2025-10-01T09:18:10.904Z",
+      "__v": 0,
+      "image_url": null
+    },
+    {
+      "_id": "68dd030766f76eac3545733a",
+      "full_name": "Jaef Keff",
+      "email": "jaef@gmail.com",
+      "phone_number": "9106921998",
+      "gender": "female",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "6842b21bab15a78f9544f10c",
+            "branch_id": [
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              }
+            ],
+            "package_name": "Package 2",
+            "description": "I Love This One",
+            "start_date": "2025-06-10T00:00:00.000Z",
+            "end_date": "2026-07-26T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "68424eef9d0576de75cccb7e",
+                  "name": "Anti-tan Facial",
+                  "service_duration": 120,
+                  "regular_price": 5500,
+                  "description": ""
+                },
+                "discounted_price": 100,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c7",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 20,
+                "quantity": 5,
+                "_id": "6884a05736b62c88b65e80c8",
+                "remaining_quantity": 5
+              },
+              {
+                "service_id": {
+                  "_id": "68424f239d0576de75cccb8c",
+                  "name": "Blow Dry",
+                  "service_duration": 30,
+                  "regular_price": 550,
+                  "description": ""
+                },
+                "discounted_price": 500,
+                "quantity": 1,
+                "_id": "6884a05736b62c88b65e80c9",
+                "remaining_quantity": 1
+              }
+            ],
+            "package_price": 1100,
+            "salon_id": "684011271ee646f27873fddc",
+            "createdAt": "2025-06-06T09:17:15.628Z",
+            "updatedAt": "2025-07-26T09:31:03.681Z",
+            "__v": 0
+          },
+          "payment_method": "Cash",
+          "date": "2025-10-01T10:31:35.557Z",
+          "_id": "68dd030766f76eac35457340",
+          "expiry_date": "2026-07-26T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "684fe53a6e9923a79dd7a48b",
+            "membership_name": "Dimond Membership",
+            "description": "Besdt Ever",
+            "subscription_plan": "1-month",
+            "discount": 90,
+            "discount_type": "percentage",
+            "membership_amount": 10000
+          },
+          "payment_method": null,
+          "date": "2025-10-06T05:24:38.228Z",
+          "_id": "68e35296546ad1fe8e813e16",
+          "expiry_date": "2025-11-06T05:24:38.228Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-10-01T10:31:35.543Z",
+      "updatedAt": "2025-10-06T05:24:38.237Z",
+      "__v": 6,
+      "image_url": null
+    },
+    {
+      "_id": "68e3b0431cdf515ab1b8b5b8",
+      "full_name": "Ramu Kaaaaak",
+      "phone_number": "910000000000",
+      "gender": "male",
+      "salon_id": {
+        "_id": "684011271ee646f27873fddc",
+        "salon_name": "Ashirwad Beauty Center & Academy",
+        "description": "",
+        "address": "Isanpur, Ahmedabad.",
+        "contact_number": "",
+        "contact_email": "",
+        "opening_time": "",
+        "closing_time": "",
+        "category": "unisex",
+        "status": 1,
+        "package_id": "68281ad67f49a9e75012cd2c",
+        "signup_id": "684011271ee646f27873fdda",
+        "createdAt": "2025-06-04T09:25:59.340Z",
+        "updatedAt": "2025-09-23T06:29:50.319Z",
+        "__v": 0,
+        "gst_number": "22BHEPR4073E1Z5",
+        "image_url": null
+      },
+      "package_and_membership": [
+        {
+          "branch_package": {
+            "_id": "688dd8ad8c8f3ef4856f5d03",
+            "branch_id": [
+              {
+                "_id": "6840fc497e25fa65885e3edd",
+                "name": "Ashirwad 1",
+                "address": "Block 7, 1st Floor Dakshini",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "684915d33e71ee76709f2aa1",
+                "name": "Ashirwad 3",
+                "address": "Dasdsa",
+                "state": "Ahmeadabad",
+                "city": "Ahmedaa"
+              }
+            ],
+            "package_name": "Package9035860928776",
+            "description": "Asdbvhbsg",
+            "start_date": "2025-08-01T00:00:00.000Z",
+            "end_date": "2026-08-31T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "684194299db5063a0234b471",
+                  "name": "Full Hand Wax",
+                  "service_duration": 20,
+                  "regular_price": 150,
+                  "description": "Fdsfsafsa"
+                },
+                "discounted_price": 100,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d04",
+                "remaining_quantity": 494
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 50,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d05",
+                "remaining_quantity": 500
+              }
+            ],
+            "package_price": 75000,
+            "salon_id": "684011271ee646f27873fddc",
+            "used_services": [
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:49:19.560Z",
+                "_id": "68e4a9df91c5480b979955d0"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:51:15.629Z",
+                "_id": "68e4aa5391c5480b979955fb"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:36:22.349Z",
+                "_id": "68e4b4e6415021afb8d28b31"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:41:52.186Z",
+                "_id": "68e4b63085d9c38d57886479"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:53:48.898Z",
+                "_id": "68e4b8fc7533108ae83ce714"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T07:22:14.287Z",
+                "_id": "68e4bfa67bd146f880b989c7"
+              }
+            ],
+            "createdAt": "2025-08-02T09:21:49.672Z",
+            "updatedAt": "2025-10-07T07:22:14.287Z",
+            "__v": 0
+          },
+          "date": "2025-10-07T06:53:48.874Z",
+          "_id": "68e4b8fc7533108ae83ce726",
+          "expiry_date": "2026-08-31T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "6863b4f03dd0493efa22a388",
+            "membership_name": "Smart",
+            "description": "Sart",
+            "subscription_plan": "12-months",
+            "discount": 20,
+            "discount_type": "percentage",
+            "membership_amount": 50000
+          },
+          "date": "2025-10-07T06:53:48.891Z",
+          "_id": "68e4b8fc7533108ae83ce727",
+          "expiry_date": "2026-10-07T06:53:48.891Z",
+          "status": "active"
+        },
+        {
+          "branch_package": {
+            "_id": "688dd8ad8c8f3ef4856f5d03",
+            "branch_id": [
+              {
+                "_id": "6840fc497e25fa65885e3edd",
+                "name": "Ashirwad 1",
+                "address": "Block 7, 1st Floor Dakshini",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "68418ec69db5063a0234b38c",
+                "name": "Ashirwad 2",
+                "address": "Rannapark Soc. Partheswar Temple",
+                "state": "Gujarat",
+                "city": "Ahmedabad"
+              },
+              {
+                "_id": "684915d33e71ee76709f2aa1",
+                "name": "Ashirwad 3",
+                "address": "Dasdsa",
+                "state": "Ahmeadabad",
+                "city": "Ahmedaa"
+              }
+            ],
+            "package_name": "Package9035860928776",
+            "description": "Asdbvhbsg",
+            "start_date": "2025-08-01T00:00:00.000Z",
+            "end_date": "2026-08-31T00:00:00.000Z",
+            "status": 1,
+            "package_details": [
+              {
+                "service_id": {
+                  "_id": "684194299db5063a0234b471",
+                  "name": "Full Hand Wax",
+                  "service_duration": 20,
+                  "regular_price": 150,
+                  "description": "Fdsfsafsa"
+                },
+                "discounted_price": 100,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d04",
+                "remaining_quantity": 494
+              },
+              {
+                "service_id": {
+                  "_id": "68424ead9d0576de75cccb75",
+                  "name": "Eyebrow Threading",
+                  "service_duration": 20,
+                  "regular_price": 60,
+                  "description": ""
+                },
+                "discounted_price": 50,
+                "quantity": 500,
+                "_id": "688dd8ad8c8f3ef4856f5d05",
+                "remaining_quantity": 500
+              }
+            ],
+            "package_price": 75000,
+            "salon_id": "684011271ee646f27873fddc",
+            "used_services": [
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:49:19.560Z",
+                "_id": "68e4a9df91c5480b979955d0"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T05:51:15.629Z",
+                "_id": "68e4aa5391c5480b979955fb"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:36:22.349Z",
+                "_id": "68e4b4e6415021afb8d28b31"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:41:52.186Z",
+                "_id": "68e4b63085d9c38d57886479"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T06:53:48.898Z",
+                "_id": "68e4b8fc7533108ae83ce714"
+              },
+              {
+                "service_id": "684194299db5063a0234b471",
+                "used_at": "2025-10-07T07:22:14.287Z",
+                "_id": "68e4bfa67bd146f880b989c7"
+              }
+            ],
+            "createdAt": "2025-08-02T09:21:49.672Z",
+            "updatedAt": "2025-10-07T07:22:14.287Z",
+            "__v": 0
+          },
+          "date": "2025-10-07T07:22:14.258Z",
+          "_id": "68e4bfa67bd146f880b989da",
+          "expiry_date": "2026-08-31T00:00:00.000Z",
+          "status": "active"
+        },
+        {
+          "branch_membership": {
+            "_id": "6863b4f03dd0493efa22a388",
+            "membership_name": "Smart",
+            "description": "Sart",
+            "subscription_plan": "12-months",
+            "discount": 20,
+            "discount_type": "percentage",
+            "membership_amount": 50000
+          },
+          "date": "2025-10-07T07:22:14.278Z",
+          "_id": "68e4bfa67bd146f880b989db",
+          "expiry_date": "2026-10-07T07:22:14.278Z",
+          "status": "active"
+        }
+      ],
+      "status": 1,
+      "payment_split": [],
+      "createdAt": "2025-10-06T12:04:19.705Z",
+      "updatedAt": "2025-10-07T07:22:14.308Z",
+      "__v": 2,
+      "image_url": null
+    }
+  ]
+}

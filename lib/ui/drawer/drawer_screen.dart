@@ -17,6 +17,10 @@ class DrawerScreen extends StatelessWidget {
 
     final List<DrawerItem> drawerItems = [
       DrawerItem(
+          title: 'SummaryPage',
+          icon: Icons.document_scanner_outlined,
+          route: Routes.SummaryPage),
+      DrawerItem(
           title: 'Dashboard',
           icon: FontAwesomeIcons.gauge,
           route: Routes.dashboardScreen),
@@ -33,36 +37,31 @@ class DrawerScreen extends StatelessWidget {
       DrawerItem(
         title: 'Services',
         route: '', // parent doesn’t navigate
-        icon: Icons.room_service_outlined,
+        icon: Icons.manage_accounts_outlined,
         subItems: [
-          DrawerItem(title: 'List', icon: Icons.list, route: Routes.addService),
+          DrawerItem(title: 'List', icon: Icons.menu, route: Routes.addService),
           DrawerItem(
               title: 'Category',
-              icon: Icons.category_outlined,
+              icon: Icons.list,
               route: Routes.addNewCategotyScreen),
           DrawerItem(
               title: 'Sub Category',
-              icon: Icons.list_alt_rounded,
+              icon: Icons.list,
               route: Routes.addService),
         ],
       ),
       DrawerItem(
           title: 'Packages',
-          icon: Icons.category_outlined,
+          icon: Icons.card_giftcard_outlined,
           route: Routes.GetBranchPackagesScreen),
       DrawerItem(
           title: 'Expence',
-          icon: Icons.category_outlined,
+          icon: Icons.attach_money,
           route: Routes.FinancePage),
       DrawerItem(
           title: 'Membership',
-          icon: Icons.supervised_user_circle_outlined,
+          icon: Icons.switch_account_outlined,
           route: Routes.addBranchMembership),
-      DrawerItem(
-          title: 'SummaryPage',
-          icon: Icons.supervised_user_circle_outlined,
-          route: Routes.SummaryPage),
-
       DrawerItem(
           title: 'Reports',
           icon: Icons.receipt_outlined,
@@ -70,23 +69,23 @@ class DrawerScreen extends StatelessWidget {
           subItems: [
             DrawerItem(
                 title: 'Daily Booking',
-                icon: Icons.edit_document,
+                icon: Icons.sim_card_download_rounded,
                 route: Routes.DailybookingScreen),
             DrawerItem(
                 title: 'Order Report',
-                icon: Icons.stacked_line_chart_outlined,
+                icon: Icons.pie_chart,
                 route: Routes.OrderReportScreen),
             DrawerItem(
                 title: 'Overall Booking',
-                icon: Icons.book_outlined,
+                icon: Icons.add_chart_rounded,
                 route: Routes.OverallBookingScreen),
             DrawerItem(
                 title: 'Staff Payout',
-                icon: Icons.payment,
+                icon: Icons.payments_outlined,
                 route: Routes.Staffpayoutreportscreen),
             DrawerItem(
                 title: 'Staff Service',
-                icon: Icons.cleaning_services_rounded,
+                icon: Icons.supervisor_account_outlined,
                 route: Routes.StaffServiceReportScreen),
             DrawerItem(
                 title: 'Customer Package',
@@ -192,7 +191,8 @@ class DrawerScreen extends StatelessWidget {
             currentAccountPicture: GestureDetector(
               onTap: () => Get.toNamed(Routes.Adminprofilescreen),
               child: Obx(() {
-                final imageUrl = "${Apis.pdfUrl}${getController.salonImageUrl.value}";
+                final imageUrl =
+                    "${Apis.pdfUrl}${getController.salonImageUrl.value}";
                 final name = getController.fullname.value;
                 final firstLetter =
                     name.isNotEmpty ? name[0].toUpperCase() : '?';

@@ -21,7 +21,7 @@ class CustomerPackageReportController extends GetxController {
   final searchQuery = ''.obs;
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
   final Rx<DateTimeRange?> selectedDateRange = Rx<DateTimeRange?>(null);
-  final sortOrder = 'desc'.obs; // 'asc' or 'desc'
+  final sortOrder = 'desc'.obs; 
 
   @override
   void onInit() {
