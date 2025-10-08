@@ -25,7 +25,7 @@ abstract class Routes {
   static const getBranches = "/Getbranchesscreen";
   static const addNewCategotyScreen = "/AddNewCategotyScreen";
   static const managerScreen = "/Managerscreen";
-
+static const Renewpackagescreen = "/Renewpackagescreen";
   static const getManager = "/Getmanagerscreen";
 
   static const customersScreen = "/CustomersScreen";

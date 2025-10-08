@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/auth/forgot/forgot_screen.dart'
     show ForgotScreen;
 import 'package:flutter_template/utils/app_images.dart';
@@ -347,24 +348,50 @@ class LoginScreen extends StatelessWidget {
           SizedBox(height: 5.h),
           Btn_Login(),
           SizedBox(height: 10.h),
-          Obx(() => getController.selectedRole.value == 'Admin'
-              ? GestureDetector(
-                  onTap: () => Get.to(RegisterScreen()),
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: white),
-                        child: CustomTextWidget(
-                            text: "Create New account",
-                            textStyle: CustomTextStyles.textFontBold(
-                                size: 14.sp,
-                                color: primaryColor,
-                                textOverflow: TextOverflow.ellipsis)),
-                      )))
-              : SizedBox.shrink()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Obx(() => getController.selectedRole.value == 'Admin'
+                  ? GestureDetector(
+                      onTap: () => Get.to(RegisterScreen()),
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: white),
+                            child: CustomTextWidget(
+                                text: "Create New account",
+                                textStyle: CustomTextStyles.textFontBold(
+                                    size: 14.sp,
+                                    color: primaryColor,
+                                    textOverflow: TextOverflow.ellipsis)),
+                          )))
+                  : SizedBox.shrink()),
+              SizedBox(height: 10.h),
+              Obx(() => getController.selectedRole.value == 'Admin'
+                  ? GestureDetector(
+                      onTap: () => Get.offAllNamed(Routes.Renewpackagescreen),
+                      child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: white),
+                            child: CustomTextWidget(
+                                text: "Renew Package",
+                                textStyle: CustomTextStyles.textFontBold(
+                                    size: 14.sp,
+                                    color: primaryColor,
+                                    textOverflow: TextOverflow.ellipsis)),
+                          )))
+                  : SizedBox.shrink()),
+            ],
+          )
         ],
       ),
     );

@@ -13,6 +13,7 @@ import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
+import 'package:flutter_template/ui/auth/renewPackage/renewPackageScreen.dart';
 import 'package:flutter_template/ui/drawer/Branchmembership/add/branchMembershipAddScreen.dart';
 import 'package:flutter_template/ui/drawer/Branchmembership/get/branchMembershipListScreen.dart';
 import 'package:flutter_template/ui/drawer/admin_expence.dart';
@@ -406,7 +407,13 @@ class AppPages {
         transition: Transition.rightToLeft),
 
         GetPage(name: Routes.productDetailScreen, page: () => ProductDetailScreen(),transition: Transition.rightToLeft),
-        GetPage(name: Routes.StaffDashboard, page: () => StaffDashboard(),transition: Transition.rightToLeft)
+        GetPage(name: Routes.StaffDashboard, page: () => StaffDashboard(),transition: Transition.rightToLeft),
+
+    GetPage(
+        name: Routes.Renewpackagescreen,
+        page: () => Renewpackagescreen(),
+        transition: Transition.rightToLeft),
+    
   
   ];
 }
