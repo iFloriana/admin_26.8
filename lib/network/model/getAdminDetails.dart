@@ -15,8 +15,8 @@ class GetAdminDetails {
 
   Map<String, dynamic> toJson() {
     return {
-      "admin": admin?.toJson(),
-      "salonDetails": salonDetails?.toJson(),
+      'admin': admin?.toJson(),
+      'salonDetails': salonDetails?.toJson(),
     };
   }
 }
@@ -27,7 +27,7 @@ class Admin {
   final String? phoneNumber;
   final String? email;
   final String? address;
-  final List<PackageElement>? packageId;
+  final List<AdminPackage>? packageId;
   final String? password;
   final int? v;
   final String? updatedAt;
@@ -46,91 +46,92 @@ class Admin {
 
   factory Admin.fromJson(Map<String, dynamic> json) {
     return Admin(
-      id: json["_id"],
-      fullName: json["full_name"],
-      phoneNumber: json["phone_number"],
-      email: json["email"],
-      address: json["address"],
-      packageId: json["package_id"] != null
-          ? List<PackageElement>.from(
-              json["package_id"].map((x) => PackageElement.fromJson(x)))
+      id: json['_id'],
+      fullName: json['full_name'],
+      phoneNumber: json['phone_number'],
+      email: json['email'],
+      address: json['address'],
+      packageId: json['package_id'] != null
+          ? (json['package_id'] as List)
+              .map((e) => AdminPackage.fromJson(e))
+              .toList()
           : [],
-      password: json["password"],
-      v: json["__v"],
-      updatedAt: json["updatedAt"],
+      password: json['password'],
+      v: json['__v'],
+      updatedAt: json['updatedAt'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "_id": id,
-      "full_name": fullName,
-      "phone_number": phoneNumber,
-      "email": email,
-      "address": address,
-      "package_id": packageId?.map((e) => e.toJson()).toList(),
-      "password": password,
-      "__v": v,
-      "updatedAt": updatedAt,
+      '_id': id,
+      'full_name': fullName,
+      'phone_number': phoneNumber,
+      'email': email,
+      'address': address,
+      'package_id': packageId?.map((e) => e.toJson()).toList(),
+      'password': password,
+      '__v': v,
+      'updatedAt': updatedAt,
     };
   }
 }
 
-class PackageElement {
-  final int? status;
-  final String? id;
-  final String? buffer;
-  final PackageId? packageId;
+class AdminPackage {
+  final PackageDetails? packageId;
   final String? packageStartDate;
   final String? packageExpirationDate;
+  final int? status;
+  final String? id;
+  final String? buffer; // For entries that only contain buffer
 
-  PackageElement({
-    this.status,
-    this.id,
-    this.buffer,
+  AdminPackage({
     this.packageId,
     this.packageStartDate,
     this.packageExpirationDate,
+    this.status,
+    this.id,
+    this.buffer,
   });
 
-  factory PackageElement.fromJson(Map<String, dynamic> json) {
-    return PackageElement(
-      status: json["status"],
-      id: json["_id"],
-      buffer: json["buffer"],
-      packageId: json["package_id"] != null &&
-              json["package_id"] is Map<String, dynamic>
-          ? PackageId.fromJson(json["package_id"])
+  factory AdminPackage.fromJson(Map<String, dynamic> json) {
+    return AdminPackage(
+      packageId: json['package_id'] != null &&
+              json['package_id'] is Map<String, dynamic>
+          ? PackageDetails.fromJson(json['package_id'])
           : null,
-      packageStartDate: json["package_start_date"],
-      packageExpirationDate: json["package_expiration_date"],
+      packageStartDate: json['package_start_date'],
+      packageExpirationDate: json['package_expiration_date'],
+      status: json['status'],
+      id: json['_id'],
+      buffer: json['buffer'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "status": status,
-      "_id": id,
-      "buffer": buffer,
-      "package_id": packageId?.toJson(),
-      "package_start_date": packageStartDate,
-      "package_expiration_date": packageExpirationDate,
+      'package_id': packageId?.toJson(),
+      'package_start_date': packageStartDate,
+      'package_expiration_date': packageExpirationDate,
+      'status': status,
+      '_id': id,
+      'buffer': buffer,
     };
   }
 }
 
-class PackageId {
+class PackageDetails {
   final String? status;
   final String? id;
   final String? packageName;
   final String? description;
-  final int? price;
+  final num? price;
   final List<String>? servicesIncluded;
   final String? subscriptionPlan;
   final String? expirationDate;
   final int? v;
 
-  PackageId({
+  PackageDetails({
     this.status,
     this.id,
     this.packageName,
@@ -142,33 +143,33 @@ class PackageId {
     this.v,
   });
 
-  factory PackageId.fromJson(Map<String, dynamic> json) {
-    return PackageId(
-      status: json["status"],
-      id: json["_id"],
-      packageName: json["package_name"],
-      description: json["description"],
-      price: json["price"],
-      servicesIncluded: json["services_included"] != null
-          ? List<String>.from(json["services_included"])
+  factory PackageDetails.fromJson(Map<String, dynamic> json) {
+    return PackageDetails(
+      status: json['status'],
+      id: json['_id'],
+      packageName: json['package_name'],
+      description: json['description'],
+      price: json['price'],
+      servicesIncluded: json['services_included'] != null
+          ? List<String>.from(json['services_included'])
           : [],
-      subscriptionPlan: json["subscription_plan"],
-      expirationDate: json["expiration_date"],
-      v: json["__v"],
+      subscriptionPlan: json['subscription_plan'],
+      expirationDate: json['expiration_date'],
+      v: json['__v'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "status": status,
-      "_id": id,
-      "package_name": packageName,
-      "description": description,
-      "price": price,
-      "services_included": servicesIncluded,
-      "subscription_plan": subscriptionPlan,
-      "expiration_date": expirationDate,
-      "__v": v,
+      'status': status,
+      '_id': id,
+      'package_name': packageName,
+      'description': description,
+      'price': price,
+      'services_included': servicesIncluded,
+      'subscription_plan': subscriptionPlan,
+      'expiration_date': expirationDate,
+      '__v': v,
     };
   }
 }
@@ -214,45 +215,45 @@ class SalonDetails {
 
   factory SalonDetails.fromJson(Map<String, dynamic> json) {
     return SalonDetails(
-      id: json["_id"],
-      salonName: json["salon_name"],
-      description: json["description"],
-      address: json["address"],
-      contactNumber: json["contact_number"],
-      contactEmail: json["contact_email"],
-      openingTime: json["opening_time"],
-      closingTime: json["closing_time"],
-      category: json["category"],
-      status: json["status"],
-      packageId: json["package_id"],
-      signupId: json["signup_id"],
-      createdAt: json["createdAt"],
-      updatedAt: json["updatedAt"],
-      v: json["__v"],
-      gstNumber: json["gst_number"],
-      imageUrl: json["image_url"],
+      id: json['_id'],
+      salonName: json['salon_name'],
+      description: json['description'],
+      address: json['address'],
+      contactNumber: json['contact_number'],
+      contactEmail: json['contact_email'],
+      openingTime: json['opening_time'],
+      closingTime: json['closing_time'],
+      category: json['category'],
+      status: json['status'],
+      packageId: json['package_id'],
+      signupId: json['signup_id'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      v: json['__v'],
+      gstNumber: json['gst_number'],
+      imageUrl: json['image_url'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "_id": id,
-      "salon_name": salonName,
-      "description": description,
-      "address": address,
-      "contact_number": contactNumber,
-      "contact_email": contactEmail,
-      "opening_time": openingTime,
-      "closing_time": closingTime,
-      "category": category,
-      "status": status,
-      "package_id": packageId,
-      "signup_id": signupId,
-      "createdAt": createdAt,
-      "updatedAt": updatedAt,
-      "__v": v,
-      "gst_number": gstNumber,
-      "image_url": imageUrl,
+      '_id': id,
+      'salon_name': salonName,
+      'description': description,
+      'address': address,
+      'contact_number': contactNumber,
+      'contact_email': contactEmail,
+      'opening_time': openingTime,
+      'closing_time': closingTime,
+      'category': category,
+      'status': status,
+      'package_id': packageId,
+      'signup_id': signupId,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      '__v': v,
+      'gst_number': gstNumber,
+      'image_url': imageUrl,
     };
   }
 }

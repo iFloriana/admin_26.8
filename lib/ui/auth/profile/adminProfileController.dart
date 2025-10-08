@@ -7,8 +7,9 @@ import 'package:http_parser/http_parser.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img; // Add image package
+import 'package:image/image.dart' as img;
 import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 
 class Adminprofilecontroller extends GetxController {
   var fullnameController = TextEditingController();
@@ -39,7 +40,6 @@ class Adminprofilecontroller extends GetxController {
   }
 
   var pincodeController = TextEditingController();
-
   var country = ''.obs;
   var state = ''.obs;
   var district = ''.obs;
@@ -101,28 +101,37 @@ class Adminprofilecontroller extends GetxController {
   Future<void> _handlePickedFile(XFile? pickedFile,
       {required bool isFromCamera}) async {
     const maxSizeInBytes = 150 * 1024; // 150 KB
-    if (pickedFile != null) {
-      final file = File(pickedFile.path);
-      final mimeType = _getMimeType(pickedFile.path) ?? pickedFile.mimeType;
+    if (pickedFile == null) {
+      CustomSnackbar.showError('Error', 'No image selected');
+      return;
+    }
 
-      File? processedFile;
+    final file = File(pickedFile.path);
+    final mimeType = _getMimeType(pickedFile.path) ?? pickedFile.mimeType;
+
+    File? processedFile;
+    try {
       if (isFromCamera ||
           mimeType == 'image/heic' ||
           mimeType == 'image/heif') {
         // Convert camera images (or HEIC/HEIF) to JPEG
         final bytes = await file.readAsBytes();
         final image = img.decodeImage(bytes);
-        if (image != null) {
-          final jpegBytes = img.encodeJpg(image, quality: 85);
-          final tempPath = '${file.path}.jpg';
-          processedFile = File(tempPath)..writeAsBytesSync(jpegBytes);
-        } else {
+        if (image == null) {
           CustomSnackbar.showError('Error', 'Failed to process image');
           return;
         }
+
+        // Encode to JPEG with quality control
+        final jpegBytes = img.encodeJpg(image, quality: 85);
+        
+        // Save to a temporary file with .jpg extension
+        final tempDir = await getTemporaryDirectory();
+        final tempPath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        processedFile = File(tempPath)..writeAsBytesSync(jpegBytes);
       } else if (mimeType == 'image/jpeg' ||
-          mimeType == 'image/jpg' ||
-          mimeType == 'image/png') {
+                 mimeType == 'image/jpg' ||
+                 mimeType == 'image/png') {
         processedFile = file; // Use original file for valid formats
       } else {
         CustomSnackbar.showError(
@@ -136,6 +145,8 @@ class Adminprofilecontroller extends GetxController {
       } else {
         CustomSnackbar.showError('Error', 'Image size must be less than 150KB');
       }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to process image: $e');
     }
   }
 
@@ -157,16 +168,23 @@ class Adminprofilecontroller extends GetxController {
     final url = '${Apis.baseUrl}/auth/update-admin/${loginUser?.adminId}';
 
     try {
-      isLoading.value = true; // Add loading state
+      isLoading.value = true;
       if (singleImage.value != null) {
-        // Handle multipart form data with image
-        final fileName = singleImage.value!.path.split('/').last;
-        final fileExtension = fileName.split('.').last.toLowerCase();
+        // Ensure the file has a .jpg or .png extension
+        String fileName = singleImage.value!.path.split('/').last;
+        if (!fileName.endsWith('.jpg') && !fileName.endsWith('.png')) {
+          final tempDir = await getTemporaryDirectory();
+          fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+          final newPath = '${tempDir.path}/$fileName';
+          await singleImage.value!.copy(newPath);
+          singleImage.value = File(newPath);
+        }
 
+        final fileExtension = fileName.split('.').last.toLowerCase();
         final imageMultipart = await MultipartFile.fromFile(
           singleImage.value!.path,
           filename: fileName,
-          contentType: MediaType('image', fileExtension),
+          contentType: MediaType('image', fileExtension == 'png' ? 'png' : 'jpeg'),
         );
 
         final formData = FormData.fromMap({
@@ -187,7 +205,6 @@ class Adminprofilecontroller extends GetxController {
           ),
         );
       } else {
-        // Handle standard JSON data without image
         final data = {
           'full_name': fullnameController.text,
           'phone_number': phoneController.text,
@@ -232,7 +249,7 @@ class Adminprofilecontroller extends GetxController {
         (json) => json,
       );
 
-      CustomSnackbar.showSuccess('Success', 'password update successfully');
+      CustomSnackbar.showSuccess('Success', 'Password updated successfully');
       await prefs.onLogout();
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());

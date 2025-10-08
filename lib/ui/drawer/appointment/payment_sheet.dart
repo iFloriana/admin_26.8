@@ -9,7 +9,6 @@ import '../../../wiget/custome_snackbar.dart';
 import 'appointmentController.dart';
 import '../../../main.dart';
 import '../../../network/network_const.dart';
-import '../../../network/dio.dart';
 
 class PaymentSummaryScreen extends StatefulWidget {
   final dynamic a; // pass appointment object
@@ -65,9 +64,70 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
         final addAdditionalDiscount = state.addAdditionalDiscount.value;
         final discountType = state.discountType.value; // '' means blank
         final discountValue = double.tryParse(state.discountValue.value) ?? 0.0;
-        final memberDiscount =
-            (widget.a.branchMembershipDiscount ?? 0.0).toDouble();
-        final memberType = widget.a.branchMembershipDiscountType;
+
+        // Extract package_and_membership array when available (fallback to existing fields otherwise)
+        Map<String, dynamic>? appointmentMap =
+            (widget.a is Map) ? widget.a as Map<String, dynamic> : null;
+        List<dynamic> packageAndMembership = [];
+        if (appointmentMap != null) {
+          final customer = appointmentMap['customer'];
+          if (customer is Map<String, dynamic>) {
+            final pam = customer['package_and_membership'];
+            if (pam is List) packageAndMembership = pam;
+          }
+        }
+
+        // Determine active membership from array (if present and not expired)
+        double derivedMemberDiscount = 0.0;
+        String? derivedMemberType;
+        if (packageAndMembership.isNotEmpty) {
+          final now = DateTime.now();
+          final memberships = packageAndMembership.where((item) {
+            if (item is! Map) return false;
+            final hasMembership = item['branch_membership'] != null;
+            final end = item['end_date'];
+            DateTime? endDate;
+            if (end is String) {
+              endDate = DateTime.tryParse(end);
+            }
+            return hasMembership && (endDate == null || !endDate.isBefore(now));
+          }).toList();
+          if (memberships.isNotEmpty) {
+            final m = memberships.first as Map;
+            final disc = m['discount'];
+            final dtype = m['discount_type'];
+            derivedMemberDiscount = (disc is num)
+                ? disc.toDouble()
+                : double.tryParse('$disc') ?? 0.0;
+            derivedMemberType = (dtype is String) ? dtype : dtype?.toString();
+          }
+        }
+
+        // Determine active package from array (if present and not expired)
+        bool hasActivePackage = false;
+        if (packageAndMembership.isNotEmpty) {
+          final now = DateTime.now();
+          hasActivePackage = packageAndMembership.any((item) {
+            if (item is! Map) return false;
+            final branchPackage = item['branch_package'];
+            final hasPackage =
+                branchPackage is List && branchPackage.isNotEmpty;
+            final end = item['end_date'];
+            DateTime? endDate;
+            if (end is String) {
+              endDate = DateTime.tryParse(end);
+            }
+            return hasPackage && (endDate == null || !endDate.isBefore(now));
+          });
+        }
+
+        // Fallback to previous fields when array not available
+        final memberDiscount = packageAndMembership.isNotEmpty
+            ? derivedMemberDiscount
+            : (widget.a.branchMembershipDiscount ?? 0.0).toDouble();
+        final memberType = packageAndMembership.isNotEmpty
+            ? derivedMemberType
+            : widget.a.branchMembershipDiscountType;
 
         double productTotal = 0.0;
         List<dynamic> productsList = const [];
@@ -681,17 +741,15 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                 ),
               Divider(color: Colors.grey[400]),
 
-              if (widget.a.branchMembershipDiscount != null)
+              // Membership info from package_and_membership array (with fallback)
+              if (memberDiscount > 0)
                 Row(children: [
                   const Text('Membership Discount: ',
                       style: TextStyle(color: Colors.black87)),
                   Text(
-                    (widget.a.branchMembershipDiscountType
-                                ?.toLowerCase()
-                                .startsWith('percent') ??
-                            false)
-                        ? '${widget.a.branchMembershipDiscount}%'
-                        : '₹ ${widget.a.branchMembershipDiscount}',
+                    (memberType ?? '').toLowerCase().startsWith('percent')
+                        ? '$memberDiscount%'
+                        : '₹ $memberDiscount',
                     style: const TextStyle(
                         color: Colors.green, fontWeight: FontWeight.w600),
                   )
@@ -699,13 +757,14 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               else
                 const Text('Customer has no membership',
                     style: TextStyle(color: Colors.orange)),
-              // const SizedBox(height: 6),
+
+              // Package info from array (with fallback to previous field)
               Text(
-                (widget.a.package == 'Yes')
+                hasActivePackage || (widget.a.package == 'Yes')
                     ? 'Customer have active package'
                     : 'Customer has no package',
                 style: TextStyle(
-                  color: (widget.a.package == 'Yes')
+                  color: hasActivePackage || (widget.a.package == 'Yes')
                       ? Colors.green
                       : Colors.orange,
                   fontWeight: FontWeight.w600,

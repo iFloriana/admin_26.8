@@ -80,6 +80,7 @@ class Adminprofilescreen extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
+                    spacing: 10,
                     children: [
                       GestureDetector(
                         onTap: getController.expand_details,
@@ -104,6 +105,7 @@ class Adminprofilescreen extends StatelessWidget {
                                   duration: Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
                                   child: Column(
+                                    spacing: 10,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
@@ -136,6 +138,7 @@ class Adminprofilescreen extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 12.0),
                                           child: Column(
+                                            spacing: 10,
                                             children: [
                                               SizedBox(height: 1.h),
                                               InputTxtfield_fullName(),
@@ -222,6 +225,7 @@ class Adminprofilescreen extends StatelessWidget {
                                           padding:
                                               const EdgeInsets.only(top: 12.0),
                                           child: Column(
+                                            spacing: 10,
                                             children: [
                                               SizedBox(height: 1.h),
                                               InputTxtfield_Oldpassword(),
