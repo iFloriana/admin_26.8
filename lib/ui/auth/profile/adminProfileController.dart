@@ -41,6 +41,7 @@ class Adminprofilecontroller extends GetxController {
   final Rx<GetAdminDetails?> profileDetails =
       Rx<GetAdminDetails?>(null); // Store profile details
 
+
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
   }

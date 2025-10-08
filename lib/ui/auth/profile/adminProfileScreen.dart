@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileController.dart';
+import 'package:flutter_template/ui/auth/renewPackage/renewPackageScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
@@ -475,6 +476,12 @@ class Adminprofilescreen extends StatelessWidget {
                     ],
                   ),
                 ),
+              ),
+              ElevatedButtonExample(
+                text: "Renew Package",
+                onPressed: () {
+                  Get.to(Renewpackagescreen());
+                },
               ),
             ],
           ),

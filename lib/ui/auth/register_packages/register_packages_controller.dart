@@ -44,40 +44,40 @@ class PackagesController extends GetxController {
             .toList(),
       );
       packages.value = response;
-      filterPackages();
+      // filterPackages();
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
 
-  void filterPackages() {
-    switch (selectedFilter.value) {
-      case '15-Days':
-        filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "15-Days").toList();
-        break;
-      case 'Monthly':
-        filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "1-month").toList();
-        break;
-      case 'Quarterly':
-        filteredPackages.value = packages
-            .where((pkg) => pkg.subscriptionPlan == "3-months")
-            .toList();
-        break;
-      case 'Half-Yearly':
-        filteredPackages.value = packages
-            .where((pkg) => pkg.subscriptionPlan == "6-months")
-            .toList();
-        break;
-      case 'Yearly':
-        filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "1-year").toList();
-        break;
-      default:
-        filteredPackages.value = packages;
-    }
-  }
+  // void filterPackages() {
+  //   switch (selectedFilter.value) {
+  //     case '15-Days':
+  //       filteredPackages.value =
+  //           packages.where((pkg) => pkg.subscriptionPlan == "15-Days").toList();
+  //       break;
+  //     case 'Monthly':
+  //       filteredPackages.value =
+  //           packages.where((pkg) => pkg.subscriptionPlan == "1-month").toList();
+  //       break;
+  //     case 'Quarterly':
+  //       filteredPackages.value = packages
+  //           .where((pkg) => pkg.subscriptionPlan == "3-months")
+  //           .toList();
+  //       break;
+  //     case 'Half-Yearly':
+  //       filteredPackages.value = packages
+  //           .where((pkg) => pkg.subscriptionPlan == "6-months")
+  //           .toList();
+  //       break;
+  //     case 'Yearly':
+  //       filteredPackages.value =
+  //           packages.where((pkg) => pkg.subscriptionPlan == "1-year").toList();
+  //       break;
+  //     default:
+  //       filteredPackages.value = packages;
+  //   }
+  // }
 
   void updateSelected(String value) {
     selectedPackageId.value = value;
