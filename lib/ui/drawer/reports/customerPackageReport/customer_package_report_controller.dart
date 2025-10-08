@@ -10,24 +10,22 @@ import 'package:open_file/open_file.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import '../../../../main.dart';
-import '../../../../network/model/customer_package_report_model.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
 class CustomerPackageReportController extends GetxController {
-  final customerPackages = <CustomerPackageReportData>[].obs;
-  final filteredCustomerPackages = <CustomerPackageReportData>[].obs;
+  final customerPackages = <Map<String, dynamic>>[].obs;
+  final filteredCustomerPackages = <Map<String, dynamic>>[].obs;
   final isLoading = true.obs;
   final searchQuery = ''.obs;
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
   final Rx<DateTimeRange?> selectedDateRange = Rx<DateTimeRange?>(null);
-  final sortOrder = 'desc'.obs; 
+  final sortOrder = 'desc'.obs;
 
   @override
   void onInit() {
     super.onInit();
     getCustomerPackages();
-    
   }
 
   Future<void> getCustomerPackages() async {
@@ -36,16 +34,14 @@ class CustomerPackageReportController extends GetxController {
       final loginUser = await prefs.getUser();
       final response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.customers}?salon_id=${loginUser!.salonId}',
-        (json) {
-          final model = CustomerPackageReportModel.fromJson(json);
-          return model;
-        },
+        (json) => json,
       );
-      if (response != null && response.data != null) {
-        // Only keep customers with non-empty branch_package
-        customerPackages.value = response.data!
-            .where(
-                (c) => c.branchPackage != null && c.branchPackage!.isNotEmpty)
+      if (response != null && response['data'] != null) {
+        // Only keep customers with non-empty package_and_membership
+        customerPackages.value = (response['data'] as List)
+            .cast<Map<String, dynamic>>()
+            .where((c) =>
+                (c['package_and_membership'] as List?)?.isNotEmpty ?? false)
             .toList();
 
         applyFilters();
@@ -61,58 +57,61 @@ class CustomerPackageReportController extends GetxController {
   }
 
   void applyFilters() {
-    List<CustomerPackageReportData> tempPackages = customerPackages.toList();
+    List<Map<String, dynamic>> temp = [];
 
-    if (searchQuery.isNotEmpty) {
-      tempPackages = tempPackages
-          .where((customer) =>
-              customer.fullName
-                  ?.toLowerCase()
-                  .contains(searchQuery.value.toLowerCase()) ??
-              false)
-          .toList();
-    }
+    for (var customer in customerPackages) {
+      var items = (customer['package_and_membership'] as List?)
+              ?.cast<Map<String, dynamic>>() ??
+          [];
 
-    // Apply single date filter (corrected local date comparison)
-    if (selectedDate.value != null) {
-      final filterDate = selectedDate.value!;
-      tempPackages = tempPackages.where((customer) {
-        if (customer.branchPackageBoughtAt == null ||
-            customer.branchPackageBoughtAt!.isEmpty) return false;
-        final boughtDate = DateTime.tryParse(customer.branchPackageBoughtAt!);
-        if (boughtDate == null) return false;
+      items =
+          items.where((item) => item.containsKey('branch_package')).toList();
 
-        // Compare the year, month, and day components directly in local time
-        return boughtDate.toLocal().year == filterDate.year &&
-            boughtDate.toLocal().month == filterDate.month &&
-            boughtDate.toLocal().day == filterDate.day;
-      }).toList();
-    }
+      if (searchQuery.isNotEmpty) {
+        final name = (customer['full_name'] as String?)?.toLowerCase() ?? '';
+        if (!name.contains(searchQuery.value.toLowerCase())) continue;
+      }
 
-    // Apply date range filter (with local date comparison)
-    if (selectedDateRange.value != null) {
-      final range = selectedDateRange.value!;
-      tempPackages = tempPackages.where((customer) {
-        if (customer.branchPackageBoughtAt == null ||
-            customer.branchPackageBoughtAt!.isEmpty) return false;
-        final boughtDate = DateTime.tryParse(customer.branchPackageBoughtAt!);
-        if (boughtDate == null) return false;
+      // Apply single date filter
+      if (selectedDate.value != null) {
+        final filterDate = selectedDate.value!;
+        items = items.where((item) {
+          final dateStr = item['date'] as String?;
+          if (dateStr == null || dateStr.isEmpty) return false;
+          final boughtDate = DateTime.tryParse(dateStr);
+          if (boughtDate == null) return false;
+          final localDate = boughtDate.toLocal();
+          return localDate.year == filterDate.year &&
+              localDate.month == filterDate.month &&
+              localDate.day == filterDate.day;
+        }).toList();
+      }
 
-        final localDate = boughtDate.toLocal();
-        // Ensure the comparison is inclusive of the start and end dates
-        return (localDate
-                .isAfter(range.start.subtract(const Duration(days: 1))) &&
-            localDate.isBefore(range.end.add(const Duration(days: 1))));
-      }).toList();
+      // Apply date range filter
+      if (selectedDateRange.value != null) {
+        final range = selectedDateRange.value!;
+        items = items.where((item) {
+          final dateStr = item['date'] as String?;
+          if (dateStr == null || dateStr.isEmpty) return false;
+          final boughtDate = DateTime.tryParse(dateStr);
+          if (boughtDate == null) return false;
+          final localDate = boughtDate.toLocal();
+          return localDate
+                  .isAfter(range.start.subtract(const Duration(days: 1))) &&
+              localDate.isBefore(range.end.add(const Duration(days: 1)));
+        }).toList();
+      }
+
+      if (items.isNotEmpty) {
+        var filteredCustomer = Map<String, dynamic>.from(customer);
+        filteredCustomer['package_and_membership'] = items;
+        temp.add(filteredCustomer);
+      }
     }
 
     // Sort and update
-    sortPackagesList(tempPackages, sortOrder.value);
-    filteredCustomerPackages.value = tempPackages;
-  }
-
-  bool isSameDate(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+    sortPackagesList(temp, sortOrder.value);
+    filteredCustomerPackages.value = temp;
   }
 
   void updateSearchQuery(String query) {
@@ -140,49 +139,37 @@ class CustomerPackageReportController extends GetxController {
     applyFilters();
   }
 
-  void sortPackagesList(
-      List<CustomerPackageReportData> packages, String order) {
+  void sortPackagesList(List<Map<String, dynamic>> packages, String order) {
     print('Sorting ${packages.length} packages by order: $order');
 
-    if (order == 'asc') {
-      // Sort by bought at date - oldest first
-      packages.sort((a, b) {
-        final aDate = a.branchPackageBoughtAt != null &&
-                a.branchPackageBoughtAt!.isNotEmpty
-            ? DateTime.tryParse(a.branchPackageBoughtAt!)
-            : null;
-        final bDate = b.branchPackageBoughtAt != null &&
-                b.branchPackageBoughtAt!.isNotEmpty
-            ? DateTime.tryParse(b.branchPackageBoughtAt!)
-            : null;
+    packages.sort((a, b) {
+      final aDates = (a['package_and_membership'] as List)
+          .map((item) => DateTime.tryParse((item['date'] as String?) ?? ''))
+          .where((date) => date != null)
+          .cast<DateTime>()
+          .toList();
 
-        if (aDate == null && bDate == null) return 0;
-        if (aDate == null) return 1; // null dates go to the end
-        if (bDate == null) return -1;
+      final bDates = (b['package_and_membership'] as List)
+          .map((item) => DateTime.tryParse((item['date'] as String?) ?? ''))
+          .where((date) => date != null)
+          .cast<DateTime>()
+          .toList();
 
-        return aDate.compareTo(bDate);
-      });
-      print('Sorted in ascending order (oldest first)');
-    } else {
-      // Sort by bought at date - newest first
-      packages.sort((a, b) {
-        final aDate = a.branchPackageBoughtAt != null &&
-                a.branchPackageBoughtAt!.isNotEmpty
-            ? DateTime.tryParse(a.branchPackageBoughtAt!)
-            : null;
-        final bDate = b.branchPackageBoughtAt != null &&
-                b.branchPackageBoughtAt!.isNotEmpty
-            ? DateTime.tryParse(b.branchPackageBoughtAt!)
-            : null;
+      if (aDates.isEmpty && bDates.isEmpty) return 0;
+      if (aDates.isEmpty) return 1;
+      if (bDates.isEmpty) return -1;
 
-        if (aDate == null && bDate == null) return 0;
-        if (aDate == null) return 1; 
-        if (bDate == null) return -1;
+      DateTime aCompare = order == 'asc'
+          ? aDates.reduce((a, b) => a.isBefore(b) ? a : b)
+          : aDates.reduce((a, b) => a.isAfter(b) ? a : b);
+      DateTime bCompare = order == 'asc'
+          ? bDates.reduce((a, b) => a.isBefore(b) ? a : b)
+          : bDates.reduce((a, b) => a.isAfter(b) ? a : b);
 
-        return bDate.compareTo(aDate);
-      });
-      print('Sorted in descending order (newest first)');
-    }
+      return order == 'asc'
+          ? aCompare.compareTo(bCompare)
+          : bCompare.compareTo(aCompare);
+    });
 
     // Print first few items to verify sorting
     if (packages.isNotEmpty) {
@@ -190,14 +177,9 @@ class CustomerPackageReportController extends GetxController {
       for (int i = 0; i < packages.length && i < 3; i++) {
         final customer = packages[i];
         print(
-            '  ${i + 1}. ${customer.fullName} - Bought: ${customer.branchPackageBoughtAt}');
+            '  ${i + 1}. ${customer['full_name']} - Example Date: ${(customer['package_and_membership'] as List).first['date']}');
       }
     }
-  }
-
-  void sortPackages(String order) {
-    sortOrder.value = order;
-    sortPackagesList(filteredCustomerPackages, order);
   }
 
   void setSortOrder(String order) {
@@ -206,32 +188,11 @@ class CustomerPackageReportController extends GetxController {
     applyFilters();
   }
 
-  String getStatusText(int? status) {
-    switch (status) {
-      case 1:
-        return 'Active';
-      case 0:
-        return 'Inactive';
-      default:
-        return 'Unknown';
-    }
-  }
-
   String getFormattedDate(String? dateString) {
     if (dateString == null || dateString.isEmpty) return 'N/A';
     try {
       final date = DateTime.parse(dateString);
-      return DateFormat('yyyy-MM-dd').format(date);
-    } catch (e) {
-      return 'N/A';
-    }
-  }
-
-  String getFormattedBoughtDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'N/A';
-    try {
-      final date = DateTime.parse(dateString);
-      return DateFormat('yyyy-MM-dd HH:mm').format(date);
+      return DateFormat('M/d/yyyy').format(date);
     } catch (e) {
       return 'N/A';
     }
@@ -271,12 +232,11 @@ class CustomerPackageReportController extends GetxController {
       // Add headers
       final headers = [
         'Customer Name',
-        'Email',
         'Package Name',
-        'Package Price',
-        'Bought At',
-        'Valid Till',
-        'Status',
+        'Services',
+        'Remaining Service Count',
+        'Start Date',
+        'Expiry Date',
       ];
 
       for (int i = 0; i < headers.length; i++) {
@@ -296,28 +256,31 @@ class CustomerPackageReportController extends GetxController {
 
       int rowIndex = 1;
       for (var customer in dataToExport) {
-        for (var pkg in customer.branchPackage!) {
+        for (var item in (customer['package_and_membership'] as List)
+            .cast<Map<String, dynamic>>()) {
+          final details = item['branch_package'];
+          final services = (details['package_details'] as List?)?.length ?? 0;
+          final remaining = (details['package_details'] as List?)?.fold<int>(0,
+                  (sum, e) => sum + (e['remaining_quantity'] as int? ?? 0)) ??
+              0;
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: rowIndex))
-            ..value = customer.fullName ?? '';
+            ..value = customer['full_name'] ?? '';
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: rowIndex))
-            ..value = customer.email ?? '';
+            ..value = details['package_name'] ?? '';
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: rowIndex))
-            ..value = pkg.packageName ?? '';
+            ..value = services.toString();
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: rowIndex))
-            ..value = pkg.packagePrice?.toString() ?? '';
+            ..value = remaining.toString();
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: rowIndex))
-            ..value = getFormattedBoughtDate(customer.branchPackageBoughtAt);
+            ..value = getFormattedDate(item['date']);
           sheet.cell(
               CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: rowIndex))
-            ..value = getFormattedDate(customer.branchPackageValidTill);
-          sheet.cell(
-              CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: rowIndex))
-            ..value = getStatusText(pkg.status);
+            ..value = getFormattedDate(item['expiry_date']);
           rowIndex++;
         }
       }
@@ -403,24 +366,35 @@ class CustomerPackageReportController extends GetxController {
                 data: <List<String>>[
                   [
                     'Customer Name',
-                    'Email',
                     'Package Name',
-                    'Package Price',
-                    'Bought At',
-                    'Valid Till',
-                    'Status',
+                    'Services',
+                    'Remaining Service Count',
+                    'Start Date',
+                    'Expiry Date',
                   ],
                   ...dataToExport.expand((customer) {
-                    return customer.branchPackage!.map((pkg) => [
-                          customer.fullName ?? '',
-                          customer.email ?? '',
-                          pkg.packageName ?? '',
-                          pkg.packagePrice?.toString() ?? '',
-                          getFormattedBoughtDate(
-                              customer.branchPackageBoughtAt),
-                          getFormattedDate(customer.branchPackageValidTill),
-                          getStatusText(pkg.status),
-                        ]);
+                    return (customer['package_and_membership'] as List)
+                        .cast<Map<String, dynamic>>()
+                        .map<List<String>>((item) {
+                      final details = item['branch_package'];
+                      final services =
+                          (details['package_details'] as List?)?.length ?? 0;
+                      final remaining = (details['package_details'] as List?)
+                              ?.fold<int>(
+                                  0,
+                                  (sum, e) =>
+                                      sum +
+                                      (e['remaining_quantity'] as int? ?? 0)) ??
+                          0;
+                      return <String>[
+                        customer['full_name'] ?? '',
+                        details['package_name'] ?? '',
+                        services.toString(),
+                        remaining.toString(),
+                        getFormattedDate(item['date']),
+                        getFormattedDate(item['expiry_date']),
+                      ];
+                    });
                   }).toList(),
                 ],
                 cellHeight: 30,

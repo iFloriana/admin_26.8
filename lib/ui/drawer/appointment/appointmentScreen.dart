@@ -120,7 +120,6 @@ class Appointmentscreen extends StatelessWidget {
       ),
       drawer: DrawerScreen(),
       body: Container(
-        
         child: Obx(() {
           if (getController.isLoading.value) {
             return Center(child: CustomLoadingAvatar());
@@ -156,12 +155,12 @@ class Appointmentscreen extends StatelessWidget {
                     DataColumn(
                         label: Text('Services',
                             style: TextStyle(color: Colors.black))),
-                    DataColumn(
-                        label: Text('Membership',
-                            style: TextStyle(color: Colors.black))),
-                    DataColumn(
-                        label: Text('Package',
-                            style: TextStyle(color: Colors.black))),
+                    // DataColumn(
+                    //     label: Text('Membership',
+                    //         style: TextStyle(color: Colors.black))),
+                    // DataColumn(
+                    //     label: Text('Package',
+                    //         style: TextStyle(color: Colors.black))),
                     DataColumn(
                         label: Text('Status',
                             style: TextStyle(color: Colors.black))),
@@ -176,64 +175,71 @@ class Appointmentscreen extends StatelessWidget {
                     return DataRow(cells: [
                       DataCell(Text('${a.date} - ${a.time}',
                           style: TextStyle(color: Colors.black))),
-                      DataCell(Row(
-                        children: [
-                          // CircleAvatar(
-                          //   backgroundImage: a.clientImage != null &&
-                          //           a.clientImage!.isNotEmpty
-                          //       ? NetworkImage(a.clientImage!)
-                          //       : null,
-                          //   child: (a.clientImage == null ||
-                          //           a.clientImage!.isEmpty)
-                          //       ? Icon(Icons.person, color: Colors.black)
-                          //       : null,
-                          // ),
-                          // SizedBox(width: 8),
-                          Flexible(
-                              child: Text(a.clientName,
-                                  style: TextStyle(color: Colors.black))),
-                        ],
-                      )),
+                      DataCell(
+                        a.clientName == '-' ||
+                                a.clientName == null ||
+                                a.clientName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      a.clientName,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+
                       DataCell(Text('₹ ${a.amount}',
                           style: TextStyle(color: Colors.black))),
-                      DataCell(Row(
-                        children: [
-                          // CircleAvatar(
-                          //   backgroundImage: a.staffImage != null &&
-                          //           a.staffImage!.isNotEmpty
-                          //       ? NetworkImage(a.staffImage!)
-                          //       : null,
-                          //   child: (a.staffImage == null ||
-                          //           a.staffImage!.isEmpty)
-                          //       ? Icon(Icons.person, color: Colors.black)
-                          //       : null,
-                          // ),
-                          // SizedBox(width: 8),
-                          Flexible(
-                              child: Text(a.staffName,
-                                  style: TextStyle(color: Colors.black))),
-                        ],
-                      )),
-                      DataCell(Text(a.serviceName,
-                          style: TextStyle(color: Colors.black))),
-                      DataCell(a.membership == '-'
-                          ? Text('-', style: TextStyle(color: Colors.black))
-                          : Chip(
-                              label: Text(
-                                'Yes',
-                                style: TextStyle(color: white),
+                      DataCell(
+                        a.staffName == '-' ||
+                                a.staffName == null ||
+                                a.staffName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      a.staffName,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              backgroundColor: Colors.grey[700],
-                              labelStyle: TextStyle(color: Colors.black))),
-                      DataCell(a.package == '-'
-                          ? Text('-', style: TextStyle(color: Colors.black))
-                          : Chip(
-                              label: Text(
-                                'Yes',
-                                style: TextStyle(color: white),
+                      ),
+
+                      DataCell(
+                        a.serviceName == '-' ||
+                                a.serviceName == null ||
+                                a.serviceName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Text(
+                                a.serviceName,
+                                style: TextStyle(color: Colors.black),
                               ),
-                              backgroundColor: Colors.grey[700],
-                              labelStyle: TextStyle(color: Colors.black))),
+                      ),
+
+                      // DataCell(a.membership == '-'
+                      //     ? Text('-', style: TextStyle(color: Colors.black))
+                      //     : Chip(
+                      //         label: Text(
+                      //           'Yes',
+                      //           style: TextStyle(color: white),
+                      //         ),
+                      //         backgroundColor: Colors.grey[700],
+                      //         labelStyle: TextStyle(color: Colors.black))),
+                      // DataCell(a.package == '-'
+                      //     ? Text('-', style: TextStyle(color: Colors.black))
+                      //     : Chip(
+                      //         label: Text(
+                      //           'Yes',
+                      //           style: TextStyle(color: white),
+                      //         ),
+                      //         backgroundColor: Colors.grey[700],
+                      //         labelStyle: TextStyle(color: Colors.black))),
                       DataCell(
                         GestureDetector(
                             onTap: () {
