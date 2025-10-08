@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileController.dart';
 import 'package:flutter_template/ui/auth/renewPackage/renewPackageScreen.dart';
@@ -26,7 +27,17 @@ class Adminprofilescreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(title: "Profile"),
+        appBar: CustomAppBar(
+          title: "Profile",
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: white), 
+              onPressed: () {
+                prefs.onLogout();
+              },
+            )
+          ],
+        ),
         drawer: DrawerScreen(),
         body: Padding(
           padding: const EdgeInsets.all(10),
