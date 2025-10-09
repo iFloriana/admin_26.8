@@ -36,6 +36,7 @@ import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCree
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart'
     show Staffdetailsscreen;
+import 'package:flutter_template/ui/drawer/staffattendence.dart';
 import 'package:flutter_template/ui/drawer/summary.dart';
 import 'package:flutter_template/ui/tax/addNewTaxScreen.dart';
 import 'package:get/get.dart';
@@ -413,7 +414,10 @@ class AppPages {
         name: Routes.Renewpackagescreen,
         page: () => Renewpackagescreen(),
         transition: Transition.rightToLeft),
-    
+    GetPage(
+        name: Routes.StaffAttendanceReportPage,
+        page: () => StaffAttendanceReportPage(),
+        transition: Transition.rightToLeft),
   
   ];
 }

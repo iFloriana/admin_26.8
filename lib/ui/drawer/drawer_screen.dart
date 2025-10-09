@@ -55,6 +55,8 @@ class DrawerScreen extends StatelessWidget {
           icon: Icons.card_giftcard_outlined,
           route: Routes.GetBranchPackagesScreen),
       DrawerItem(
+          title: "Staff Attendence", route: Routes.StaffAttendanceReportPage),
+      DrawerItem(
           title: 'Expence',
           icon: Icons.attach_money,
           route: Routes.FinancePage),

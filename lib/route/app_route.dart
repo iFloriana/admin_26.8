@@ -100,4 +100,6 @@ static const Renewpackagescreen = "/Renewpackagescreen";
   static const SummaryPage = "/SummaryPage";
 
   static const StaffDashboard = "/StaffDashboard";
+
+  static const StaffAttendanceReportPage = "/StaffAttendanceReportPage";
 }
