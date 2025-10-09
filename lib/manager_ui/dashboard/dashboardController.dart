@@ -14,6 +14,7 @@ class managerDashboardController extends GetxController {
   void onInit() {
     super.onInit();
     getDashbordData();
+    getChartData();
   }
 
   Future<void> getDashbordData() async {

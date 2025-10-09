@@ -39,7 +39,6 @@ class Postbranchesscreen extends StatelessWidget {
                 width: 80.h,
                 child: ImagePickerBranch(),
               ),
-
               CustomTextFormField(
                 controller: getController.nameController,
                 labelText: 'Name',
@@ -47,7 +46,6 @@ class Postbranchesscreen extends StatelessWidget {
                 validator: (value) => Validation.validatename(value),
               ),
               Category(),
-
               CustomTextFormField(
                 controller: getController.contactEmailController,
                 labelText: 'Email',
@@ -113,14 +111,13 @@ class Postbranchesscreen extends StatelessWidget {
                   )
                 ],
               ),
-
               CustomTextFormField(
                 controller: getController.postalCodeController,
                 labelText: 'Postal Code',
                 keyboardType: TextInputType.text,
               ),
               SizedBox(
-                width: 250.w,
+                width: 150.w,
                 child: ElevatedButtonExample(
                   onPressed: () async {
                     await getController.fetchLocation();
@@ -128,26 +125,29 @@ class Postbranchesscreen extends StatelessWidget {
                   text: 'Get Location',
                 ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextFormField(
-                      controller: getController.latController,
-                      labelText: 'Latitude',
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Expanded(
-                    child: CustomTextFormField(
-                      controller: getController.lngController,
-                      labelText: 'Longitude',
-                      // readOnly: true,
-                    ),
-                  ),
-                ],
-              ),
+              Obx(() => getController.latitude.value.isNotEmpty &&
+                      getController.longitude.value.isNotEmpty
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextFormField(
+                            controller: getController.latController,
+                            labelText: 'Latitude',
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Expanded(
+                          child: CustomTextFormField(
+                            controller: getController.lngController,
+                            labelText: 'Longitude',
+                            // readOnly: true,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink()),
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -279,14 +279,6 @@ class Postbranchesscreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   'Payment Methods',
-        //   style: TextStyle(
-        //     fontSize: 16.sp,
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        // ),
-        // SizedBox(height: 8.h),
         MultiDropdown<String>(
           items: _paymentMethods
               .map((method) => DropdownItem(
