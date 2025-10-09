@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/manager_ui/staff/ManagerStaffProfileScreen.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/manager_ui/staff/manager_staff_controller.dart';
@@ -133,10 +134,7 @@ class ManagerStaffScreen extends StatelessWidget {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 elevation: 2,
-                child: ExpansionTile(
-                  iconColor:
-                      Colors.grey[800], // color of the arrow when expanded
-                  collapsedIconColor: Colors.grey[800],
+                child: ListTile(
                   leading: (staff.imageUrl != null &&
                           staff.imageUrl!.isNotEmpty)
                       ? ClipRRect(
@@ -173,45 +171,9 @@ class ManagerStaffScreen extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   subtitle: Text('Branch: ${staff.branch?.name ?? '-'}'),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if ((staff.email ?? '').isNotEmpty)
-                            Text('Email: ${staff.email}'),
-                          if ((staff.phoneNumber ?? '').isNotEmpty)
-                            Text('Phone: ${staff.phoneNumber}'),
-                          if ((staff.specialization ?? '').isNotEmpty)
-                            Text('Specialization: ${staff.specialization}'),
-                          if (staff.showInCalendar != null)
-                            Text(
-                                'Show in Calendar: ${staff.showInCalendar == true ? 'Yes' : 'No'}'),
-                          const SizedBox(height: 8),
-                          const Text('Services:',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 6),
-                          if (staff.services.isEmpty) const Text('-'),
-                          if (staff.services.isNotEmpty)
-                            Column(
-                              children: staff.services.map((s) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(child: Text(s.name ?? '-')),
-                                    if (s.duration != null)
-                                      Text('${s.duration} min'),
-                                    if (s.price != null) Text('₹${s.price}'),
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  onTap: () {
+                    Get.to(() => ManagerStaffProfileScreen(staff: staff));
+                  },
                 ),
               );
             },

@@ -129,7 +129,6 @@ class ManagerStaffController extends GetxController {
         }
         branches.assignAll(unique.values.toList());
 
-        // Build unique specialization list
         final Set<String> specs = {};
         for (final s in staff) {
           final spec = (s.specialization ?? '').trim();
