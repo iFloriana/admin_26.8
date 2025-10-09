@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:excel/excel.dart';
@@ -356,7 +357,7 @@ class ManagerAttendanceTab extends StatelessWidget {
       return Stack(
         children: [
           controller.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(child: CustomLoadingAvatar())
               : controller.attendanceData.isEmpty
                   ? Center(
                       child: Column(
@@ -573,7 +574,7 @@ class ManagerPerformanceTab extends StatelessWidget {
 
     return Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: CustomLoadingAvatar());
       }
 
       final data = controller.performanceData.value;

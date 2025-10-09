@@ -71,7 +71,7 @@ class Renewpackagescreen extends StatelessWidget {
                   if (getController.isLoading.value) {
                     return const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
-                      child: CircularProgressIndicator(color: primaryColor),
+                      child: CustomLoadingAvatar(),
                     );
                   }
 

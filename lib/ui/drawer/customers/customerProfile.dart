@@ -6,6 +6,7 @@ import 'package:flutter_template/ui/drawer/customers/customerController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart'; // For date formatting
@@ -98,9 +99,7 @@ class ProfileTab extends StatelessWidget {
                             width: 120.w,
                             height: 120.h,
                             placeholder: (context, url) =>
-                                const CircularProgressIndicator(
-                              color: primaryColor,
-                            ),
+                                const CustomLoadingAvatar(),
                             errorWidget: (context, url, error) => const Icon(
                               Icons.person,
                               size: 60,
@@ -230,7 +229,7 @@ class MembershipPackageTab extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(color: primaryColor),
+            child: CustomLoadingAvatar(),
           );
         } else if (snapshot.hasError || snapshot.data == null) {
           return Center(
@@ -569,7 +568,7 @@ class HistoryTab extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(color: primaryColor),
+            child: CustomLoadingAvatar(),
           );
         } else if (snapshot.hasError || snapshot.data == null) {
           return Center(

@@ -5,6 +5,7 @@ import 'package:flutter_template/ui/drawer/customers/customerProfile.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -82,7 +83,7 @@ class CustomersScreen extends StatelessWidget {
       ),
       drawer: DrawerScreen(),
       body: Obx(() => customerController.isLoading.value
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CustomLoadingAvatar())
           : customerController.filteredCustomerList.isEmpty
               ? Center(
                   child: Text(
@@ -159,7 +160,7 @@ class CustomersScreen extends StatelessWidget {
                                     height: 50.h,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
+                                        const CustomLoadingAvatar(),
                                     errorWidget: (context, url, error) =>
                                         Container(
                                       width: 50.w,

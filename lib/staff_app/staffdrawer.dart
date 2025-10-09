@@ -7,6 +7,7 @@ import 'package:flutter_template/staff_app/timecard.dart'; // Import AttendanceC
 import 'package:flutter_template/staff_app/reports.dart'; // Import StaffReportScreen
 import 'package:flutter_template/staff_app/staffprofile.dart'; // Import StaffProfileScreen
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
@@ -53,7 +54,7 @@ class StaffDashboard extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+          body: Center(child: CustomLoadingAvatar()),
         );
       }
 

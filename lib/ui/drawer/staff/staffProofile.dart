@@ -5,6 +5,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:excel/excel.dart' hide Data;
@@ -372,7 +373,7 @@ class AttendanceTab extends StatelessWidget {
       return Stack(
         children: [
           controller.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(child: CustomLoadingAvatar())
               : controller.attendanceData.isEmpty
                   ? Center(
                       child: Column(
@@ -589,7 +590,7 @@ class PerformanceTab extends StatelessWidget {
 
     return Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: CustomLoadingAvatar());
       }
 
       final data = controller.performanceData.value;

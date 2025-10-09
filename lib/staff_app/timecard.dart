@@ -3,6 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -929,7 +930,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen> {
         ],
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CustomLoadingAvatar())
           : _error != null
               ? Center(
                   child: Column(

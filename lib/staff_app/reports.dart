@@ -7,6 +7,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 
 class StaffReportController extends GetxController
@@ -126,8 +127,7 @@ class StaffReportScreen extends StatelessWidget {
       body: Obx(
         () => controller.isLoading.value
             ? Center(
-                child: CircularProgressIndicator(
-                  color: primaryColor,
+                child: CustomLoadingAvatar(
                 ),
               )
             : TabBarView(

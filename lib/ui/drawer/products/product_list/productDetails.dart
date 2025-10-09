@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import '../../../../wiget/appbar/commen_appbar.dart';
 import 'product_list_model.dart';
@@ -13,9 +14,9 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2, // Number of tabs
+      length: 2,
       child: Scaffold(
-        appBar: CustomAppBar( 
+        appBar: CustomAppBar(
           title: product.productName,
           bottom: const TabBar(
             indicatorColor: secondaryColor,
@@ -34,7 +35,6 @@ class ProductDetailScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             _buildProductDetailsTab(context),
-
             ProductStockHistoryTab(productId: product.id),
           ],
         ),
@@ -47,6 +47,7 @@ class ProductDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(height: 10),
           _buildProductImage(context),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -124,22 +125,20 @@ class ProductDetailScreen extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.4,
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(30),
         ),
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(30),
         ),
         child: product.imageUrl != null && product.imageUrl!.isNotEmpty
             ? CachedNetworkImage(
-                imageUrl: product.imageUrl!,
+                imageUrl: "${Apis.pdfUrl}${product.imageUrl!}",
                 fit: BoxFit.cover,
                 placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
+                    const Center(child: CustomLoadingAvatar()),
                 errorWidget: (context, url, error) => const Center(
                   child: Icon(Icons.image_not_supported,
                       size: 80, color: Colors.grey),
@@ -218,7 +217,7 @@ class ProductStockHistoryTab extends StatelessWidget {
       future: _fetchStockHistory(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingAvatar());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

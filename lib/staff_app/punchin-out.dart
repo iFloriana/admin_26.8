@@ -11,6 +11,7 @@ import 'package:flutter_template/staff_app/timecard.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -590,14 +591,7 @@ class AttendanceScreen extends StatelessWidget {
                 }
               },
         icon: controller.isPunching.value
-            ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
+            ? const CustomLoadingAvatar()
             : Icon(
                 isPunchedIn ? Icons.waving_hand : Icons.thumb_up_alt_outlined,
                 size: 28,

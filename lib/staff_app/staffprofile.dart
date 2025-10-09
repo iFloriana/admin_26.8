@@ -3,6 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 
 /// Controller without model (using Map only)
@@ -69,7 +70,7 @@ class StaffProfileScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.loading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingAvatar());
         }
 
         if (controller.staffData.isEmpty) {
@@ -109,7 +110,7 @@ class StaffProfileScreen extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.all(20),
                       width: double.infinity,
-                      child: Column(  
+                      child: Column(
                         children: [
                           CircleAvatar(
                             radius: 40,
