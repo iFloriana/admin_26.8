@@ -7,6 +7,7 @@ import 'package:flutter_template/manager_ui/manager_products/product_list/manage
 import 'package:flutter_template/manager_ui/manager_products/product_list/product_list_screen.dart';
 import 'package:flutter_template/manager_ui/manager_products/subcategory/subcategoryScreen.dart';
 import 'package:flutter_template/manager_ui/manager_products/units/unitsScreen.dart';
+import 'package:flutter_template/manager_ui/manager_staff_attendence_report.dart';
 import 'package:flutter_template/manager_ui/manager_summry.dart';
 import 'package:flutter_template/staff_app/punchin-out.dart';
 import 'package:flutter_template/staff_app/staffdrawer.dart';
@@ -424,6 +425,11 @@ class AppPages {
         name: Routes.ManagerProductDetailScreen,
         page: () => ManagerProductDetailScreen(),
         transition: Transition.rightToLeft),
+
+        //   GetPage(
+        // name: Routes.ManagerStaffAttendanceReportPage,
+        // page: () => ManagerStaffAttendanceReportPage(),
+        // transition: Transition.rightToLeft),
   
   ];
 }

@@ -54,6 +54,9 @@ class ManagerDrawerScreen extends StatelessWidget {
           route: Routes.managerFinancePage),
       DrawerItem(
           title: 'Summery', icon: Icons.dock, route: Routes.ManagerSummaryPage),
+      // DrawerItem(
+      //     title: "Staff Attendence",
+      //     route: Routes.ManagerStaffAttendanceReportPage),
       DrawerItem(
           title: 'Reports',
           icon: Icons.receipt_outlined,
