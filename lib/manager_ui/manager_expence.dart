@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/network/network_const.dart';
+import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart' hide FormData, MultipartFile;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http_parser/http_parser.dart';
-import '../wiget/custome_snackbar.dart';
 
 class Branch1 {
   final String? id;
@@ -43,9 +44,8 @@ class managerFinanceController extends GetxController {
   final owner_deposit_noteCtrl = TextEditingController();
   final addExpenceamountCtrl = TextEditingController();
   final addExpencenoteCtrl = TextEditingController();
-  var branchList = <Branch1>[].obs;
+  // var branchList = <Branch1>[].obs;
   var amount = TextEditingController();
-  // var selectedBranchId = "".obs;
   final categories = [
     "Food & Drinks",
     "Maintenance",
@@ -56,24 +56,24 @@ class managerFinanceController extends GetxController {
   var financeData = <String, dynamic>{}.obs;
   var isLoading = false.obs;
   var selectedDateRange = Rxn<DateTimeRange>();
-  var branches = <Map<String, String>>[].obs;
-  var selectedBranch = "".obs;
+  // var branches = <Map<String, String>>[].obs;
+  // var selectedBranch = "".obs;
   var expensesData = {}.obs;
   var openingBalance = 0.0.obs;
   // Totals
   var totalCredit = 0.0.obs;
   var totalDebit = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchFinanceData();
-    print('===========> ${Apis.baseUrl}${Endpoints.getBranchName}6877740e7c0e7ecb364b21c7');
   }
 
   Future<void> updateOpeningBalanceDio() async {
     try {
       final manager = await prefs.getManagerUser();
-      if (manager?.manager?.salonId == null) {
+      if (manager?.manager!.salonId == null) {
         print('Salon ID missing.');
         return;
       }
@@ -83,7 +83,7 @@ class managerFinanceController extends GetxController {
         data: {
           "salon_id": manager?.manager?.salonId,
           "opening_balance": amount.text,
-          "branch_id": manager?.manager?.branchId?.sId
+          "branch_id": manager?.manager?.branchId?.sId ?? "",
         },
         options: Options(headers: {"Content-Type": "application/json"}),
       );
@@ -91,7 +91,7 @@ class managerFinanceController extends GetxController {
       if (response.data != null && response.data['success'] == true) {
         Get.back(); // Close the dialog
         amount.clear();
-        // ✅ Fetch the updated opening balance from the server
+
         await fetchOpeningBalance(
           salonId: manager?.manager?.salonId ?? "",
           branchId: manager?.manager?.branchId?.sId ?? "",
@@ -142,24 +142,15 @@ class managerFinanceController extends GetxController {
       isLoading.value = true;
       final getdata = await prefs.getManagerUser();
 
-      // Build query
       Map<String, dynamic> query = {
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId
+        "branch_id": getdata?.manager?.branchId?.sId ?? "",
       };
 
-      if (getdata?.manager?.branchId?.sId != null) {
-        query["branch_id"] = getdata?.manager?.branchId?.sId;
-
-        // 🆕 Fetch opening balance for the selected branch
-        await fetchOpeningBalance(
-          salonId: getdata?.manager?.salonId ?? "",
-          branchId: getdata?.manager?.branchId?.sId ?? "",
-        );
-      } else {
-        // Reset if "All Branches" is selected
-        openingBalance.value = 0.0;
-      }
+      await fetchOpeningBalance(
+        salonId: getdata?.manager?.salonId ?? "",
+        branchId: getdata?.manager?.branchId?.sId ?? "",
+      );
 
       final response = await dioClient.dio.get(
         "${Apis.baseUrl}/expenses",
@@ -172,7 +163,6 @@ class managerFinanceController extends GetxController {
         final Map<String, dynamic> filteredMap = {};
         final DateTimeRange? range = selectedDateRange.value;
 
-        // Precompute inclusive start/end (local dates)
         DateTime? start;
         DateTime? end;
         if (range != null) {
@@ -202,11 +192,10 @@ class managerFinanceController extends GetxController {
               }
             }).toList();
 
-            // 🔥 Strict filter on the dateKey itself
             try {
               final dateObj = DateTime.parse(dateKey).toLocal();
               if (dateObj.isBefore(start!) || dateObj.isAfter(end!)) {
-                itemsList = []; // force empty if date is outside
+                itemsList = [];
               }
             } catch (_) {}
           }
@@ -218,15 +207,20 @@ class managerFinanceController extends GetxController {
 
         financeData.value = filteredMap;
 
-        // recalc totals from the filteredMap
         double credit = 0;
         double debit = 0;
         filteredMap.forEach((date, transactions) {
           for (var t in transactions) {
-            if (t["type"] == "receive_from_owner_account") {
+            // Updated logic to handle new credit types
+            if (t["type"] == "receive_from_owner_account" ||
+                t["type"] == "services" ||
+                t["type"] == "products" ||
+                t["type"] == "memberships" ||
+                t["type"] == "packages") {
               credit += (t["amount"] ?? 0).toDouble();
             } else if (t["type"] == "vendor_pay" ||
-                t["type"] == "deposit_to_owner_account") {
+                t["type"] == "deposit_to_owner_account" ||
+                t["type"] == "add_expense") {
               debit += (t["amount"] ?? 0).toDouble();
             }
           }
@@ -251,7 +245,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -261,7 +254,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -272,7 +264,8 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "branch_id": getdata?.manager?.branchId?.sId ??
+            "", // 🆕 Use the selected branch ID
         "type": "vendor_pay",
         "vendor_name": vendorNameCtrl.text.trim(),
         "amount": vendoramountCtrl.text.trim(),
@@ -293,7 +286,6 @@ class managerFinanceController extends GetxController {
         vendoramountCtrl.clear();
         vendornoteCtrl.clear();
 
-        // 🔹 Clear image from controller
         clearImage();
         Get.back();
         CustomSnackbar.showSuccess("Success", "Payment added successfully");
@@ -320,7 +312,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -330,7 +321,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -341,7 +331,8 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "branch_id": getdata?.manager?.branchId?.sId ??
+            "", // 🆕 Use the selected branch ID
         "type": "receive_from_owner_account",
         "amount": receivce_from_owner_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -385,7 +376,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -395,7 +385,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -406,7 +395,8 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "branch_id": getdata?.manager?.branchId?.sId ??
+            "", // 🆕 Use the selected branch ID
         "type": "deposit_to_owner_account",
         "amount": owner_deposit_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -450,7 +440,6 @@ class managerFinanceController extends GetxController {
         final fileName = imageFile.path.split('/').last;
         final ext = fileName.split('.').last.toLowerCase();
 
-        // ✅ Allow only jpg, jpeg, png
         if (["jpg", "jpeg", "png"].contains(ext)) {
           String mimeType = ext == "png" ? "png" : "jpeg";
 
@@ -460,7 +449,6 @@ class managerFinanceController extends GetxController {
             contentType: MediaType("image", mimeType),
           );
         } else {
-          // ❌ Invalid format, show error and stop request
           CustomSnackbar.showError(
             "Invalid File",
             "Only .jpg, .jpeg, .png formats are allowed",
@@ -472,7 +460,8 @@ class managerFinanceController extends GetxController {
       FormData formData = FormData.fromMap({
         "category": selectedCategory.value,
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId,
+        "branch_id": getdata?.manager?.branchId?.sId ??
+            "", // 🆕 Use the selected branch ID
         "type": 'add_expense',
         "amount": addExpenceamountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -577,14 +566,13 @@ class managerFinanceController extends GetxController {
 
 // 🎯 Main Page
 class managerFinancePage extends StatelessWidget {
-  final managerFinanceController controller =
-      Get.put(managerFinanceController());
+  final controller = Get.put(managerFinanceController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Finance Dashboard",
+        title: "Expence Management",
         actions: [
           Obx(() {
             final range = controller.selectedDateRange.value;
@@ -903,9 +891,14 @@ class managerFinancePage extends StatelessWidget {
                         children: List.generate(transactions.length, (index) {
                           final txn = transactions[index];
                           bool isCredit =
-                              txn["type"] == "receive_from_owner_account";
+                              txn["type"] == "receive_from_owner_account" ||
+                                  txn["type"] == "services" ||
+                                  txn["type"] == "products" ||
+                                  txn["type"] == "memberships" ||
+                                  txn["type"] == "packages";
                           bool isDebit = txn["type"] == "vendor_pay" ||
-                              txn["type"] == "deposit_to_owner_account";
+                              txn["type"] == "deposit_to_owner_account" ||
+                              txn["type"] == "add_expense";
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: isCredit
@@ -1350,7 +1343,7 @@ class managerFinancePage extends StatelessWidget {
     );
   }
 
-// 3. Vendor Pay Dialog
+  // 3. Vendor Pay Dialog
   void _showVendorPayDialog(Color color) {
     Get.dialog(
       Dialog(
@@ -1465,7 +1458,7 @@ class managerFinancePage extends StatelessWidget {
     );
   }
 
-// 4. Receive from Owner Dialog
+  // 4. Receive from Owner Dialog
   void _showReceiveDialog(Color color) {
     Get.dialog(
       Dialog(
