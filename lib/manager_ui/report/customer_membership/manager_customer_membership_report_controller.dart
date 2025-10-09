@@ -418,4 +418,5 @@ class ManagerCustomerMembershipReportController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to export PDF: $e');
     }
   }
+
 }
