@@ -102,4 +102,6 @@ static const Renewpackagescreen = "/Renewpackagescreen";
   static const StaffDashboard = "/StaffDashboard";
 
   static const StaffAttendanceReportPage = "/StaffAttendanceReportPage";
+
+  static const ManagerProductDetailScreen = "/ManagerProductDetailScreen";
 }

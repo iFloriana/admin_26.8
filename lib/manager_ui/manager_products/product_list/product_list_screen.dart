@@ -12,7 +12,8 @@ import '../../../../wiget/loading.dart';
 import '../../../../network/network_const.dart';
 
 class ManagerProductListScreen extends StatelessWidget {
-  final ManagerProductListController controller = Get.put(ManagerProductListController());
+  final ManagerProductListController controller =
+      Get.put(ManagerProductListController());
 
   @override
   Widget build(BuildContext context) {
@@ -122,16 +123,72 @@ class ManagerProductListScreen extends StatelessWidget {
   List<DataRow> _createRows() {
     return controller.productList
         .map((product) => DataRow(cells: [
-              DataCell(_ProductListItem(product: product)._buildProductInfo()),
-              DataCell(Text(product.brandId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(product.categoryId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(_ProductListItem(product: product).getPrice(),
-                  style: TextStyle(color: Colors.black))),
-              DataCell(Text(_ProductListItem(product: product).getQuantity(),
-                  style: TextStyle(color: Colors.black))),
-              DataCell(_ProductListItem(product: product)._buildStatus()),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: _ProductListItem(product: product)._buildProductInfo(),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: Text(
+                    product.brandId?.name ?? 'N/A',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: Text(
+                    product.categoryId?.name ?? 'N/A',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: Text(
+                    _ProductListItem(product: product).getPrice(),
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: Text(
+                    _ProductListItem(product: product).getQuantity(),
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routes.ManagerProductDetailScreen,
+                        arguments: product);
+                  },
+                  child: _ProductListItem(product: product)._buildStatus(),
+                ),
+              ),
               DataCell(_buildActionButtons(Get.context!, product)),
             ]))
         .toList();
