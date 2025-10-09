@@ -67,7 +67,7 @@ class AttendanceController extends GetxController {
         CustomSnackbar.showError('Error', 'Failed to fetch branch data');
       }
     } catch (e) {
-      print("Branch fetch error: $e");
+      print("⚠️ Branch fetch error: $e");
       CustomSnackbar.showError('Exception', e.toString());
     }
   }
@@ -99,7 +99,7 @@ class AttendanceController extends GetxController {
         attendanceData.clear();
       }
     } catch (e) {
-      print("Attendance fetch error: $e");
+      print("⚠️ Attendance fetch error: $e");
       CustomSnackbar.showError('Exception', e.toString());
       attendanceData.clear();
     } finally {
@@ -218,72 +218,98 @@ class StaffAttendanceReportPage extends StatelessWidget {
       appBar: CustomAppBar(
         title: 'Staff Attendance',
         actions: [
+          Obx(() => controller.isSearching.value
+              ? SizedBox(
+                  width: 220.w,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TextField(
+                      controller: searchController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        hintText: 'Search by Staff Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintStyle: const TextStyle(color: Colors.grey),
+                      ),
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      onChanged: (value) {
+                        controller.setSearchQuery(value);
+                      },
+                    ),
+                  ),
+                )
+              : SizedBox()),
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: Obx(() => Icon(
+                  controller.isSearching.value ? Icons.close : Icons.search,
+                  color: Colors.white,
+                )),
+            onPressed: () {
+              if (controller.isSearching.value) {
+                controller.isSearching.value = false;
+                searchController.clear();
+                controller.clearSearch();
+              } else {
+                controller.isSearching.value = true;
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.filter_list, color: Colors.white),
             onPressed: () => _showFilterDialog(context),
           ),
         ],
       ),
       drawer: DrawerScreen(),
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CustomLoadingAvatar());
-              }
-              var displayData = controller.attendanceData.toList();
-              if (controller.selectedBranch.value.isNotEmpty) {
-                final selectedBranchId = controller.selectedBranch.value;
-                displayData = displayData
-                    .where((staff) => staff['branch_id'] == selectedBranchId)
-                    .toList();
-              }
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CustomLoadingAvatar());
+        }
 
-              final filteredData = displayData
-                  .where((staff) => (staff['full_name'] as String? ?? 'Unknown')
-                      .toLowerCase()
-                      .contains(controller.searchQuery.value))
-                  .toList();
+        final filteredData = controller.attendanceData
+            .where((staff) =>
+                (staff['full_name']?.toString().toLowerCase() ?? '')
+                    .contains(controller.searchQuery.value))
+            .toList();
 
-              if (filteredData.isEmpty) {
-                return const Center(child: Text("No attendance data found"));
-              }
+        if (filteredData.isEmpty) {
+          return const Center(child: Text("No attendance data found"));
+        }
 
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Staff')),
-                      DataColumn(label: Text('Branch')),
-                      DataColumn(label: Text('Present Days')),
-                      DataColumn(label: Text('Absent Days')),
-                      DataColumn(label: Text('Late Entries')),
-                      DataColumn(label: Text('Early Exits')),
-                    ],
-                    rows: filteredData.asMap().entries.map((entry) {
-                      final index = entry.key + 1;
-                      final staff = entry.value;
-                      return DataRow(cells: [
-                        DataCell(
-                            Text(staff['full_name'] as String? ?? 'Unknown')),
-                        DataCell(
-                            Text(staff['branch_name'] as String? ?? 'Unknown')),
-                        DataCell(Text((staff['present_days'] ?? 0).toString())),
-                        DataCell(Text((staff['absent_days'] ?? 0).toString())),
-                        DataCell(Text((staff['late_entries'] ?? 0).toString())),
-                        DataCell(Text((staff['early_exits'] ?? 0).toString())),
-                      ]);
-                    }).toList(),
-                  ),
-                ),
-              );
-            }),
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Staff')),
+                DataColumn(label: Text('Branch')),
+                DataColumn(label: Text('Present Days')),
+                DataColumn(label: Text('Absent Days')),
+                DataColumn(label: Text('Late Entries')),
+                DataColumn(label: Text('Early Exits')),
+              ],
+              rows: filteredData.asMap().entries.map((entry) {
+                final index = entry.key + 1;
+                final staff = entry.value;
+                return DataRow(cells: [
+                  DataCell(Text(staff['full_name']?.toString() ?? 'Unknown')),
+                  DataCell(Text(staff['branch_name']?.toString() ?? 'Unknown')),
+                  DataCell(Text((staff['present_days'] ?? 0).toString())),
+                  DataCell(Text((staff['absent_days'] ?? 0).toString())),
+                  DataCell(Text((staff['late_entries'] ?? 0).toString())),
+                  DataCell(Text((staff['early_exits'] ?? 0).toString())),
+                ]);
+              }).toList(),
+            ),
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }
