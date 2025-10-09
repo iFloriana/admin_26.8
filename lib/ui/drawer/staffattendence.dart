@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
+import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
@@ -168,7 +169,7 @@ class AttendanceController extends GetxController {
 
       pdf.addPage(
         pw.MultiPage(
-           pageFormat: PdfPageFormat.a4,
+          pageFormat: PdfPageFormat.a4,
           theme: pw.ThemeData.withFont(base: ttf, bold: ttf),
           build: (pw.Context context) {
             return [
@@ -316,11 +317,116 @@ class StaffAttendanceReportPage extends StatelessWidget {
     );
   }
 
+  void _showExportDialog(
+      BuildContext context, AttendanceController controller) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          title: const Text(
+            'Export Data',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: primaryColor, // Using blue as primaryColor placeholder
+            ),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Choose your preferred export format:',
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildExportOption(
+                    context,
+                    icon: Icons.table_chart,
+                    label: 'Excel',
+                    color: Colors.green,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      controller.exportToExcel();
+                    },
+                  ),
+                  _buildExportOption(
+                    context,
+                    icon: Icons.picture_as_pdf,
+                    label: 'PDF',
+                    color: Colors.red,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      controller.exportToPdf();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+          actionsPadding: const EdgeInsets.all(16.0),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildExportOption(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 30, color: color),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title:'Staff Attendance',
+        title: 'Staff Attendance',
         actions: [
           Obx(() => controller.isSearching.value
               ? SizedBox(
@@ -366,26 +472,6 @@ class StaffAttendanceReportPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.filter_list, color: Colors.white),
             onPressed: () => _showFilterDialog(context),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.download, color: Colors.white),
-            onSelected: (value) async {
-              if (value == 'excel') {
-                await controller.exportToExcel();
-              } else if (value == 'pdf') {
-                await controller.exportToPdf();
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem<String>(
-                value: 'excel',
-                child: Text('Export to Excel'),
-              ),
-              PopupMenuItem<String>(
-                value: 'pdf',
-                child: Text('Export to PDF'),
-              ),
-            ],
           ),
         ],
       ),
@@ -434,6 +520,12 @@ class StaffAttendanceReportPage extends StatelessWidget {
           ),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showExportDialog(context, controller),
+        child: const Icon(Icons.file_download, color: Colors.white),
+        backgroundColor: primaryColor,
+        tooltip: 'Export Data',
+      ),
     );
   }
 }
