@@ -48,6 +48,8 @@ class Postbranchescontroller extends GetxController {
   var postalCodeController = TextEditingController();
   var discriptionController = TextEditingController();
   var addressController = TextEditingController();
+  var latController = TextEditingController();
+  var lngController = TextEditingController();
   var selectedCategory = "".obs;
   var isActive = true.obs;
   RxList<Service> selectedServices = <Service>[].obs;
@@ -79,6 +81,8 @@ class Postbranchescontroller extends GetxController {
     discriptionController.dispose();
     addressController.dispose();
     pincodeController.dispose();
+    latController.dispose();
+    lngController.dispose();
     serviceController.dispose();
     paymentMethodController.dispose();
     super.onClose();
@@ -124,6 +128,39 @@ class Postbranchescontroller extends GetxController {
     }
   }
 
+  Future<void> fetchLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      CustomSnackbar.showError('Error', 'Location services are disabled.');
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        CustomSnackbar.showError('Error', 'Location permissions are denied');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      CustomSnackbar.showError('Error',
+          'Location permissions are permanently denied, we cannot request permissions.');
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    latitude.value = position.latitude.toString();
+    longitude.value = position.longitude.toString();
+    latController.text = latitude.value;
+    lngController.text = longitude.value;
+  }
+
   Future onBranchAdd() async {
     final loginUser = await prefs.getUser();
     try {
@@ -145,8 +182,8 @@ class Postbranchescontroller extends GetxController {
         "state": stateController.text,
         "city": cityController.text,
         "postal_code": postalCodeController.text,
-        // "latitude": latitude.value,
-        // "longitude": longitude.value,
+        "latitude": latController.text,
+        "longitude": lngController.text,
         "description": discriptionController.text,
         "address": addressController.text,
       };

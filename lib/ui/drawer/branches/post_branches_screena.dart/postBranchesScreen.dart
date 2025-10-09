@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchescontroller.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
@@ -55,9 +56,13 @@ class Postbranchesscreen extends StatelessWidget {
               ),
               CustomTextFormField(
                 controller: getController.contactNumberController,
-                labelText: 'Number',
+                labelText: 'Phone Number',
                 keyboardType: TextInputType.number,
                 validator: (value) => Validation.validatePhone(value),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
               ),
               paymentMethodDropdown(),
               serviceDropdown(),
@@ -114,7 +119,35 @@ class Postbranchesscreen extends StatelessWidget {
                 labelText: 'Postal Code',
                 keyboardType: TextInputType.text,
               ),
-
+              SizedBox(
+                width: 250.w,
+                child: ElevatedButtonExample(
+                  onPressed: () async {
+                    await getController.fetchLocation();
+                  },
+                  text: 'Get Location',
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextFormField(
+                      controller: getController.latController,
+                      labelText: 'Latitude',
+                    ),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Expanded(
+                    child: CustomTextFormField(
+                      controller: getController.lngController,
+                      labelText: 'Longitude',
+                      // readOnly: true,
+                    ),
+                  ),
+                ],
+              ),
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -132,40 +165,6 @@ class Postbranchesscreen extends StatelessWidget {
                       ),
                     ],
                   )),
-
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Obx(() => CustomTextFormField(
-              //             controller: getController.latController
-              //               ..text = getController.latitude.value,
-              //             labelText: 'Latitude',
-              //             suffixIcon: IconButton(
-              //               icon: Icon(Icons.gps_fixed),
-              //               onPressed: () async {
-              //                 await getController.fetchLocation();
-              //               },
-              //             ),
-              //           )),
-              //     ),
-              //     SizedBox(
-              //       width: 5.w,
-              //     ),
-              //     Expanded(
-              //       child: Obx(() => CustomTextFormField(
-              //             controller: getController.lngController
-              //               ..text = getController.longitude.value,
-              //             labelText: 'Longitude',
-              //             suffixIcon: IconButton(
-              //               icon: Icon(Icons.gps_fixed),
-              //               onPressed: () async {
-              //                 await getController.fetchLocation();
-              //               },
-              //             ),
-              //           )),
-              //     ),
-              //   ],
-              // ),
               Btn_addBranch(),
               SizedBox(
                 height: 10.h,
@@ -187,7 +186,7 @@ class Postbranchesscreen extends StatelessWidget {
           labelText: 'Category',
           onChanged: (newValue) {
             if (newValue != null) {
-              getController.selectedCategory(newValue);
+              getController.selectedCategory.value = newValue;
             }
           },
         ));
@@ -195,7 +194,7 @@ class Postbranchesscreen extends StatelessWidget {
 
   Widget serviceDropdown() {
     return Obx(() {
-      if (getController.serviceList.isEmpty) {
+      if (getController.isLoading.value) {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           decoration: BoxDecoration(
