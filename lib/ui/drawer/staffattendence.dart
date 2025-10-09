@@ -4,11 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
-import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
+import 'package:excel/excel.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:open_file/open_file.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:flutter/services.dart' show rootBundle;
 
 class AttendanceController extends GetxController {
   var attendanceData = <Map<String, dynamic>>[].obs;
@@ -106,6 +112,109 @@ class AttendanceController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> exportToExcel() async {
+    try {
+      final excel = Excel.createExcel();
+      if (excel.sheets.containsKey('Sheet1')) {
+        excel.delete('Sheet1');
+      }
+
+      final sheet = excel['Attendance Report'];
+
+      // Add header row
+      sheet.appendRow([
+        'Staff Name',
+        'Branch',
+        'Present Days',
+        'Absent Days',
+        'Late Entries',
+        'Early Exits'
+      ]);
+
+      // Add data rows
+      for (var staff in attendanceData) {
+        sheet.appendRow([
+          staff['full_name']?.toString() ?? 'Unknown',
+          staff['branch_name']?.toString() ?? 'Unknown',
+          staff['present_days']?.toString() ?? '0',
+          staff['absent_days']?.toString() ?? '0',
+          staff['late_entries']?.toString() ?? '0',
+          staff['early_exits']?.toString() ?? '0',
+        ]);
+      }
+
+      // Save file
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName =
+          'attendance_report_${DateTime.now().millisecondsSinceEpoch}.xlsx';
+      final file = File('${directory.path}/$fileName');
+      await file.writeAsBytes(excel.encode()!);
+      await OpenFile.open(file.path);
+
+      CustomSnackbar.showSuccess(
+          'Success', 'Excel file exported successfully!');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to export Excel: $e');
+    }
+  }
+
+  Future<void> exportToPdf() async {
+    try {
+      final pdf = pw.Document();
+      final fontData =
+          await rootBundle.load("assets/fonts/NotoSans-Regular.ttf");
+      final ttf = pw.Font.ttf(fontData);
+
+      pdf.addPage(
+        pw.MultiPage(
+           pageFormat: PdfPageFormat.a4,
+          theme: pw.ThemeData.withFont(base: ttf, bold: ttf),
+          build: (pw.Context context) {
+            return [
+              pw.Header(
+                level: 0,
+                child: pw.Text('Staff Attendance Report',
+                    style: pw.TextStyle(
+                        fontSize: 20, fontWeight: pw.FontWeight.bold)),
+              ),
+              pw.Table.fromTextArray(
+                headers: [
+                  'Staff Name',
+                  'Branch',
+                  'Present Days',
+                  'Absent Days',
+                  'Late Entries',
+                  'Early Exits'
+                ],
+                data: attendanceData
+                    .map((staff) => [
+                          staff['full_name']?.toString() ?? 'Unknown',
+                          staff['branch_name']?.toString() ?? 'Unknown',
+                          staff['present_days']?.toString() ?? '0',
+                          staff['absent_days']?.toString() ?? '0',
+                          staff['late_entries']?.toString() ?? '0',
+                          staff['early_exits']?.toString() ?? '0',
+                        ])
+                    .toList(),
+              ),
+            ];
+          },
+        ),
+      );
+
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName =
+          'attendance_report_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final file = File('${directory.path}/$fileName');
+      await file.writeAsBytes(await pdf.save());
+      await OpenFile.open(file.path);
+
+      CustomSnackbar.showSuccess('Success', 'PDF file exported successfully!');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to export PDF: $e');
+    }
+  }
 }
 
 class StaffAttendanceReportPage extends StatelessWidget {
@@ -185,26 +294,21 @@ class StaffAttendanceReportPage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-                onPressed: () {
-                  controller.selectedYear.value = DateTime.now().year;
-                  controller.selectedMonth.value = DateTime.now().month;
-                  controller.selectedBranch.value = '';
-                  controller.fetchAttendanceData();
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Clear',
-                  style: TextStyle(color: grey),
-                )),
+              onPressed: () {
+                controller.selectedYear.value = DateTime.now().year;
+                controller.selectedMonth.value = DateTime.now().month;
+                controller.selectedBranch.value = '';
+                controller.fetchAttendanceData();
+                Navigator.of(context).pop();
+              },
+              child: Text('Clear'),
+            ),
             TextButton(
               onPressed: () {
                 controller.fetchAttendanceData();
                 Navigator.of(context).pop();
               },
-              child: Text(
-                'Apply',
-                style: TextStyle(color: primaryColor),
-              ),
+              child: Text('Apply'),
             ),
           ],
         );
@@ -216,7 +320,7 @@ class StaffAttendanceReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Staff Attendance',
+        title:'Staff Attendance',
         actions: [
           Obx(() => controller.isSearching.value
               ? SizedBox(
@@ -262,6 +366,26 @@ class StaffAttendanceReportPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.filter_list, color: Colors.white),
             onPressed: () => _showFilterDialog(context),
+          ),
+          PopupMenuButton<String>(
+            icon: Icon(Icons.download, color: Colors.white),
+            onSelected: (value) async {
+              if (value == 'excel') {
+                await controller.exportToExcel();
+              } else if (value == 'pdf') {
+                await controller.exportToPdf();
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<String>(
+                value: 'excel',
+                child: Text('Export to Excel'),
+              ),
+              PopupMenuItem<String>(
+                value: 'pdf',
+                child: Text('Export to PDF'),
+              ),
+            ],
           ),
         ],
       ),

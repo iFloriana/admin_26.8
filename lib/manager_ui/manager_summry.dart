@@ -253,6 +253,7 @@ class ManagerSummaryController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to export PDF: $e');
     }
   }
+
 }
 
 class ManagerSummaryPage extends StatelessWidget {
