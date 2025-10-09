@@ -216,7 +216,7 @@ class StaffAttendanceReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Staff Attendance Report',
+        title: 'Staff Attendance',
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -227,43 +227,11 @@ class StaffAttendanceReportPage extends StatelessWidget {
       drawer: DrawerScreen(),
       body: Column(
         children: [
-          // Optional: Show selected filters as chips
-          // Obx(() => Padding(
-          //       padding: EdgeInsets.all(8.w),
-          //       child: Wrap(
-          //         spacing: 8.w,
-          //         children: [
-          //           if (controller.selectedBranch.value.isNotEmpty)
-          //             Chip(
-          //               label: Text(controller.branches.firstWhere(
-          //                   (b) => b['_id'] == controller.selectedBranch.value,
-          //                   orElse: () => {'name': 'Unknown'})['name']),
-          //               onDeleted: () {
-          //                 controller.selectedBranch.value = '';
-          //                 controller.fetchAttendanceData();
-          //               },
-          //             ),
-          //           if (controller.selectedYear.value != DateTime.now().year ||
-          //               controller.selectedMonth.value != DateTime.now().month)
-          //             Chip(
-          //               label: Text(
-          //                   '${controller.months.firstWhere((m) => m['value'] == controller.selectedMonth.value)['name']} ${controller.selectedYear.value}'),
-          //               onDeleted: () {
-          //                 controller.selectedYear.value = DateTime.now().year;
-          //                 controller.selectedMonth.value = DateTime.now().month;
-          //                 controller.fetchAttendanceData();
-          //               },
-          //             ),
-          //         ],
-          //       ),
-          //     )),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
                 return const Center(child: CustomLoadingAvatar());
               }
-
-              // Client-side fallback filter if server doesn't filter (based on demo data observation)
               var displayData = controller.attendanceData.toList();
               if (controller.selectedBranch.value.isNotEmpty) {
                 final selectedBranchId = controller.selectedBranch.value;
