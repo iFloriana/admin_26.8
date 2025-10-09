@@ -162,6 +162,7 @@ class ManagerCustomerPackageReportScreen extends StatelessWidget {
             return const Center(
                 child: Text('No customers found with the current filters.'));
           }
+
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: SingleChildScrollView(
@@ -169,30 +170,87 @@ class ManagerCustomerPackageReportScreen extends StatelessWidget {
               child: DataTable(
                 columns: const [
                   DataColumn(label: Text('Customer')),
-                  DataColumn(label: Text('Email')),
-                  DataColumn(label: Text('Package Name')),
-                  DataColumn(label: Text('Package Price')),
-                  DataColumn(label: Text('Bought At')),
-                  DataColumn(label: Text('Valid Till')),
-                  DataColumn(label: Text('Status')),
+                  DataColumn(label: Text('Package')),
+                  DataColumn(label: Text('Services')),
+                  DataColumn(label: Text('Remaining Service Count')),
+                  DataColumn(label: Text('Start Date')),
+                  DataColumn(label: Text('Expiry Date')),
                 ],
                 rows: controller.filteredCustomerPackages.expand((customer) {
-                  return customer.branchPackage!.map((pkg) {
+                  return (customer['package_and_membership'] as List)
+                      .cast<Map<String, dynamic>>()
+                      .map((item) {
+                    final details = item['branch_package'];
+                    final services =
+                        (details['package_details'] as List?)?.length ?? 0;
+                    final remaining = (details['package_details'] as List?)
+                            ?.fold<int>(
+                                0,
+                                (sum, e) =>
+                                    sum +
+                                    (e['remaining_quantity'] as int? ?? 0)) ??
+                        0;
+                    final expiryDate =
+                        DateTime.tryParse(item['expiry_date'] ?? '');
+                    final isExpired = expiryDate != null &&
+                        expiryDate.isBefore(DateTime.now());
                     return DataRow(cells: [
                       DataCell(
-                        Text(
-                          customer.fullName ?? '',
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                customer['full_name'] ?? '',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      DataCell(Text(customer.email ?? '')),
-                      DataCell(Text(pkg.packageName ?? '')),
-                      DataCell(Text(pkg.packagePrice?.toString() ?? '')),
-                      DataCell(Text(controller.getFormattedBoughtDate(
-                          customer.branchPackageBoughtAt))),
-                      DataCell(Text(controller
-                          .getFormattedDate(customer.branchPackageValidTill))),
-                      DataCell(Text(controller.getStatusText(pkg.status))),
+                      DataCell(Text(details['package_name'] ?? '')),
+                      DataCell(Text(services.toString())),
+                      DataCell(
+                        GestureDetector(
+                          onTap: () {
+                            _showRemainingDetailsBottomSheet(
+                                context,
+                                customer['full_name'],
+                                details['package_name'],
+                                details['package_details']);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: remaining > 0 ? Colors.grey : Colors.red,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              remaining.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(Text(controller.getFormattedDate(item['date']))),
+                      DataCell(
+                        isExpired
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  controller
+                                      .getFormattedDate(item['expiry_date']),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              )
+                            : Text(controller
+                                .getFormattedDate(item['expiry_date'])),
+                      ),
                     ]);
                   });
                 }).toList(),
@@ -201,6 +259,52 @@ class ManagerCustomerPackageReportScreen extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  void _showRemainingDetailsBottomSheet(BuildContext context,
+      String? customerName, String? packageName, dynamic packageDetails) {
+    final detailsList =
+        (packageDetails as List?)?.cast<Map<String, dynamic>>() ?? [];
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Package Name: ${packageName ?? ''}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18)),
+              const SizedBox(height: 8),
+              Text('Customer Name: ${customerName ?? ''}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 16),
+              if (detailsList.isNotEmpty)
+                DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Service Name')),
+                    DataColumn(label: Text('Remaining Quantity')),
+                  ],
+                  rows: detailsList.map((detail) {
+                    final service =
+                        detail['service_id'] as Map<String, dynamic>?;
+                    return DataRow(cells: [
+                      DataCell(Text(service?['name'] ?? '')),
+                      DataCell(
+                          Text((detail['remaining_quantity'] ?? 0).toString())),
+                    ]);
+                  }).toList(),
+                )
+              else
+                const Text('No service details available.'),
+            ],
+          ),
+        );
+      },
     );
   }
 

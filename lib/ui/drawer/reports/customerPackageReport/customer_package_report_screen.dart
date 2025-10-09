@@ -164,6 +164,7 @@ class CustomerPackageReportScreen extends StatelessWidget {
             return const Center(
                 child: Text('No customers found with the current filters.'));
           }
+
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: SingleChildScrollView(
@@ -239,6 +240,7 @@ class CustomerPackageReportScreen extends StatelessWidget {
               ),
             ),
           );
+        
         }),
       ),
     );

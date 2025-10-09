@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
-import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
@@ -79,12 +79,41 @@ class AttendanceController extends GetxController {
   }
 }
 
-class StaffAttendanceReportPage extends StatelessWidget {
-  final AttendanceController controller = Get.put(AttendanceController());
-  final TextEditingController searchController = TextEditingController();
+class AttendanceDataSource extends DataTableSource {
+  final List<Map<String, dynamic>> data;
+
+  AttendanceDataSource(this.data);
 
   @override
+  DataRow? getRow(int index) {
+    if (index >= data.length) return null;
+    final staff = data[index];
+    return DataRow(cells: [
+      DataCell(Text(staff['full_name'] as String? ?? 'Unknown')),
+      DataCell(Text(staff['branch_name'] as String? ?? 'Unknown')),
+      DataCell(Text((staff['present_days'] ?? 0).toString())),
+      DataCell(Text((staff['absent_days'] ?? 0).toString())),
+      DataCell(Text((staff['late_entries'] ?? 0).toString())),
+      DataCell(Text((staff['early_exits'] ?? 0).toString())),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => data.length;
+
+  @override
+  int get selectedRowCount => 0;
+}
+
+class StaffAttendanceReportPage extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
+    final searchController = TextEditingController();
+
+    final controller = Get.put(AttendanceController());
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
@@ -243,33 +272,21 @@ class StaffAttendanceReportPage extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: const [
-                // DataColumn(label: Text('Sr. No.')),
-                DataColumn(label: Text('Staff')),
-                DataColumn(label: Text('Branch')),
-                DataColumn(label: Text('Present Days')),
-                DataColumn(label: Text('Absent Days')),
-                DataColumn(label: Text('Late Entries')),
-                DataColumn(label: Text('Early Exits')),
-              ],
-              rows: filteredData.asMap().entries.map((entry) {
-                final index = entry.key + 1;
-                final staff = entry.value;
-                return DataRow(cells: [
-                  // DataCell(Text(index.toString())),
-                  DataCell(Text(staff['full_name'] as String? ?? 'Unknown')),
-                  DataCell(Text(staff['branch_name'] as String? ?? 'Unknown')),
-                  DataCell(Text((staff['present_days'] ?? 0).toString())),
-                  DataCell(Text((staff['absent_days'] ?? 0).toString())),
-                  DataCell(Text((staff['late_entries'] ?? 0).toString())),
-                  DataCell(Text((staff['early_exits'] ?? 0).toString())),
-                ]);
-              }).toList(),
-            ),
+          scrollDirection: Axis.horizontal,
+          child: PaginatedDataTable(
+            columns: const [
+              DataColumn(label: Text('Staff')),
+              DataColumn(label: Text('Branch')),
+              DataColumn(label: Text('Present Days')),
+              DataColumn(label: Text('Absent Days')),
+              DataColumn(label: Text('Late Entries')),
+              DataColumn(label: Text('Early Exits')),
+            ],
+            source: AttendanceDataSource(filteredData),
+            rowsPerPage: 10,
+            columnSpacing: 20,
+            horizontalMargin: 10,
+            showCheckboxColumn: false,
           ),
         );
       }),

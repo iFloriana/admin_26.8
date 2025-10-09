@@ -1,10 +1,10 @@
 class Dashboard_model {
   // Root-level fields from API
-  int? appointmentCount;
-  int? customerCount;
-  int? orderCount;
-  int? productSales;
-  int? totalCommission;
+  num? appointmentCount;
+  num? customerCount;
+  num? orderCount;
+  num? productSales;
+  num? totalCommission;
 
   List<Performance>? performance;
   List<UpcomingAppointments>? upcomingAppointments;
@@ -207,11 +207,11 @@ class UpcomingAppointments {
 
 class AppointmentsRevenueGraph {
   String? date;
-  int? appointments;
-  int? revenue;
+  num? appointments;
+  num? revenue;
   String? name;
-  int? totalAppointments;
-  int? totalRevenue;
+  num? totalAppointments;
+  num? totalRevenue;
 
   AppointmentsRevenueGraph(
       {this.date,
@@ -245,11 +245,11 @@ class AppointmentsRevenueGraph {
 class TopServices {
   String? serviceName;
   String? service_name;
-  int? count;
-  int? totalCount;
-  int? total_count;
-  int? totalAmount;
-  int? total_amount;
+  num? count;
+  num? totalCount;
+  num? total_count;
+  num? totalAmount;
+  num? total_amount;
 
   TopServices({
     this.serviceName,
@@ -286,7 +286,7 @@ class TopServices {
 
 class LineChartDataPoint {
   String? date;
-  int? sales;
+  num? sales;
   LineChartDataPoint({this.date, this.sales});
   LineChartDataPoint.fromJson(Map<String, dynamic> json) {
     date = json['date'];
@@ -296,8 +296,8 @@ class LineChartDataPoint {
 
 class BarChartDataPoint {
   String? date;
-  int? sales;
-  int? appointments;
+  num? sales;
+  num? appointments;
   BarChartDataPoint({this.date, this.sales, this.appointments});
   BarChartDataPoint.fromJson(Map<String, dynamic> json) {
     date = json['date'];
