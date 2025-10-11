@@ -16,14 +16,9 @@ class Customer {
   final String phoneNumber;
   final String email;
   final String gender;
-  final List<String> branchPackage;
-  final String branchMembership;
   final int status;
-  final String branchMembershipId;
-  final Map<String, dynamic>? branchMembershipObj;
   final String? image;
-  final List<Map<String, dynamic>> branchPackages; // Add branch_packages
-  final List<Map<String, dynamic>> branchMemberships; // Add branch_memberships
+  final List<Map<String, dynamic>>? packageAndMembership;
 
   Customer({
     required this.id,
@@ -31,14 +26,9 @@ class Customer {
     required this.phoneNumber,
     required this.email,
     required this.gender,
-    this.branchPackage = const [],
-    this.branchMembership = '',
     this.status = 1,
-    this.branchMembershipId = '',
-    this.branchMembershipObj,
     this.image,
-    this.branchPackages = const [],
-    this.branchMemberships = const [],
+    this.packageAndMembership,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
@@ -48,29 +38,13 @@ class Customer {
       phoneNumber: json['phone_number'] ?? '',
       email: json['email'] ?? '',
       gender: json['gender'] ?? '',
-      branchPackage: (json['branch_package'] as List?)
-              ?.map((e) => e is Map ? e['_id']?.toString() ?? '' : e.toString())
-              .toList() ??
-          [],
-      branchMembership: json['branch_membership'] is Map
-          ? json['branch_membership']['_id']?.toString() ?? ''
-          : json['branch_membership']?.toString() ?? '',
       status: json['status'] is int
           ? json['status']
           : int.tryParse(json['status']?.toString() ?? '1') ?? 1,
-      branchMembershipId: json['branchMembership_id']?.toString() ?? '',
-      branchMembershipObj: json['branch_membership'] is Map<String, dynamic>
-          ? json['branch_membership'] as Map<String, dynamic>
-          : null,
       image: json['image_url'],
-      branchPackages: (json['branch_packages'] as List?)
-              ?.map((e) => e as Map<String, dynamic>)
-              .toList() ??
-          [],
-      branchMemberships: (json['branch_memberships'] as List?)
-              ?.map((e) => e as Map<String, dynamic>)
-              .toList() ??
-          [],
+      packageAndMembership: (json['package_and_membership'] as List?)
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList(),
     );
   }
 }

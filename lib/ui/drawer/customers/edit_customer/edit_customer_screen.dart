@@ -45,7 +45,6 @@ class EditCustomerScreen extends StatelessWidget {
     } else {
       customerController.existingImageUrl.value = null;
     }
-    //  customerController.   customer.image;   pre selected image
 
     // Prefill gender
     final genderValue = customer.gender.capitalizeFirst ?? 'Male';
@@ -58,18 +57,21 @@ class EditCustomerScreen extends StatelessWidget {
     customerController.isActive.value = customer.status == 1;
 
     customerController.singleImage.value = null;
-    // Prefill package/membership fields
-    final hasPackages = customer.branchPackage.isNotEmpty;
-    final hasMembership = (customer.branchMembership.isNotEmpty) ||
-        (customer.branchMembershipId.isNotEmpty) ||
-        (customer.branchMembershipObj != null &&
-            customer.branchMembershipObj!['_id'] != null);
+
+    // Prefill package/membership fields from package_and_membership
+    final packageAndMembership = customer.packageAndMembership ?? [];
+    final hasPackages =
+        packageAndMembership.any((item) => item['branch_package'] != null);
+    final hasMembership =
+        packageAndMembership.any((item) => item['branch_membership'] != null);
     customerController.showPackageFields.value = hasPackages || hasMembership;
 
     // Prefill branch packages
     if (hasPackages && customerController.branchPackageList.isNotEmpty) {
-      final customerPackageIds =
-          customer.branchPackage.map((id) => id.toString().trim()).toList();
+      final customerPackageIds = packageAndMembership
+          .where((item) => item['branch_package'] != null)
+          .map((item) => item['branch_package']['_id'].toString().trim())
+          .toList();
       final selectedPkgs = customerController.branchPackageList
           .where((pkg) =>
               pkg.id != null &&
@@ -84,15 +86,12 @@ class EditCustomerScreen extends StatelessWidget {
       customerController.packageController.clearAll();
     }
 
-    // Prefill branch membership (use id from object if id is missing)
+    // Prefill branch membership
     String? membershipId;
-    if (customer.branchMembership.isNotEmpty) {
-      membershipId = customer.branchMembership;
-    } else if (customer.branchMembershipId.isNotEmpty) {
-      membershipId = customer.branchMembershipId;
-    } else if (customer.branchMembershipObj != null &&
-        customer.branchMembershipObj!['_id'] != null) {
-      membershipId = customer.branchMembershipObj!['_id'];
+    final membershipItem = packageAndMembership
+        .firstWhereOrNull((item) => item['branch_membership'] != null);
+    if (membershipItem != null) {
+      membershipId = membershipItem['branch_membership']['_id']?.toString();
     }
     if (membershipId != null &&
         customerController.branchMembershipList
@@ -284,10 +283,6 @@ class EditCustomerScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // CustomTextWidget(
-        //   text: 'Customer Photo',
-        //   textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
-        // ),
         SizedBox(height: 8.h),
         Center(
           child: Obx(() => GestureDetector(
@@ -312,25 +307,6 @@ class EditCustomerScreen extends StatelessWidget {
                                 height: double.infinity,
                               ),
                             ),
-                            // Positioned(
-                            //   top: 4,
-                            //   right: 4,
-                            //   child: GestureDetector(
-                            //     onTap: customerController.removeSelectedImage,
-                            //     child: Container(
-                            //       padding: const EdgeInsets.all(4),
-                            //       decoration: const BoxDecoration(
-                            //         color: Colors.red,
-                            //         shape: BoxShape.circle,
-                            //       ),
-                            //       child: const Icon(
-                            //         Icons.close,
-                            //         color: Colors.white,
-                            //         size: 16,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         )
                       : customerController.existingImageUrl.value != null &&
@@ -356,28 +332,6 @@ class EditCustomerScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                // Positioned(
-                                //   top: 4,
-                                //   right: 4,
-                                //   child: GestureDetector(
-                                //     onTap: () {
-                                //       customerController
-                                //           .existingImageUrl.value = null;
-                                //     },
-                                //     child: Container(
-                                //       padding: const EdgeInsets.all(4),
-                                //       decoration: const BoxDecoration(
-                                //         color: Colors.red,
-                                //         shape: BoxShape.circle,
-                                //       ),
-                                //       child: const Icon(
-                                //         Icons.close,
-                                //         color: Colors.white,
-                                //         size: 16,
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             )
                           : Column(
@@ -401,26 +355,7 @@ class EditCustomerScreen extends StatelessWidget {
                 ),
               )),
         ),
-
         SizedBox(height: 8.h),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     ElevatedButton.icon(
-        //       onPressed: () =>
-        //           customerController.showImageSourceDialog(context),
-        //       icon: const Icon(Icons.add_a_photo),
-        //       label: const Text('Upload Photo'),
-        //       style: ElevatedButton.styleFrom(
-        //         backgroundColor: primaryColor,
-        //         foregroundColor: Colors.white,
-        //         shape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(8.r),
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -431,7 +366,6 @@ class EditCustomerScreen extends StatelessWidget {
               ? (customer.gender.isNotEmpty ? customer.gender : 'Male')
               : customerController.selectedGender.value,
           items: customerController.genderOptions,
-          // hintText: 'Gender',
           labelText: 'Gender',
           onChanged: (newValue) {
             if (newValue != null) {
