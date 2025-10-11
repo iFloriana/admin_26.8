@@ -1,0 +1,206 @@
+{
+  "success": true,
+  "data": [
+    {
+      "appointment_id": "68788c162923135f389a79f8",
+      "appointment_date": "2025-07-17T00:00:00.000Z",
+      "appointment_time": "11:00",
+      "notes": "",
+      "customer": {
+        "_id": "687761c9b44ab95d1f6a9d00",
+        "full_name": "Rrd Dfsd",
+        "email": "rd@gmail.com",
+        "phone_number": "915645446556",
+        "gender": "other",
+        "salon_id": "684011271ee646f27873fddc",
+        "branch_package": [],
+        "status": 1,
+        "createdAt": "2025-07-16T08:24:41.985Z",
+        "updatedAt": "2025-07-16T08:44:37.787Z",
+        "__v": 0,
+        "branch_membership": "684bf3649a80137c2c89029a",
+        "branch_membership_bought_at": "2025-07-16T08:44:37.784Z",
+        "branch_membership_valid_till": "2026-01-16T08:44:37.784Z",
+        "package_and_membership": [
+          {
+            "branch_membership": "684bf3649a80137c2c89029a",
+            "membership_name": "Membership New",
+            "discount": 20,
+            "discount_type": "percentage",
+            "start_date": "2025-07-16T08:24:55.680Z",
+            "end_date": "2026-01-16T08:24:55.678Z",
+            "date": "2025-07-16T08:24:55.680Z",
+            "_id": "687761d7b44ab95d1f6a9d18"
+          }
+        ],
+        "active_branch_package": "inactive",
+        "active_branch_membership": "active"
+      },
+      "branch": {
+        "_id": "6840fc497e25fa65885e3edd",
+        "name": "Ashirwad 1"
+      },
+      "services": [
+        {
+          "service": {
+            "_id": "68424f239d0576de75cccb8c",
+            "name": "Blow Dry",
+            "service_duration": 30,
+            "regular_price": 550,
+            "category_id": "6841909c9db5063a0234b3c8",
+            "description": "",
+            "status": 1,
+            "salon_id": "684011271ee646f27873fddc",
+            "createdAt": "2025-06-06T02:14:59.687Z",
+            "updatedAt": "2025-08-05T10:56:14.170Z",
+            "__v": 0
+          },
+          "staff": {
+            "_id": "6854e87f552c461e11b487dd",
+            "full_name": "Darshan Rami",
+            "email": "dr@gmail.com",
+            "phone_number": "912545445454",
+            "gender": "male",
+            "branch_id": "6840fc497e25fa65885e3edd",
+            "salon_id": "684011271ee646f27873fddc",
+            "service_id": [
+              "684194299db5063a0234b471",
+              "68424ead9d0576de75cccb75",
+              "68424eef9d0576de75cccb7e",
+              "68424f0e9d0576de75cccb85",
+              "68424f239d0576de75cccb8c",
+              "6842b45eab15a78f9544f158",
+              "6895f15d792b33b75140cd40"
+            ],
+            "status": 1,
+            "show_in_calendar": true,
+            "assign_time": {
+              "start_shift": "09:19",
+              "end_shift": "19:00"
+            },
+            "lunch_time": {
+              "duration": 60,
+              "timing": "13:00"
+            },
+            "assigned_commission_id": "68427bb09e25d5ef4917ce06",
+            "createdAt": "2025-06-20T04:50:07.340Z",
+            "updatedAt": "2025-08-13T10:19:16.963Z",
+            "__v": 0,
+            "specialization": "Hair"
+          },
+          "service_amount": 550
+        }
+      ],
+      "products": [],
+      "branch_package": null,
+      "branch_membership": null,
+      "status": "check-out",
+      "payment_status": "Paid",
+      "total_payment": 550,
+      "service_total_amount": 550,
+      "product_total_amount": 0,
+      "coupon_discount": 0,
+      "additional_discount": 0,
+      "order_code": "ORD-1752730646335-7436"
+    },
+    {
+      "appointment_id": "6878d273a8b7d0ff6cdf95f0",
+      "appointment_date": "2025-07-17T00:00:00.000Z",
+      "appointment_time": "15:00",
+      "notes": "",
+      "customer": {
+        "_id": "6878d263a8b7d0ff6cdf95ec",
+        "full_name": "Hffjhfjhjfhjfhjfhf",
+        "phone_number": "915451215454",
+        "gender": "male",
+        "salon_id": "684011271ee646f27873fddc",
+        "branch_package": [],
+        "status": 1,
+        "createdAt": "2025-07-17T10:37:23.853Z",
+        "updatedAt": "2025-07-18T04:52:58.963Z",
+        "__v": 0,
+        "branch_membership": "684bf3649a80137c2c89029a",
+        "branch_membership_bought_at": "2025-07-18T04:52:58.956Z",
+        "branch_membership_valid_till": "2026-01-18T04:52:58.956Z",
+        "package_and_membership": [
+          {
+            "branch_membership": "684bf3649a80137c2c89029a",
+            "membership_name": "Membership New",
+            "discount": 20,
+            "discount_type": "percentage",
+            "start_date": "2025-07-18T04:52:58.957Z",
+            "end_date": "2026-01-18T04:52:58.956Z",
+            "date": "2025-07-18T04:52:58.957Z",
+            "_id": "6879d32aa3716e0f8293df8d"
+          }
+        ],
+        "active_branch_package": "inactive",
+        "active_branch_membership": "active"
+      },
+      "branch": {
+        "_id": "684915d33e71ee76709f2aa1",
+        "name": "Ashirwad 3"
+      },
+      "services": [
+        {
+          "service": {
+            "_id": "68424eef9d0576de75cccb7e",
+            "name": "Anti-tan Facial",
+            "service_duration": 120,
+            "regular_price": 5500,
+            "category_id": "6842ac5ef0fef8162d75a54a",
+            "description": "",
+            "status": 1,
+            "salon_id": "684011271ee646f27873fddc",
+            "createdAt": "2025-06-06T02:14:07.912Z",
+            "updatedAt": "2025-08-05T10:56:04.757Z",
+            "__v": 0
+          },
+          "staff": {
+            "_id": "6863c3707dd31d4513c3b3ae",
+            "full_name": "Falguni Rami",
+            "email": "falguni@gmail.com",
+            "phone_number": "919898989898",
+            "gender": "female",
+            "branch_id": "684915d33e71ee76709f2aa1",
+            "salon_id": "684011271ee646f27873fddc",
+            "service_id": [
+              "684194299db5063a0234b471",
+              "68424ead9d0576de75cccb75",
+              "68424eef9d0576de75cccb7e",
+              "68424f0e9d0576de75cccb85",
+              "68424f239d0576de75cccb8c",
+              "6842b45eab15a78f9544f158"
+            ],
+            "status": 1,
+            "show_in_calendar": true,
+            "assign_time": {
+              "start_shift": "08:00",
+              "end_shift": "19:00"
+            },
+            "lunch_time": {
+              "duration": 30,
+              "timing": "13:30"
+            },
+            "assigned_commission_id": "68427bb09e25d5ef4917ce06",
+            "createdAt": "2025-07-01T11:16:00.972Z",
+            "updatedAt": "2025-07-01T11:16:00.972Z",
+            "__v": 0
+          },
+          "service_amount": 5500
+        }
+      ],
+      "products": [],
+      "branch_package": null,
+      "branch_membership": null,
+      "status": "check-out",
+      "payment_status": "Pending",
+      "total_payment": 0,
+      "service_total_amount": 5500,
+      "product_total_amount": 0,
+      "coupon_discount": 0,
+      "additional_discount": 0,
+      "order_code": "ORD-1752748659789-3753"
+    }
+  ]
+}

@@ -56,7 +56,8 @@ class Appointment {
     final firstService = services.isNotEmpty ? services[0] : {};
     final service = firstService['service'] ?? {};
     final staff = firstService['staff'] ?? {};
-    final branchMembership = customer['branch_membership'];
+    final packageAndMembership =
+        customer['package_and_membership'] as List? ?? [];
 
     // Helper function to safely convert dynamic to string
     String toString(dynamic value) {
@@ -94,22 +95,85 @@ class Appointment {
       return normalized;
     }
 
-    // Safely extract membership discount only if branchMembership is a Map
-    double? extractMembershipDiscount(dynamic bm) {
-      if (bm is Map && bm != null) {
-        final discount = bm['discount'];
-        return (discount is int
-            ? discount.toDouble()
-            : (discount ?? 0).toDouble());
+    // Extract membership info from package_and_membership array
+    double? extractMembershipDiscount() {
+      if (packageAndMembership.isEmpty) return null;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              final discount = item['discount'];
+              return (discount is num)
+                  ? discount.toDouble()
+                  : double.tryParse('$discount') ?? 0.0;
+            }
+          }
+        }
       }
       return null;
     }
 
-    String? extractMembershipDiscountType(dynamic bm) {
-      if (bm is Map && bm != null) {
-        return toString(bm['discount_type']);
+    String? extractMembershipDiscountType() {
+      if (packageAndMembership.isEmpty) return null;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              return toString(item['discount_type']);
+            }
+          }
+        }
       }
       return null;
+    }
+
+    // Check if customer has active package
+    bool hasActivePackage() {
+      if (packageAndMembership.isEmpty) return false;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map) {
+          final branchPackage = item['branch_package'];
+          if (branchPackage is List && branchPackage.isNotEmpty) {
+            final endDate = item['end_date'];
+            if (endDate != null) {
+              final end = DateTime.tryParse(endDate);
+              if (end != null && end.isAfter(now)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    // Check if customer has active membership
+    bool hasActiveMembership() {
+      if (packageAndMembership.isEmpty) return false;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     }
 
     return Appointment(
@@ -120,22 +184,16 @@ class Appointment {
       clientImage:
           customer['image'] is Map ? null : toString(customer['image']),
       clientPhone: toString(customer['phone_number']),
-      amount: toInt(json['total_payment']),
+      amount: toInt(json['service_total_amount']),
       staffName: toString(staff['full_name']),
       staffImage: staff['image'] is Map ? null : toString(staff['image']),
       serviceName: toString(service['name']),
-      membership: customer['branch_membership'] != null ? 'Yes' : '-',
-      package: (customer['branch_package'] != null &&
-              (customer['branch_package'] is List
-                  ? customer['branch_package'].isNotEmpty
-                  : true))
-          ? 'Yes'
-          : '-',
+      membership: hasActiveMembership() ? 'Yes' : '-',
+      package: hasActivePackage() ? 'Yes' : '-',
       status: _normalizeStatus(toString(json['status'])),
       paymentStatus: toString(json['payment_status']),
-      branchMembershipDiscount: extractMembershipDiscount(branchMembership),
-      branchMembershipDiscountType:
-          extractMembershipDiscountType(branchMembership),
+      branchMembershipDiscount: extractMembershipDiscount(),
+      branchMembershipDiscountType: extractMembershipDiscountType(),
     );
   }
 }
@@ -464,7 +522,7 @@ class AppointmentController extends GetxController {
   // Cancel appointment method
   Future<void> cancelAppointment(String appointmentId) async {
     try {
-      final response = await dioClient.dio.put(
+      await dioClient.dio.put(
         '${Apis.baseUrl}/appointments/$appointmentId',
         data: {
           'status': 'cancelled',
@@ -525,7 +583,7 @@ class AppointmentController extends GetxController {
   // Delete appointment method
   Future<void> deleteAppointment(String appointmentId) async {
     try {
-      final response = await dioClient.deleteData(
+      await dioClient.deleteData(
         '${Apis.baseUrl}/appointments/$appointmentId',
         (json) => json,
       );
@@ -557,11 +615,11 @@ class AppointmentController extends GetxController {
           sheet = excel['Appointments'];
         } else {
           final first = excel.sheets.keys.first;
-          sheet = excel[first]!;
+          sheet = excel[first];
         }
       } catch (_) {
         final first = excel.sheets.keys.first;
-        sheet = excel[first]!;
+        sheet = excel[first];
       }
 
       // Add headers with styling
@@ -613,11 +671,11 @@ class AppointmentController extends GetxController {
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: rowIndex))
-            .value = appointment.membership ?? '-';
+            .value = appointment.membership;
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: rowIndex))
-            .value = appointment.package ?? '-';
+            .value = appointment.package;
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: rowIndex))

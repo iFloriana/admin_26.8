@@ -176,9 +176,7 @@ class Appointmentscreen extends StatelessWidget {
                       DataCell(Text('${a.date} - ${a.time}',
                           style: TextStyle(color: Colors.black))),
                       DataCell(
-                        a.clientName == '-' ||
-                                a.clientName == null ||
-                                a.clientName.isEmpty
+                        a.clientName == '-' || a.clientName.isEmpty
                             ? Text('-', style: TextStyle(color: Colors.black))
                             : Row(
                                 children: [
@@ -195,9 +193,7 @@ class Appointmentscreen extends StatelessWidget {
                       DataCell(Text('₹ ${a.amount}',
                           style: TextStyle(color: Colors.black))),
                       DataCell(
-                        a.staffName == '-' ||
-                                a.staffName == null ||
-                                a.staffName.isEmpty
+                        a.staffName == '-' || a.staffName.isEmpty
                             ? Text('-', style: TextStyle(color: Colors.black))
                             : Row(
                                 children: [
@@ -212,9 +208,7 @@ class Appointmentscreen extends StatelessWidget {
                       ),
 
                       DataCell(
-                        a.serviceName == '-' ||
-                                a.serviceName == null ||
-                                a.serviceName.isEmpty
+                        a.serviceName == '-' || a.serviceName.isEmpty
                             ? Text('-', style: TextStyle(color: Colors.black))
                             : Text(
                                 a.serviceName,
@@ -292,25 +286,9 @@ class Appointmentscreen extends StatelessWidget {
                                       .value = 'percentage';
                                   controller.paymentSummaryState.discountValue
                                       .value = '0';
-                                  // Calculate initial grand total (new signature)
-                                  controller.calculateGrandTotal(
-                                    serviceAmount: a.amount.toDouble(),
-                                    additionalCharges: 0,
-                                    productTotal: 0,
-                                    membershipDiscount:
-                                        (a.branchMembershipDiscount ?? 0.0)
-                                            .toDouble(),
-                                    membershipDiscountType:
-                                        a.branchMembershipDiscountType,
-                                    couponDiscount: 0,
-                                    hasAdditionalDiscount: false,
-                                    additionalDiscountValue: 0,
-                                    additionalDiscountType: 'percentage',
-                                    taxPercent: controller.taxes.isNotEmpty
-                                        ? controller.taxes.first.value
-                                        : 0.0,
-                                    tip: 0.0,
-                                  );
+                                  // Reset payment summary state for new payment
+                                  controller.paymentSummaryState.grandTotal
+                                      .value = 0.0;
                                   Get.to(() => PaymentSummaryScreen(a: a));
                                 }
                               : null,

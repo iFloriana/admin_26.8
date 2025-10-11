@@ -47,6 +47,18 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
     });
   }
 
+  double getServiceAmount() {
+    // If appointment is not a Map or doesn't have the required structure, use total_payment
+    if (widget.a is! Map) {
+      return (widget.a.amount ?? 0).toDouble();
+    }
+
+    final appointmentMap = widget.a as Map<String, dynamic>;
+    final serviceTotal =
+        (appointmentMap['service_total_amount'] ?? 0).toDouble();
+    return serviceTotal;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = controller.paymentSummaryState;
@@ -145,48 +157,71 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
           }
         }
 
-        // Build base and compute discounts exactly as per formula
+        // Use service_total_amount directly as base amount (matching JavaScript logic)
+        // Since we updated Appointment model to use service_total_amount for amount field
         final double serviceAmount = (widget.a.amount ?? 0).toDouble();
+
         final double additionalCharges = _showAdditionalCharges
             ? (double.tryParse(_additionalChargesCtrl.text) ?? 0)
             : 0;
-        double baseForDiscounts = serviceAmount + additionalCharges;
+        double amountForDiscountsAndTax = serviceAmount + additionalCharges;
 
+        // Membership Discount (applied first)
         double membershipDeduction = 0;
         if (memberDiscount > 0) {
           final isPercent =
               (memberType ?? '').toLowerCase().startsWith('percent');
           membershipDeduction = isPercent
-              ? (memberDiscount * baseForDiscounts / 100.0)
+              ? (memberDiscount * amountForDiscountsAndTax / 100.0)
               : memberDiscount;
         }
-        baseForDiscounts -= membershipDeduction;
-        if (baseForDiscounts < 0) baseForDiscounts = 0;
+        amountForDiscountsAndTax -= membershipDeduction;
 
+        // Coupon Discount (applied after membership)
         double couponDeduction = 0;
         if (couponMap != null) {
           final String cType =
               (couponMap['discount_type'] ?? '').toString().toLowerCase();
           final num cAmount = (couponMap['discount_amount'] ?? 0) as num;
           couponDeduction = cType == 'percent'
-              ? (cAmount.toDouble() * baseForDiscounts / 100.0)
+              ? (cAmount.toDouble() * amountForDiscountsAndTax / 100.0)
               : cAmount.toDouble();
         }
+        amountForDiscountsAndTax -= couponDeduction;
 
-        controller.calculateGrandTotal(
-          serviceAmount: serviceAmount,
-          additionalCharges: additionalCharges,
-          productTotal: productTotal,
-          membershipDiscount: memberDiscount,
-          membershipDiscountType: memberType,
-          couponDiscount: couponDeduction,
-          hasAdditionalDiscount: addAdditionalDiscount,
-          additionalDiscountValue: discountValue,
-          additionalDiscountType:
-              discountType.isEmpty ? 'percentage' : discountType,
-          taxPercent: selectedTax?.value ?? 0,
-          tip: tips,
-        );
+        // Additional Discount (applied after coupon)
+        double additionalDeduction = 0;
+        if (addAdditionalDiscount && discountValue > 0) {
+          final isPercent = discountType.toLowerCase().startsWith('percent');
+          additionalDeduction = isPercent
+              ? (discountValue * amountForDiscountsAndTax / 100.0)
+              : discountValue;
+        }
+        amountForDiscountsAndTax -= additionalDeduction;
+
+        // Ensure amount doesn't go below 0
+        amountForDiscountsAndTax =
+            amountForDiscountsAndTax < 0 ? 0 : amountForDiscountsAndTax;
+
+        // Tax calculation (on discounted amount) - matching JavaScript logic
+        double taxAmount = 0;
+        if (selectedTax != null) {
+          // JavaScript checks selectedTax.type === "percent"
+          // For now, assuming all taxes are percentage-based
+          taxAmount = amountForDiscountsAndTax * (selectedTax.value / 100.0);
+        }
+
+        // Service total after discounts & tax
+        double serviceTotal = amountForDiscountsAndTax + taxAmount;
+
+        // Add tips
+        serviceTotal += tips;
+
+        // Add product total
+        final grandTotal = serviceTotal + productTotal;
+
+        // Update the grand total in the state
+        state.grandTotal.value = grandTotal < 0 ? 0 : grandTotal;
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -213,7 +248,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               ),
               Text("Phone: ${widget.a.clientPhone ?? ''}",
                   style: const TextStyle(color: Colors.black87)),
-              Text("Service Amount: ₹ ${widget.a.amount}",
+              Text("Service Amount: ₹ $serviceAmount",
                   style: const TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w500)),
               if (productsList.isNotEmpty) ...[
@@ -622,7 +657,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
                           DropdownMenuItem(
                               value: "percentage", child: Text("Percentage")),
                           DropdownMenuItem(
-                              value: "amount", child: Text("Amount")),
+                              value: "flat", child: Text("Fixed")),
                         ],
                         onChanged: (val) {
                           if (val != null) state.discountType.value = val;
@@ -744,7 +779,7 @@ class _PaymentSummaryScreenState extends State<PaymentSummaryScreen> {
               // Membership info from package_and_membership array (with fallback)
               if (memberDiscount > 0)
                 Row(children: [
-                  const Text('Membership Discount: ',
+                  const Text('Customer have a membership - ',
                       style: TextStyle(color: Colors.black87)),
                   Text(
                     (memberType ?? '').toLowerCase().startsWith('percent')
