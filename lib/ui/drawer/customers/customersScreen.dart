@@ -230,7 +230,7 @@ class CustomersScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.warning_amber_rounded,
-                  size: 48, color: Colors.red),
+                  size: 48, color: primaryColor),
               const SizedBox(height: 12),
               const Text(
                 "Delete Customer?",
@@ -245,16 +245,19 @@ class CustomersScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
-                      child: const Text("Cancel"),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: grey),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -263,7 +266,10 @@ class CustomersScreen extends StatelessWidget {
                         Navigator.of(ctx).pop();
                         controller.deleteCustomer(customerId);
                       },
-                      child: const Text("Delete"),
+                      child: const Text(
+                        "Delete",
+                        style: TextStyle(color: white),
+                      ),
                     ),
                   ),
                 ],
