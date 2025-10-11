@@ -16,7 +16,8 @@ import 'package:multi_dropdown/multi_dropdown.dart';
 
 class ManagerPostCustomerScreen extends StatelessWidget {
   ManagerPostCustomerScreen({super.key});
-  final customerController = Get.put(ManagerPostCustomerController());
+  final customerController =
+      Get.put(ManagerPostCustomerController());
 
   @override
   Widget build(BuildContext context) {
@@ -57,23 +58,7 @@ class ManagerPostCustomerScreen extends StatelessWidget {
               ),
 
               genderDropdown(),
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextWidget(
-                        text: 'Status',
-                        textStyle:
-                            CustomTextStyles.textFontRegular(size: 14.sp),
-                      ),
-                      Switch(
-                        value: customerController.isActive.value,
-                        onChanged: (value) {
-                          customerController.isActive.value = value;
-                        },
-                        activeColor: primaryColor,
-                      ),
-                    ],
-                  )),
+
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -171,6 +156,23 @@ class ManagerPostCustomerScreen extends StatelessWidget {
                       ],
                     )
                   : const SizedBox()),
+              Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        text: 'Status',
+                        textStyle:
+                            CustomTextStyles.textFontRegular(size: 14.sp),
+                      ),
+                      Switch(
+                        value: customerController.isActive.value,
+                        onChanged: (value) {
+                          customerController.isActive.value = value;
+                        },
+                        activeColor: primaryColor,
+                      ),
+                    ],
+                  )),
               Btn_addCustomer(),
               SizedBox(height: 20.h),
             ],

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/manager_ui/customer/manager_get_customer_controller.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:http_parser/http_parser.dart';
 import 'dart:io';
-
-import '../manager_get_customer_controller.dart';
+import 'dart:convert';
 
 class Salon {
   final String? id;
@@ -209,7 +210,7 @@ class ManagerPostCustomerController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser?.manager?.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser!.manager?.salonId}',
         (json) => json,
       );
 
@@ -225,8 +226,8 @@ class ManagerPostCustomerController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchMembershipNames}?salon_id=${loginUser?.manager?.salonId}',
-        (json) => json,
+        '${Apis.baseUrl}${Endpoints.getBranchMembershipNames}?salon_id=${loginUser!.manager?.salonId}',
+        (json) => json, 
       );
 
       final data = response['data'] as List;
@@ -244,11 +245,10 @@ class ManagerPostCustomerController extends GetxController {
 
       // Prepare form data for multipart request
       Map<String, dynamic> customerData = {
-        'salon_id': loginUser?.manager?.salonId,
+        'salon_id': loginUser!.manager?.salonId,
         'full_name': fullNameController.text,
         'email': emailController.text,
         'gender': selectedGender.value.toLowerCase(),
-        // 'password': passwordController.text,
         'phone_number': phoneController.text,
         'status': isActive.value ? 1 : 0,
       };
@@ -259,12 +259,31 @@ class ManagerPostCustomerController extends GetxController {
         customerData['branch_membership'] = selectedBranchMembership.value;
       }
 
-      // Add image if selected
+      // ✅ Handle image with validation
       if (selectedImage.value != null) {
+        final path = selectedImage.value!.path;
+        String filename = path.split(Platform.pathSeparator).last;
+
+        // Extract and normalize extension
+        String ext = '';
+        if (filename.contains('.')) {
+          ext = filename.split('.').last.toLowerCase();
+        }
+
+        // ✅ Allow only jpg, jpeg, png — fallback to jpg if not allowed
+        if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+          ext = 'jpg';
+          filename = '$filename.$ext';
+        }
+
+        // ✅ Assign correct MIME type
+        final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
+
         customerData['image'] = await dio.MultipartFile.fromFile(
-          selectedImage.value!.path,
-          filename:
-              selectedImage.value!.path.split(Platform.pathSeparator).last,
+          path,
+          filename: filename,
+          contentType:
+              MediaType(mimeType.split('/')[0], mimeType.split('/')[1]),
         );
       }
 
@@ -290,7 +309,6 @@ class ManagerPostCustomerController extends GetxController {
       fullNameController.clear();
       emailController.clear();
       phoneController.clear();
-      // passwordController.clear();
       selectedGender.value = '';
       selectedBranchMembership.value = '';
       selectedPackages.clear();

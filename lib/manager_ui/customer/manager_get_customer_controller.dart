@@ -5,10 +5,10 @@ import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart' as dio;
 import 'dart:io';
-import '../../../commen_items/commen_class.dart';
 
 class Customer {
   final String id;
@@ -16,12 +16,9 @@ class Customer {
   final String phoneNumber;
   final String email;
   final String gender;
-  final List<String> branchPackage;
-  final String branchMembership;
   final int status;
-  final String branchMembershipId;
-  final Map<String, dynamic>? branchMembershipObj;
-  final String? image; // Add image field
+  final String? image;
+  final List<Map<String, dynamic>>? packageAndMembership;
 
   Customer({
     required this.id,
@@ -29,12 +26,9 @@ class Customer {
     required this.phoneNumber,
     required this.email,
     required this.gender,
-    this.branchPackage = const [],
-    this.branchMembership = '',
     this.status = 1,
-    this.branchMembershipId = '',
-    this.branchMembershipObj,
-    this.image, // Add image parameter
+    this.image,
+    this.packageAndMembership,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
@@ -44,33 +38,28 @@ class Customer {
       phoneNumber: json['phone_number'] ?? '',
       email: json['email'] ?? '',
       gender: json['gender'] ?? '',
-      branchPackage: (json['branch_package'] as List?)
-              ?.map((e) => e is Map ? e['_id']?.toString() ?? '' : e.toString())
-              .toList() ??
-          [],
-      branchMembership: json['branch_membership'] is Map
-          ? json['branch_membership']['_id']?.toString() ?? ''
-          : json['branch_membership']?.toString() ?? '',
       status: json['status'] is int
           ? json['status']
           : int.tryParse(json['status']?.toString() ?? '1') ?? 1,
-      branchMembershipId: json['branchMembership_id']?.toString() ?? '',
-      branchMembershipObj: json['branch_membership'] is Map<String, dynamic>
-          ? json['branch_membership'] as Map<String, dynamic>
-          : null,
-      image: json['image_url'], // Parse image field
+      image: json['image_url'],
+      packageAndMembership: (json['package_and_membership'] as List?)
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList(),
     );
   }
 }
 
 class ManagerGetStaffController extends GetxController {
   var isLoading = false.obs;
+  RxList<Customer> customerList = <Customer>[].obs;
+  RxList<Customer> filteredCustomerList = <Customer>[].obs;
+  var isSearching = false.obs;
 
   // Add these for add/edit flows
   var fullNameController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
-  var selectedGender = 'Male'.obs;
+  var selectedGender = ''.obs;
   var isActive = true.obs;
   final List<String> genderOptions = ['Male', 'Female', 'Other'];
 
@@ -113,8 +102,6 @@ class ManagerGetStaffController extends GetxController {
 
   final Rx<File?> singleImage = Rx<File?>(null);
   final RxString editImageUrl = ''.obs;
-
-  RxList<Customer> customerList = <Customer>[].obs;
 
   // Flags to track loading
   var packagesLoaded = false.obs;
@@ -194,16 +181,19 @@ class ManagerGetStaffController extends GetxController {
   Future<void> fetchCustomers() async {
     try {
       final loginUser = await prefs.getManagerUser();
-
+      isLoading.value = true;
       final Map<String, dynamic> response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getCustomersDetails}?salon_id=${loginUser?.manager?.salonId}',
+        '${Apis.baseUrl}${Endpoints.getCustomersDetails}?salon_id=${loginUser!.manager?.salonId}',
         (json) => json as Map<String, dynamic>,
       );
 
       final List<dynamic> data = response['data'];
       customerList.value = data.map((e) => Customer.fromJson(e)).toList();
+      filteredCustomerList.assignAll(customerList);
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch customers: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -212,12 +202,14 @@ class ManagerGetStaffController extends GetxController {
       final loginUser = await prefs.getManagerUser();
       isLoading.value = true;
       final response = await dioClient.deleteData(
-        '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser?.manager?.salonId}',
+        '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser!.manager?.salonId}',
         (json) => json,
       );
 
       if (response != null) {
         customerList.removeWhere((customer) => customer.id == customerId);
+        filteredCustomerList
+            .removeWhere((customer) => customer.id == customerId);
         CustomSnackbar.showSuccess('Success', 'Customer deleted successfully');
         await fetchCustomers();
       }
@@ -233,14 +225,13 @@ class ManagerGetStaffController extends GetxController {
       final loginUser = await prefs.getManagerUser();
       isLoading.value = true;
 
-      // Prepare form data for multipart request
       Map<String, dynamic> customerData = {
         'full_name': fullNameController.text,
         'email': emailController.text,
         'phone_number': phoneController.text,
         'gender': selectedGender.value.toLowerCase(),
         'status': isActive.value ? 1 : 0,
-        'salon_id': loginUser != null ? loginUser?.manager?.salonId : null
+        'salon_id': loginUser != null ? loginUser.manager?.salonId : null
       };
 
       if (showPackageFields.value) {
@@ -251,29 +242,59 @@ class ManagerGetStaffController extends GetxController {
         }
       }
 
-      // Add image if selected
       if (selectedImage.value != null) {
+        final path = selectedImage.value!.path;
+        String filename = path.split(Platform.pathSeparator).last;
+
+        // Ensure filename has an extension; infer from actual file if missing
+        String ext = '';
+        if (filename.contains('.')) {
+          ext = filename.split('.').last.toLowerCase();
+        }
+
+        // Normalize/validate extension
+        if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+          // try to guess from file path; fallback to jpg
+          ext = 'jpg';
+          filename = '$filename.$ext';
+        }
+
+        final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
+
         customerData['image'] = await dio.MultipartFile.fromFile(
-          selectedImage.value!.path,
-          filename:
-              selectedImage.value!.path.split(Platform.pathSeparator).last,
+          path,
+          filename: filename,
+          contentType:
+              MediaType(mimeType.split('/')[0], mimeType.split('/')[1]),
         );
       }
 
-      // Create FormData for multipart request
       final formData = dio.FormData.fromMap(customerData);
 
-      await dioClient.dio.put(
-        '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser?.manager?.salonId}',
-        data: formData,
-        options: dio.Options(
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
-      );
+      try {
+        final response = await dioClient.dio.put(
+          '${Apis.baseUrl}${Endpoints.customers}/$customerId',
+          data: formData,
+          options: dio.Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
 
-      // Update in list
+        if (response.statusCode != null && response.statusCode! >= 400) {
+          throw Exception('Upload failed with status: ${response.statusCode}');
+        }
+      } on dio.DioError catch (dioError) {
+        // Show server response body when available (HTML or JSON)
+        final serverBody = dioError.response?.data;
+        final serverText =
+            serverBody is String ? serverBody : serverBody?.toString();
+        CustomSnackbar.showError(
+            'Upload Error', 'Server response: $serverText');
+        rethrow;
+      }
+
       int index = customerList.indexWhere((c) => c.id == customerId);
       if (index != -1) {
         customerList[index] = Customer(
@@ -286,10 +307,10 @@ class ManagerGetStaffController extends GetxController {
               ? selectedImage.value!.path
               : existingImageUrl.value,
         );
+        filteredCustomerList.assignAll(customerList);
         customerList.refresh();
       }
 
-      // Clear image selection
       selectedImage.value = null;
       existingImageUrl.value = null;
 
@@ -307,7 +328,7 @@ class ManagerGetStaffController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser?.manager?.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser!.manager?.salonId}',
         (json) => json,
       );
       final data = response['data'] as List;
@@ -324,7 +345,7 @@ class ManagerGetStaffController extends GetxController {
     try {
       final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchMembershipNames}?salon_id=${loginUser?.manager?.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchMembershipNames}?salon_id=${loginUser!.manager?.salonId}',
         (json) => json,
       );
       final data = response['data'] as List;
@@ -335,5 +356,24 @@ class ManagerGetStaffController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get branch memberships: $e');
       membershipsLoaded.value = true;
     }
+  }
+
+  void searchCustomers(String query) {
+    isSearching.value = query.isNotEmpty;
+    if (query.isEmpty) {
+      filteredCustomerList.assignAll(customerList);
+    } else {
+      filteredCustomerList.assignAll(
+        customerList
+            .where((customer) =>
+                customer.fullName.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
+  }
+
+  void clearSearch() {
+    isSearching.value = false;
+    filteredCustomerList.assignAll(customerList);
   }
 }
