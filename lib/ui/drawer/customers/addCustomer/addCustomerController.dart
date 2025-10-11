@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:http_parser/http_parser.dart';
 import 'dart:io';
 import 'dart:convert';
 import '../customerController.dart';
@@ -236,8 +237,7 @@ class Addcustomercontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get branch memberships: $e');
     }
   }
-
-  Future<void> addCustomer() async {
+Future<void> addCustomer() async {
     try {
       isLoading.value = true;
       final loginUser = await prefs.getUser();
@@ -248,7 +248,6 @@ class Addcustomercontroller extends GetxController {
         'full_name': fullNameController.text,
         'email': emailController.text,
         'gender': selectedGender.value.toLowerCase(),
-        // 'password': passwordController.text,
         'phone_number': phoneController.text,
         'status': isActive.value ? 1 : 0,
       };
@@ -257,14 +256,33 @@ class Addcustomercontroller extends GetxController {
         customerData['branch_package'] =
             selectedPackages.map((p) => p.id).toList();
         customerData['branch_membership'] = selectedBranchMembership.value;
-      } 
+      }
 
-      // Add image if selected
+      // ✅ Handle image with validation
       if (selectedImage.value != null) {
+        final path = selectedImage.value!.path;
+        String filename = path.split(Platform.pathSeparator).last;
+
+        // Extract and normalize extension
+        String ext = '';
+        if (filename.contains('.')) {
+          ext = filename.split('.').last.toLowerCase();
+        }
+
+        // ✅ Allow only jpg, jpeg, png — fallback to jpg if not allowed
+        if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+          ext = 'jpg';
+          filename = '$filename.$ext';
+        }
+
+        // ✅ Assign correct MIME type
+        final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
+
         customerData['image'] = await dio.MultipartFile.fromFile(
-          selectedImage.value!.path,
-          filename:
-              selectedImage.value!.path.split(Platform.pathSeparator).last,
+          path,
+          filename: filename,
+          contentType:
+              MediaType(mimeType.split('/')[0], mimeType.split('/')[1]),
         );
       }
 
@@ -290,7 +308,6 @@ class Addcustomercontroller extends GetxController {
       fullNameController.clear();
       emailController.clear();
       phoneController.clear();
-      // passwordController.clear();
       selectedGender.value = '';
       selectedBranchMembership.value = '';
       selectedPackages.clear();
@@ -307,4 +324,5 @@ class Addcustomercontroller extends GetxController {
       isLoading.value = false;
     }
   }
+
 }

@@ -4,10 +4,10 @@ import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart' as dio;
 import 'dart:io';
-import '../../../commen_items/commen_class.dart';
 import 'addCustomer/addCustomerController.dart'; // For BranchPackage
 
 class Customer {
@@ -243,24 +243,57 @@ class CustomerController extends GetxController {
       }
 
       if (selectedImage.value != null) {
+        final path = selectedImage.value!.path;
+        String filename = path.split(Platform.pathSeparator).last;
+
+        // Ensure filename has an extension; infer from actual file if missing
+        String ext = '';
+        if (filename.contains('.')) {
+          ext = filename.split('.').last.toLowerCase();
+        }
+
+        // Normalize/validate extension
+        if (!['jpg', 'jpeg', 'png'].contains(ext)) {
+          // try to guess from file path; fallback to jpg
+          ext = 'jpg';
+          filename = '$filename.$ext';
+        }
+
+        final mimeType = ext == 'png' ? 'image/png' : 'image/jpeg';
+
         customerData['image'] = await dio.MultipartFile.fromFile(
-          selectedImage.value!.path,
-          filename:
-              selectedImage.value!.path.split(Platform.pathSeparator).last,
+          path,
+          filename: filename,
+          contentType:
+              MediaType(mimeType.split('/')[0], mimeType.split('/')[1]),
         );
       }
 
       final formData = dio.FormData.fromMap(customerData);
 
-      await dioClient.dio.put(
-        '${Apis.baseUrl}${Endpoints.customers}/$customerId',
-        data: formData,
-        options: dio.Options(
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
-      );
+      try {
+        final response = await dioClient.dio.put(
+          '${Apis.baseUrl}${Endpoints.customers}/$customerId',
+          data: formData,
+          options: dio.Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
+
+        if (response.statusCode != null && response.statusCode! >= 400) {
+          throw Exception('Upload failed with status: ${response.statusCode}');
+        }
+      } on dio.DioError catch (dioError) {
+        // Show server response body when available (HTML or JSON)
+        final serverBody = dioError.response?.data;
+        final serverText =
+            serverBody is String ? serverBody : serverBody?.toString();
+        CustomSnackbar.showError(
+            'Upload Error', 'Server response: $serverText');
+        rethrow;
+      }
 
       int index = customerList.indexWhere((c) => c.id == customerId);
       if (index != -1) {
