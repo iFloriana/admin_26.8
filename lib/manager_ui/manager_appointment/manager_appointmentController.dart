@@ -20,7 +20,8 @@ class Appointment {
   final String clientName;
   final String? clientImage;
   final String? clientPhone;
-  final int amount;
+  final num amount;
+  final num totalPayment;
   final String staffName;
   final String? staffImage;
   final String serviceName;
@@ -39,6 +40,7 @@ class Appointment {
     this.clientImage,
     this.clientPhone,
     required this.amount,
+    required this.totalPayment,
     required this.staffName,
     this.staffImage,
     required this.serviceName,
@@ -56,17 +58,15 @@ class Appointment {
     final firstService = services.isNotEmpty ? services[0] : {};
     final service = firstService['service'] ?? {};
     final staff = firstService['staff'] ?? {};
-    final branchMembership = customer['branch_membership'];
 
-    // Helper function to safely convert dynamic to string
+    final packageAndMembership =
+        customer['package_and_membership'] as List? ?? [];
+
     String toString(dynamic value) {
       if (value == null) return '';
       if (value is String) return value;
       if (value is Map) {
-        // Handle image object - construct URL or return empty string
         if (value.containsKey('data') && value.containsKey('contentType')) {
-          // This is an image object, you might want to construct a URL here
-          // For now, return empty string to avoid errors
           return '';
         }
         return value.toString();
@@ -74,7 +74,6 @@ class Appointment {
       return value.toString();
     }
 
-    // Helper function to safely convert dynamic to int
     int toInt(dynamic value) {
       if (value == null) return 0;
       if (value is int) return value;
@@ -83,7 +82,6 @@ class Appointment {
       return 0;
     }
 
-    // Helper function to normalize status values
     String _normalizeStatus(String status) {
       final normalized = status.toLowerCase().trim();
       if (normalized == 'check-in' || normalized == 'check in') {
@@ -94,6 +92,84 @@ class Appointment {
       return normalized;
     }
 
+    double? extractMembershipDiscount() {
+      if (packageAndMembership.isEmpty) return null;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              final discount = item['discount'];
+              return (discount is num)
+                  ? discount.toDouble()
+                  : double.tryParse('$discount') ?? 0.0;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    String? extractMembershipDiscountType() {
+      if (packageAndMembership.isEmpty) return null;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              return toString(item['discount_type']);
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    bool hasActivePackage() {
+      if (packageAndMembership.isEmpty) return false;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map) {
+          final branchPackage = item['branch_package'];
+          if (branchPackage is List && branchPackage.isNotEmpty) {
+            final endDate = item['end_date'];
+            if (endDate != null) {
+              final end = DateTime.tryParse(endDate);
+              if (end != null && end.isAfter(now)) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    bool hasActiveMembership() {
+      if (packageAndMembership.isEmpty) return false;
+
+      final now = DateTime.now();
+      for (final item in packageAndMembership) {
+        if (item is Map && item['branch_membership'] != null) {
+          final endDate = item['end_date'];
+          if (endDate != null) {
+            final end = DateTime.tryParse(endDate);
+            if (end != null && end.isAfter(now)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
     return Appointment(
       appointmentId: toString(json['appointment_id']),
       date: toString(json['appointment_date']).split('T')[0],
@@ -102,27 +178,17 @@ class Appointment {
       clientImage:
           customer['image'] is Map ? null : toString(customer['image']),
       clientPhone: toString(customer['phone_number']),
-      amount: toInt(json['total_payment']),
+      amount: toInt(json['service_total_amount']),
+      totalPayment: toInt(json['total_payment']),
       staffName: toString(staff['full_name']),
       staffImage: staff['image'] is Map ? null : toString(staff['image']),
       serviceName: toString(service['name']),
-      membership: customer['branch_membership'] != null ? 'Yes' : '-',
-      package: (customer['branch_package'] != null &&
-              (customer['branch_package'] is List
-                  ? customer['branch_package'].isNotEmpty
-                  : true))
-          ? 'Yes'
-          : '-',
+      membership: hasActiveMembership() ? 'Yes' : '-',
+      package: hasActivePackage() ? 'Yes' : '-',
       status: _normalizeStatus(toString(json['status'])),
       paymentStatus: toString(json['payment_status']),
-      branchMembershipDiscount: branchMembership != null
-          ? (branchMembership['discount'] is int
-              ? (branchMembership['discount'] as int).toDouble()
-              : (branchMembership['discount'] ?? 0).toDouble())
-          : null,
-      branchMembershipDiscountType: branchMembership != null
-          ? toString(branchMembership['discount_type'])
-          : null,
+      branchMembershipDiscount: extractMembershipDiscount(),
+      branchMembershipDiscountType: extractMembershipDiscountType(),
     );
   }
 }
@@ -210,10 +276,10 @@ class ManagerAppointmentcontroller extends GetxController {
   var appliedCoupon = Rxn<Map<String, dynamic>>();
   var couponApplied = false.obs;
   var couponId = ''.obs;
-  // Filter and sort variables
+
   DateTime? selectedDate;
   DateTimeRange? selectedDateRange;
-  String sortOrder = 'desc'; // Default to newest first
+  String sortOrder = 'desc';
 
   @override
   void onInit() {
@@ -223,7 +289,6 @@ class ManagerAppointmentcontroller extends GetxController {
     getAppointment();
   }
 
-  // Filter and sort methods
   void selectDate(DateTime date) {
     selectedDate = date;
     selectedDateRange = null;
@@ -251,7 +316,6 @@ class ManagerAppointmentcontroller extends GetxController {
   void _applyFilters() {
     var filtered = List<Appointment>.from(appointments);
 
-    // Apply date filters
     if (selectedDate != null) {
       filtered = filtered.where((appointment) {
         final appointmentDate = DateTime.parse(appointment.date);
@@ -269,199 +333,105 @@ class ManagerAppointmentcontroller extends GetxController {
       }).toList();
     }
 
-    // Apply sorting
     filtered.sort((a, b) {
       final dateA = DateTime.parse(a.date);
       final dateB = DateTime.parse(b.date);
-      if (sortOrder == 'asc') {
-        return dateA.compareTo(dateB);
-      } else {
-        return dateB.compareTo(dateA);
-      }
+      return sortOrder == 'asc'
+          ? dateA.compareTo(dateB)
+          : dateB.compareTo(dateA);
     });
 
     filteredAppointments.value = filtered;
   }
 
   Future<void> getAppointment() async {
-    final loginUser = await prefs.getManagerUser();
-    isLoading.value = true;
     try {
+      isLoading.value = true;
+      final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/appointments?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}&page=$currentPage&limit=10',
         (json) => json,
       );
-      // if (response != null && response['success'] == true) {
+
       final List data = response['data'] ?? [];
-      appointments.value = data.map((e) => Appointment.fromJson(e)).toList();
-      filteredAppointments.value = List.from(appointments);
+      final List<Appointment> newAppointments =
+          data.map((json) => Appointment.fromJson(json)).toList();
+
+      if (currentPage == 1) {
+        appointments.clear();
+      }
+
+      appointments.addAll(newAppointments);
+      hasMore = data.length == 10;
       _applyFilters();
-      // }
-      print(
-          "${Apis.baseUrl}/appointments?salon_id=${loginUser!.manager!.salonId}");
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+      CustomSnackbar.showError('Error', 'Failed to fetch appointments: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<void> getTax() async {
-    final loginUser = await prefs.getManagerUser();
-    isLoading.value = true;
     try {
+      final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/taxes/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/taxes?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}',
         (json) => json,
       );
-      print(
-          '=============> ${Apis.baseUrl}/taxes/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}');
-      if (response != null && response['data'] != null) {
-        final List data = response['data'] ?? [];
-        taxes.value = data.map((e) => TaxModel.fromJson(e)).toList();
-      }
+
+      final List data = response['data'] ?? [];
+      taxes.value = data.map((json) => TaxModel.fromJson(json)).toList();
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
-    } finally {
-      isLoading.value = false;
+      CustomSnackbar.showError('Error', 'Failed to fetch taxes: $e');
     }
   }
 
   Future<void> getCoupons() async {
-    final loginUser = await prefs.getManagerUser();
-    isLoading.value = true;
     try {
+      final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}',
+        '${Apis.baseUrl}/coupons?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}',
         (json) => json,
       );
-      print(
-          '=============> ${Apis.baseUrl}/appointments/by-branch?salon_id=${loginUser?.manager?.salonId}&branch_id=${loginUser?.manager?.branchId?.sId}');
-      if (response != null && response['data'] != null) {
-        final List data = response['data'] ?? [];
-        coupons.value = data.map((e) => CouponModel.fromJson(e)).toList();
-      }
+
+      final List data = response['data'] ?? [];
+      coupons.value = data.map((json) => CouponModel.fromJson(json)).toList();
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
-    } finally {
-      isLoading.value = false;
+      CustomSnackbar.showError('Error', 'Failed to fetch coupons: $e');
     }
   }
 
   Future<void> applyCoupon(String code) async {
-    final loginUser = await prefs.getManagerUser();
     try {
-      final res =
-          await dioClient.dio.get("${Apis.baseUrl}/coupons", queryParameters: {
-        "salon_id": loginUser!..manager!.salonId,
-      });
+      final loginUser = await prefs.getManagerUser();
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}/coupons/verify?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}&code=$code',
+        (json) => json,
+      );
 
-      final List<dynamic> allCoupons = res.data["data"] ?? [];
-      final now = DateTime.now();
-
-      final matchedCoupon = allCoupons.firstWhereOrNull((c) {
-        final start = DateTime.tryParse(c["start_date"]);
-        final end = DateTime.tryParse(c["end_date"]);
-        return c["coupon_code"].toString().toLowerCase() ==
-                code.toLowerCase() &&
-            c["status"] == 1 &&
-            start != null &&
-            end != null &&
-            now.isAfter(start) &&
-            now.isBefore(end.add(const Duration(days: 1))); // inclusive
-      });
-
-      if (matchedCoupon != null) {
-        appliedCoupon.value = matchedCoupon;
-        couponId.value = matchedCoupon["_id"];
+      if (response['success'] == true) {
+        appliedCoupon.value = response['data'];
         couponApplied.value = true;
-
-        CustomSnackbar.showSuccess(
-            "Coupon Applied", matchedCoupon["coupon_code"]);
+        couponId.value = response['data']['_id'];
+        paymentSummaryState.appliedCoupon.value =
+            CouponModel.fromJson(response['data']);
+        CustomSnackbar.showSuccess('Success', 'Coupon applied successfully');
       } else {
-        appliedCoupon.value = null;
-        couponId.value = '';
-        couponApplied.value = false;
-
-        CustomSnackbar.showError(
-            "Invalid Coupon", "Coupon is not active or doesn't exist");
+        CustomSnackbar.showError('Error', 'Invalid coupon code');
       }
     } catch (e) {
-      CustomSnackbar.showError(
-          "Coupon Error", "Something went wrong while applying the coupon.");
-      debugPrint("applyCoupon error: $e");
+      CustomSnackbar.showError('Error', 'Failed to apply coupon: $e');
     }
   }
 
-  // Calculate the grand total using the requested formula
-  // grandTotal = (serviceAmount + additionalCharges)
-  //               - membershipDiscount
-  //               - couponDiscount
-  //               - additionalDiscount
-  //               + taxAmount (on discounted base)
-  //               + tip
-  //               + productTotal
-  void calculateGrandTotal({
-    required double serviceAmount,
-    double additionalCharges = 0.0,
-    double productTotal = 0.0,
-    double membershipDiscount = 0.0,
-    String? membershipDiscountType,
-    double couponDiscount = 0.0,
-    bool hasAdditionalDiscount = false,
-    double additionalDiscountValue = 0.0,
-    String additionalDiscountType = 'percentage',
-    double taxPercent = 0.0,
-    double tip = 0.0,
-  }) {
-    double baseAmount = serviceAmount + additionalCharges;
-
-    double discountedAmount = baseAmount;
-
-    // Membership discount
-    if (membershipDiscount > 0) {
-      final isPercent =
-          (membershipDiscountType ?? '').toLowerCase().startsWith('percent');
-      if (isPercent) {
-        discountedAmount -= (membershipDiscount * discountedAmount / 100.0);
-      } else {
-        discountedAmount -= membershipDiscount;
-      }
-    }
-
-    // Coupon discount (value already computed outside)
-    discountedAmount -= couponDiscount;
-
-    // Additional discount
-    if (hasAdditionalDiscount && additionalDiscountValue > 0) {
-      final isPercent =
-          additionalDiscountType.toLowerCase().startsWith('percent');
-      if (isPercent) {
-        discountedAmount -=
-            (additionalDiscountValue * discountedAmount / 100.0);
-      } else {
-        discountedAmount -= additionalDiscountValue;
-      }
-    }
-
-    if (discountedAmount < 0) discountedAmount = 0;
-
-    // Tax
-    final taxAmount = discountedAmount * (taxPercent / 100.0);
-
-    final grandTotal = discountedAmount + taxAmount + tip + productTotal;
-    paymentSummaryState.grandTotal.value = grandTotal < 0 ? 0 : grandTotal;
-  }
-
-  // Cancel appointment method
   Future<void> cancelAppointment(String appointmentId) async {
     try {
-      final response = await dioClient.dio.put(
+      await dioClient.putData(
         '${Apis.baseUrl}/appointments/$appointmentId',
-        data: {
-          'status': 'cancelled',
-        },
+        {'status': 'cancelled'},
+        (json) => json,
       );
+
       CustomSnackbar.showSuccess(
           'Success', 'Appointment cancelled successfully');
       await getAppointment();
@@ -470,16 +440,14 @@ class ManagerAppointmentcontroller extends GetxController {
     }
   }
 
-  // Get payment data by appointment ID and open PDF
   Future<void> openAppointmentPdf(String appointmentId) async {
     try {
       final loginUser = await prefs.getManagerUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/payments?salon_id=${loginUser!..manager!.salonId}',
+        '${Apis.baseUrl}/payments?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}',
         (json) => json,
       );
 
-      // if (response != null && response['success'] == true) {
       final List payments = response['data'] ?? [];
       final payment = payments.firstWhereOrNull(
         (payment) => payment['appointment_id'] == appointmentId,
@@ -492,15 +460,11 @@ class ManagerAppointmentcontroller extends GetxController {
         CustomSnackbar.showError(
             'Error', 'No invoice found for this appointment');
       }
-      // } else {
-      //   CustomSnackbar.showError('Error', 'Failed to fetch payment data');
-      // }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to open PDF: $e');
     }
   }
 
-  // Open PDF method
   Future<void> openPdf(String url) async {
     final uri = Uri.parse(url);
 
@@ -514,49 +478,42 @@ class ManagerAppointmentcontroller extends GetxController {
     }
   }
 
-  // Delete appointment method
   Future<void> deleteAppointment(String appointmentId) async {
     try {
-      final response = await dioClient.deleteData(
-        '${Apis.baseUrl}/appointments/$appointmentId',
+      final loginUser = await prefs.getManagerUser();
+      await dioClient.deleteData(
+        '${Apis.baseUrl}/appointments/$appointmentId?salon_id=${loginUser!.manager!.salonId}&branch_id=${loginUser.manager!.branchId}',
         (json) => json,
       );
 
       CustomSnackbar.showSuccess('Success', 'Appointment deleted successfully');
-      // Refresh the appointments list
       await getAppointment();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete appointment: $e');
     }
   }
 
-  // Export methods
   Future<void> exportToExcel() async {
     try {
       final excel = Excel.createExcel();
-      // Safely ensure only one sheet named 'Appointments'
       Sheet sheet;
       try {
         if (excel.sheets.keys.contains('Sheet1')) {
           try {
             excel.rename('Sheet1', 'Appointments');
-          } catch (_) {
-            // Fallback: just use default sheet if rename unsupported
-          }
+          } catch (_) {}
         }
-        // Try to get the 'Appointments' sheet; fallback to first available
         if (excel.sheets.keys.contains('Appointments')) {
           sheet = excel['Appointments'];
         } else {
           final first = excel.sheets.keys.first;
-          sheet = excel[first]!;
+          sheet = excel[first];
         }
       } catch (_) {
         final first = excel.sheets.keys.first;
-        sheet = excel[first]!;
+        sheet = excel[first];
       }
 
-      // Add headers with styling
       final headers = [
         'Date & Time',
         'Client',
@@ -573,11 +530,9 @@ class ManagerAppointmentcontroller extends GetxController {
         final cell =
             sheet.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
         cell.value = headers[i];
-        // Make headers bold
         cell.cellStyle = CellStyle(bold: true);
       }
 
-      // Add data from filtered appointments
       for (int i = 0; i < filteredAppointments.length; i++) {
         final appointment = filteredAppointments[i];
         final rowIndex = i + 1;
@@ -593,7 +548,7 @@ class ManagerAppointmentcontroller extends GetxController {
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: rowIndex))
-            .value = appointment.amount;
+            .value = appointment.totalPayment;
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: rowIndex))
@@ -605,11 +560,11 @@ class ManagerAppointmentcontroller extends GetxController {
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: rowIndex))
-            .value = appointment.membership ?? '-';
+            .value = appointment.membership;
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: rowIndex))
-            .value = appointment.package ?? '-';
+            .value = appointment.package;
         sheet
             .cell(
                 CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: rowIndex))
@@ -620,10 +575,6 @@ class ManagerAppointmentcontroller extends GetxController {
             .value = appointment.paymentStatus;
       }
 
-      // Set column widths (Excel package doesn't have setColumnWidth method)
-      // Columns will auto-fit based on content
-
-      // Save file
       final directory = await getApplicationDocumentsDirectory();
       final fileName =
           'appointments_${DateTime.now().millisecondsSinceEpoch}.xlsx';
@@ -634,7 +585,6 @@ class ManagerAppointmentcontroller extends GetxController {
       }
       await file.writeAsBytes(bytes, flush: true);
 
-      // Open file
       await OpenFile.open(file.path);
       CustomSnackbar.showSuccess('Success', 'Excel file exported successfully');
     } catch (e) {
@@ -648,7 +598,6 @@ class ManagerAppointmentcontroller extends GetxController {
       final fontData =
           await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
       final ttf = pw.Font.ttf(fontData);
-      // Use MultiPage so long tables paginate correctly
 
       pdf.addPage(
         pw.MultiPage(
@@ -660,7 +609,6 @@ class ManagerAppointmentcontroller extends GetxController {
           ),
           build: (pw.Context context) {
             return [
-              // Header
               pw.Center(
                 child: pw.Text(
                   'Appointments Report',
@@ -671,20 +619,6 @@ class ManagerAppointmentcontroller extends GetxController {
                 ),
               ),
               pw.SizedBox(height: 10),
-
-              // Export info
-              // pw.Text(
-              //   'Generated on: ${DateTime.now().toString().split('.')[0]}',
-              //   style: pw.TextStyle(fontSize: 12, color: pw.PdfColors.grey),
-              // ),
-              // pw.SizedBox(height: 5),
-              // pw.Text(
-              //   'Total Records: ${filteredAppointments.length}',
-              //   style: pw.TextStyle(fontSize: 12, color: pw.PdfColors.grey),
-              // ),
-              // pw.SizedBox(height: 20),
-
-              // Table
               pw.Table.fromTextArray(
                 context: context,
                 border: pw.TableBorder.all(),
@@ -701,20 +635,13 @@ class ManagerAppointmentcontroller extends GetxController {
                     .map((appointment) => [
                           '${appointment.date}\n${appointment.time}',
                           appointment.clientName,
-                          '₹${appointment.amount}',
+                          '₹${appointment.totalPayment}',
                           appointment.staffName,
                           appointment.serviceName,
                           appointment.status,
                           appointment.paymentStatus,
                         ])
                     .toList(),
-                // headerStyle: pw.TextStyle(
-                //   fontWeight: pw.FontWeight.bold,
-                //   color: pw.PdfColors.white,
-                // ),
-                // headerDecoration: pw.BoxDecoration(
-                //   color: pw.PdfColors.blue,
-                // ),
                 cellHeight: 30,
                 cellPadding: pw.EdgeInsets.all(5),
               ),
@@ -723,14 +650,12 @@ class ManagerAppointmentcontroller extends GetxController {
         ),
       );
 
-      // Save file
       final directory = await getApplicationDocumentsDirectory();
       final fileName =
           'appointments_${DateTime.now().millisecondsSinceEpoch}.pdf';
       final file = File('${directory.path}/$fileName');
       await file.writeAsBytes(await pdf.save());
 
-      // Open file
       await OpenFile.open(file.path);
       CustomSnackbar.showSuccess('Success', 'PDF file exported successfully');
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:flutter_template/manager_ui/drawer/drawerscreen.dart';
 import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentController.dart';
 import 'package:flutter_template/manager_ui/manager_appointment/manager_payment_sheet.dart';
 import 'package:flutter_template/manager_ui/manager_appointment/manageraddNewAppointment/manager_newAppointmentScreen.dart';
+// import 'package:flutter_template/manager_ui/manager_appointment/manageraddNewAppointment/manager_newAppointmentScreen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
@@ -11,7 +12,8 @@ import '../../../wiget/loading.dart';
 
 class ManagerAppointmentscreen extends StatelessWidget {
   ManagerAppointmentscreen({super.key});
-  final ManagerAppointmentcontroller getController = Get.put(ManagerAppointmentcontroller());
+  final ManagerAppointmentcontroller getController =
+      Get.put(ManagerAppointmentcontroller());
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +69,7 @@ class ManagerAppointmentscreen extends StatelessWidget {
                   value: 'sort_asc',
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.arrow_upward,
-                        size: 16,
-                        color: grey,
-                      ),
+                      Icon(Icons.arrow_upward, size: 16, color: grey),
                       SizedBox(width: 8),
                       Text('Sort Oldest First'),
                     ],
@@ -81,11 +79,7 @@ class ManagerAppointmentscreen extends StatelessWidget {
                   value: 'sort_desc',
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.arrow_downward,
-                        size: 16,
-                        color: grey,
-                      ),
+                      Icon(Icons.arrow_downward, size: 16, color: grey),
                       SizedBox(width: 8),
                       Text('Sort Newest First'),
                     ],
@@ -96,11 +90,7 @@ class ManagerAppointmentscreen extends StatelessWidget {
                   value: 'export',
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.file_download,
-                        size: 16,
-                        color: grey,
-                      ),
+                      Icon(Icons.file_download, size: 16, color: grey),
                       SizedBox(width: 8),
                       Text('Export Data'),
                     ],
@@ -116,9 +106,8 @@ class ManagerAppointmentscreen extends StatelessWidget {
           ],
         ),
       ),
-     drawer: ManagerDrawerScreen(),
+      drawer: ManagerDrawerScreen(),
       body: Container(
-        
         child: Obx(() {
           if (getController.isLoading.value) {
             return Center(child: CustomLoadingAvatar());
@@ -137,7 +126,6 @@ class ManagerAppointmentscreen extends StatelessWidget {
             child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  // headingRowColor: MaterialStateProperty.all(secondaryColor),
                   columns: const [
                     DataColumn(
                         label: Text('Date & Time',
@@ -155,12 +143,6 @@ class ManagerAppointmentscreen extends StatelessWidget {
                         label: Text('Services',
                             style: TextStyle(color: Colors.black))),
                     DataColumn(
-                        label: Text('Membership',
-                            style: TextStyle(color: Colors.black))),
-                    DataColumn(
-                        label: Text('Package',
-                            style: TextStyle(color: Colors.black))),
-                    DataColumn(
                         label: Text('Status',
                             style: TextStyle(color: Colors.black))),
                     DataColumn(
@@ -174,91 +156,72 @@ class ManagerAppointmentscreen extends StatelessWidget {
                     return DataRow(cells: [
                       DataCell(Text('${a.date} - ${a.time}',
                           style: TextStyle(color: Colors.black))),
-                      DataCell(Row(
-                        children: [
-                          // CircleAvatar(
-                          //   backgroundImage: a.clientImage != null &&
-                          //           a.clientImage!.isNotEmpty
-                          //       ? NetworkImage(a.clientImage!)
-                          //       : null,
-                          //   child: (a.clientImage == null ||
-                          //           a.clientImage!.isEmpty)
-                          //       ? Icon(Icons.person, color: Colors.black)
-                          //       : null,
-                          // ),
-                          // SizedBox(width: 8),
-                          Flexible(
-                              child: Text(a.clientName,
-                                  style: TextStyle(color: Colors.black))),
-                        ],
-                      )),
-                      DataCell(Text('₹ ${a.amount}',
-                          style: TextStyle(color: Colors.black))),
-                      DataCell(Row(
-                        children: [
-                          // CircleAvatar(
-                          //   backgroundImage: a.staffImage != null &&
-                          //           a.staffImage!.isNotEmpty
-                          //       ? NetworkImage(a.staffImage!)
-                          //       : null,
-                          //   child: (a.staffImage == null ||
-                          //           a.staffImage!.isEmpty)
-                          //       ? Icon(Icons.person, color: Colors.black)
-                          //       : null,
-                          // ),
-                          // SizedBox(width: 8),
-                          Flexible(
-                              child: Text(a.staffName,
-                                  style: TextStyle(color: Colors.black))),
-                        ],
-                      )),
-                      DataCell(Text(a.serviceName,
-                          style: TextStyle(color: Colors.black))),
-                      DataCell(a.membership == '-'
-                          ? Text('-', style: TextStyle(color: Colors.black))
-                          : Chip(
-                              label: Text(
-                                'Yes',
-                                style: TextStyle(color: white),
-                              ),
-                              backgroundColor: Colors.grey[700],
-                              labelStyle: TextStyle(color: Colors.black))),
-                      DataCell(a.package == '-'
-                          ? Text('-', style: TextStyle(color: Colors.black))
-                          : Chip(
-                              label: Text(
-                                'Yes',
-                                style: TextStyle(color: white),
-                              ),
-                              backgroundColor: Colors.grey[700],
-                              labelStyle: TextStyle(color: Colors.black))),
                       DataCell(
-                        GestureDetector(
-                            onTap: () {
-                              if (a.status.toLowerCase() == 'upcoming' ||
-                                  a.status.toLowerCase() == 'check in')
-                                _showCancelAppointmentDialog(context, a);
-                            },
-                            child: Chip(
-                              label: Text(
-                                a.status.toLowerCase() == 'upcoming'
-                                    ? 'Upcoming'
-                                    : a.status.toLowerCase() == 'cancelled'
-                                        ? 'Cancelled'
-                                        : a.status.toLowerCase() == 'check in'
-                                            ? 'Check In'
-                                            : 'Check-out',
+                        a.clientName == '-' || a.clientName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      a.clientName,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                      DataCell(Text('₹ ${a.totalPayment}',
+                          style: TextStyle(color: Colors.black))),
+                      DataCell(
+                        a.staffName == '-' || a.staffName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      a.staffName,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                      DataCell(
+                        a.serviceName == '-' || a.serviceName.isEmpty
+                            ? Text('-', style: TextStyle(color: Colors.black))
+                            : Text(
+                                a.serviceName,
                                 style: TextStyle(color: Colors.black),
                               ),
-                              backgroundColor: a.status.toLowerCase() ==
-                                      'upcoming'
-                                  ? const Color.fromARGB(255, 166, 94, 179)
+                      ),
+                      DataCell(
+                        GestureDetector(
+                          onTap: () {
+                            if (a.status.toLowerCase() == 'upcoming' ||
+                                a.status.toLowerCase() == 'check in')
+                              _showCancelAppointmentDialog(context, a);
+                          },
+                          child: Chip(
+                            label: Text(
+                              a.status.toLowerCase() == 'upcoming'
+                                  ? 'Upcoming'
                                   : a.status.toLowerCase() == 'cancelled'
-                                      ? const Color.fromARGB(255, 243, 88, 77)
+                                      ? 'Cancelled'
                                       : a.status.toLowerCase() == 'check in'
-                                          ? Colors.yellow
-                                          : Colors.green,
-                            )),
+                                          ? 'Check In'
+                                          : 'Check-out',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            backgroundColor:
+                                a.status.toLowerCase() == 'upcoming'
+                                    ? const Color.fromARGB(255, 166, 94, 179)
+                                    : a.status.toLowerCase() == 'cancelled'
+                                        ? const Color.fromARGB(255, 243, 88, 77)
+                                        : a.status.toLowerCase() == 'check in'
+                                            ? Colors.yellow
+                                            : Colors.green,
+                          ),
+                        ),
                       ),
                       DataCell(
                         GestureDetector(
@@ -274,85 +237,37 @@ class ManagerAppointmentscreen extends StatelessWidget {
                                       controller.taxes.isNotEmpty
                                           ? controller.taxes.first
                                           : null;
-                                  controller.paymentSummaryState.couponCode
-                                      .value = '';
-                                  controller.paymentSummaryState.appliedCoupon
-                                      .value = null;
-                                  controller.paymentSummaryState
-                                      .addAdditionalDiscount.value = false;
-                                  controller.paymentSummaryState.discountType
-                                      .value = 'percentage';
-                                  controller.paymentSummaryState.discountValue
-                                      .value = '0';
-                                  // Calculate initial grand total (new signature)
-                                  controller.calculateGrandTotal(
-                                    serviceAmount: a.amount.toDouble(),
-                                    additionalCharges: 0,
-                                    productTotal: 0,
-                                    membershipDiscount:
-                                        (a.branchMembershipDiscount ?? 0.0)
-                                            .toDouble(),
-                                    membershipDiscountType:
-                                        a.branchMembershipDiscountType,
-                                    couponDiscount: 0,
-                                    hasAdditionalDiscount: false,
-                                    additionalDiscountValue: 0,
-                                    additionalDiscountType: 'percentage',
-                                    taxPercent: controller.taxes.isNotEmpty
-                                        ? controller.taxes.first.value
-                                        : 0.0,
-                                    tip: 0.0,
-                                  );
-                                  Get.to(() => ManagerPaymentSummaryScreen(a: a));
+                                  Get.to(
+                                      () => ManagerPaymentSummaryScreen(a: a));
                                 }
-                              : null,
+                              : () {
+                                  getController
+                                      .openAppointmentPdf(a.appointmentId);
+                                },
                           child: Chip(
-                            label: Text(a.paymentStatus,
-                                style: TextStyle(color: Colors.black)),
+                            label: Text(
+                              a.paymentStatus,
+                              style: TextStyle(color: Colors.black),
+                            ),
                             backgroundColor: a.paymentStatus == 'Paid'
                                 ? Colors.green
-                                : Colors.yellow,
+                                : Colors.orange,
                           ),
                         ),
                       ),
-                      DataCell(Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.receipt,
-                                color: a.paymentStatus == 'Paid'
-                                    ? primaryColor
-                                    : Colors.grey),
-                            onPressed: a.paymentStatus == 'Paid'
-                                ? () async {
-                                    await getController
-                                        .openAppointmentPdf(a.appointmentId);
-                                  }
-                                : null,
-                          ),
-                          // IconButton(
-                          //   icon: Icon(Icons.edit_outlined,
-                          //       color: primaryColor),
-                          //   onPressed: () {},
-                          // ),
-                          // Show cancel button only for upcoming or check in appointments
-                          // if (a.status.toLowerCase() == 'upcoming' ||
-                          //     a.status.toLowerCase() == 'check in')
-                          //   IconButton(
-                          //     icon: Icon(Icons.cancel_outlined,
-                          //         color: Colors.red),
-                          //     onPressed: () {
-                          //       _showCancelAppointmentDialog(context, a);
-                          //     },
-                          //   ),
-                          IconButton(
-                            icon:
-                                Icon(Icons.delete_outline, color: primaryColor),
-                            onPressed: () {
-                              _showDeleteAppointmentDialog(context, a);
-                            },
-                          ),
-                        ],
-                      )),
+                      DataCell(
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.delete_outline,
+                                  color: primaryColor),
+                              onPressed: () {
+                                _showDeleteAppointmentDialog(context, a);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ]);
                   }).toList(),
                 )),
@@ -360,14 +275,12 @@ class ManagerAppointmentscreen extends StatelessWidget {
         }),
       ),
       floatingActionButton: FloatingActionButton(
-          backgroundColor: primaryColor,
-          child: Icon(
-            Icons.add,
-            color: white,
-          ),
-          onPressed: () {
-            Get.to(() => MaanagerNewappointmentscreen());
-          }),
+        backgroundColor: primaryColor,
+        child: Icon(Icons.add, color: white),
+        onPressed: () {
+          Get.to(() => MaanagerNewappointmentscreen());
+        },
+      ),
     );
   }
 
