@@ -37,7 +37,6 @@ class DrawerScreen extends StatelessWidget {
           icon: Icons.business_outlined,
           route: Routes.getBranches),
 
-      // ✅ Services will be expandable
       DrawerItem(
         title: 'Services',
         route: '', // parent doesn’t navigate

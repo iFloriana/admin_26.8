@@ -419,7 +419,7 @@ class ManagerAttendanceTab extends StatelessWidget {
                   _showExportDialog(context, controller);
                 },
                 backgroundColor: primaryColor,
-                child: const Icon(Icons.download),
+                child: const Icon(Icons.download,color: white,),
               ),
             ),
         ],
