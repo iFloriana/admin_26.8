@@ -22,7 +22,7 @@ class DrawerScreen extends StatelessWidget {
           route: Routes.SummaryPage),
       DrawerItem(
           title: 'Balance Sheet',
-          icon: Icons.document_scanner_outlined,
+          icon: Icons.money_outlined,
           route: Routes.DailySummaryScreen),
       DrawerItem(
           title: 'Dashboard',
@@ -36,7 +36,6 @@ class DrawerScreen extends StatelessWidget {
           title: 'Branches',
           icon: Icons.business_outlined,
           route: Routes.getBranches),
-
       DrawerItem(
         title: 'Services',
         route: '', // parent doesn’t navigate
@@ -58,50 +57,23 @@ class DrawerScreen extends StatelessWidget {
           icon: Icons.card_giftcard_outlined,
           route: Routes.GetBranchPackagesScreen),
       DrawerItem(
-          title: "Staff Attendence", route: Routes.StaffAttendanceReportPage),
-      DrawerItem(
-          title: 'Expence',
-          icon: Icons.attach_money,
-          route: Routes.FinancePage),
-      DrawerItem(
-          title: 'Membership',
-          icon: Icons.switch_account_outlined,
-          route: Routes.addBranchMembership),
-      DrawerItem(
-          title: 'Reports',
-          icon: Icons.receipt_outlined,
-          route: '', // parent doesn’t navigate
+          title: 'Users',
+          icon: Icons.supervised_user_circle_outlined,
+          route: '',
           subItems: [
             DrawerItem(
-                title: 'Daily Booking',
-                icon: Icons.sim_card_download_rounded,
-                route: Routes.DailybookingScreen),
+                title: 'Manager',
+                icon: Icons.manage_accounts_outlined,
+                route: Routes.getManager),
             DrawerItem(
-                title: 'Order Report',
-                icon: Icons.pie_chart,
-                route: Routes.OrderReportScreen),
+                title: 'Staff',
+                icon: Icons.person_search_outlined,
+                route: Routes.gerStaff),
             DrawerItem(
-                title: 'Overall Booking',
-                icon: Icons.add_chart_rounded,
-                route: Routes.OverallBookingScreen),
-            DrawerItem(
-                title: 'Staff Payout',
-                icon: Icons.payments_outlined,
-                route: Routes.Staffpayoutreportscreen),
-            DrawerItem(
-                title: 'Staff Service',
-                icon: Icons.supervisor_account_outlined,
-                route: Routes.StaffServiceReportScreen),
-            DrawerItem(
-                title: 'Customer Package',
-                icon: Icons.account_box,
-                route: Routes.CustomerPackageReportScreen),
-            DrawerItem(
-                title: 'Customer Membership',
-                icon: Icons.account_box,
-                route: Routes.CustomerMembershipReportScreen),
+                title: 'Customer',
+                icon: Icons.person_2_outlined,
+                route: Routes.customersScreen),
           ]),
-
       DrawerItem(
           title: 'Products',
           icon: Icons.shopping_cart_checkout_outlined,
@@ -138,7 +110,6 @@ class DrawerScreen extends StatelessWidget {
                 icon: Icons.update,
                 route: Routes.InhouseproductScreen),
           ]),
-
       DrawerItem(
           title: 'Finance',
           icon: Icons.format_line_spacing_rounded,
@@ -161,24 +132,51 @@ class DrawerScreen extends StatelessWidget {
                 icon: Icons.discount_outlined,
                 route: Routes.getCoupons),
           ]),
-
       DrawerItem(
-          title: 'Users',
-          icon: Icons.supervised_user_circle_outlined,
-          route: '',
+          title: 'Expence',
+          icon: Icons.attach_money,
+          route: Routes.FinancePage),
+      DrawerItem(
+          title: 'Membership',
+          icon: Icons.switch_account_outlined,
+          route: Routes.addBranchMembership),
+      DrawerItem(
+          title: 'Reports',
+          icon: Icons.receipt_outlined,
+          route: '', // parent doesn’t navigate
           subItems: [
             DrawerItem(
-                title: 'Manager',
+                title: 'Daily Booking',
+                icon: Icons.sim_card_download_rounded,
+                route: Routes.DailybookingScreen),
+            DrawerItem(
+                title: 'Order Report',
+                icon: Icons.pie_chart,
+                route: Routes.OrderReportScreen),
+            DrawerItem(
+                title: 'Overall Booking',
+                icon: Icons.add_chart_rounded,
+                route: Routes.OverallBookingScreen),
+            DrawerItem(
+                title: 'Staff Payout',
+                icon: Icons.payments_outlined,
+                route: Routes.Staffpayoutreportscreen),
+            DrawerItem(
+                title: 'Staff Service',
+                icon: Icons.supervisor_account_outlined,
+                route: Routes.StaffServiceReportScreen),
+            DrawerItem(
+                title: "Staff Attendence",
+                route: Routes.StaffAttendanceReportPage,
+                icon: Icons.spatial_audio_off_outlined),
+            DrawerItem(
+                title: 'Customer Package',
+                icon: Icons.account_box,
+                route: Routes.CustomerPackageReportScreen),
+            DrawerItem(
+                title: 'Customer Membership',
                 icon: Icons.manage_accounts_outlined,
-                route: Routes.getManager),
-            DrawerItem(
-                title: 'Staff',
-                icon: Icons.person_search_outlined,
-                route: Routes.gerStaff),
-            DrawerItem(
-                title: 'Customer',
-                icon: Icons.person_2_outlined,
-                route: Routes.customersScreen),
+                route: Routes.CustomerMembershipReportScreen),
           ]),
       DrawerItem(
         title: 'Logout',

@@ -31,6 +31,7 @@ class Admin {
   final String? password;
   final int? v;
   final String? updatedAt;
+  final int? status;
 
   Admin({
     this.id,
@@ -42,23 +43,25 @@ class Admin {
     this.password,
     this.v,
     this.updatedAt,
+    this.status,
   });
 
   factory Admin.fromJson(Map<String, dynamic> json) {
     return Admin(
-      id: json['_id'],
-      fullName: json['full_name'],
-      phoneNumber: json['phone_number'],
-      email: json['email'],
-      address: json['address'],
+      id: json['_id']?.toString(),
+      fullName: json['full_name']?.toString(),
+      phoneNumber: json['phone_number']?.toString(),
+      email: json['email']?.toString(),
+      address: json['address']?.toString(),
       packageId: json['package_id'] != null
           ? (json['package_id'] as List)
               .map((e) => AdminPackage.fromJson(e))
               .toList()
           : [],
-      password: json['password'],
+      password: json['password']?.toString(),
       v: json['__v'],
-      updatedAt: json['updatedAt'],
+      updatedAt: json['updatedAt']?.toString(),
+      status: json['status'],
     );
   }
 
@@ -73,6 +76,7 @@ class Admin {
       'password': password,
       '__v': v,
       'updatedAt': updatedAt,
+      'status': status,
     };
   }
 }
@@ -83,7 +87,7 @@ class AdminPackage {
   final String? packageExpirationDate;
   final int? status;
   final String? id;
-  final String? buffer; // For entries that only contain buffer
+  final String? buffer;
 
   AdminPackage({
     this.packageId,
@@ -100,11 +104,11 @@ class AdminPackage {
               json['package_id'] is Map<String, dynamic>
           ? PackageDetails.fromJson(json['package_id'])
           : null,
-      packageStartDate: json['package_start_date'],
-      packageExpirationDate: json['package_expiration_date'],
+      packageStartDate: json['package_start_date']?.toString(),
+      packageExpirationDate: json['package_expiration_date']?.toString(),
       status: json['status'],
-      id: json['_id'],
-      buffer: json['buffer'],
+      id: json['_id']?.toString(),
+      buffer: json['buffer']?.toString(),
     );
   }
 
@@ -145,16 +149,17 @@ class PackageDetails {
 
   factory PackageDetails.fromJson(Map<String, dynamic> json) {
     return PackageDetails(
-      status: json['status'],
-      id: json['_id'],
-      packageName: json['package_name'],
-      description: json['description'],
+      status: json['status']?.toString(),
+      id: json['_id']?.toString(),
+      packageName: json['package_name']?.toString(),
+      description: json['description']?.toString(),
       price: json['price'],
       servicesIncluded: json['services_included'] != null
-          ? List<String>.from(json['services_included'])
+          ? List<String>.from(
+              json['services_included'].map((x) => x.toString()))
           : [],
-      subscriptionPlan: json['subscription_plan'],
-      expirationDate: json['expiration_date'],
+      subscriptionPlan: json['subscription_plan']?.toString(),
+      expirationDate: json['expiration_date']?.toString(),
       v: json['__v'],
     );
   }
@@ -215,23 +220,23 @@ class SalonDetails {
 
   factory SalonDetails.fromJson(Map<String, dynamic> json) {
     return SalonDetails(
-      id: json['_id'],
-      salonName: json['salon_name'],
-      description: json['description'],
-      address: json['address'],
-      contactNumber: json['contact_number'],
-      contactEmail: json['contact_email'],
-      openingTime: json['opening_time'],
-      closingTime: json['closing_time'],
-      category: json['category'],
+      id: json['_id']?.toString(),
+      salonName: json['salon_name']?.toString(),
+      description: json['description']?.toString(),
+      address: json['address']?.toString(),
+      contactNumber: json['contact_number']?.toString(),
+      contactEmail: json['contact_email']?.toString(),
+      openingTime: json['opening_time']?.toString(),
+      closingTime: json['closing_time']?.toString(),
+      category: json['category']?.toString(),
       status: json['status'],
-      packageId: json['package_id'],
-      signupId: json['signup_id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      packageId: json['package_id']?.toString(),
+      signupId: json['signup_id']?.toString(),
+      createdAt: json['createdAt']?.toString(),
+      updatedAt: json['updatedAt']?.toString(),
       v: json['__v'],
-      gstNumber: json['gst_number'],
-      imageUrl: json['image_url'],
+      gstNumber: json['gst_number']?.toString(),
+      imageUrl: json['image_url']?.toString(),
     );
   }
 

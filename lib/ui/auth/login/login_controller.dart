@@ -50,7 +50,7 @@ class LoginController extends GetxController {
       );
 
       await prefs.setUser(loginResponse);
-      callgetSignupApi();
+      callgetSignupApi();  
       await Get.showOverlay(
         asyncFunction: () async {
           await Future.delayed(const Duration(seconds: 2));
