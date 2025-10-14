@@ -383,30 +383,33 @@ class ManagerAttendanceTab extends StatelessWidget {
                     )
                   : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Status')),
-                          DataColumn(label: Text('Check In')),
-                          DataColumn(label: Text('Check Out')),
-                          DataColumn(label: Text('Total Hours')),
-                        ],
-                        rows: controller.attendanceData.map((record) {
-                          return DataRow(cells: [
-                            DataCell(Text(record['date'] != null
-                                ? DateFormat('yyyy-MM-dd')
-                                    .format(DateTime.parse(record['date']))
-                                : 'N/A')),
-                            DataCell(
-                                Text(record['status']?.toString() ?? 'N/A')),
-                            DataCell(
-                                Text(record['check_in']?.toString() ?? 'N/A')),
-                            DataCell(
-                                Text(record['check_out']?.toString() ?? 'N/A')),
-                            DataCell(Text(
-                                record['total_hours']?.toString() ?? 'N/A')),
-                          ]);
-                        }).toList(),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Date')),
+                            DataColumn(label: Text('Status')),
+                            DataColumn(label: Text('Check In')),
+                            DataColumn(label: Text('Check Out')),
+                            DataColumn(label: Text('Total Hours')),
+                          ],
+                          rows: controller.attendanceData.map((record) {
+                            return DataRow(cells: [
+                              DataCell(Text(record['date'] != null
+                                  ? DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.parse(record['date']))
+                                  : 'N/A')),
+                              DataCell(
+                                  Text(record['status']?.toString() ?? 'N/A')),
+                              DataCell(Text(
+                                  record['check_in']?.toString() ?? 'N/A')),
+                              DataCell(Text(
+                                  record['check_out']?.toString() ?? 'N/A')),
+                              DataCell(Text(
+                                  record['total_hours']?.toString() ?? 'N/A')),
+                            ]);
+                          }).toList(),
+                        ),
                       ),
                     ),
           if (!controller.isLoading.value &&
@@ -419,7 +422,10 @@ class ManagerAttendanceTab extends StatelessWidget {
                   _showExportDialog(context, controller);
                 },
                 backgroundColor: primaryColor,
-                child: const Icon(Icons.download,color: white,),
+                child: const Icon(
+                  Icons.download,
+                  color: white,
+                ),
               ),
             ),
         ],

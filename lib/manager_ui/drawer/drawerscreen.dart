@@ -16,28 +16,18 @@ class ManagerDrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<DrawerItem> drawerItems = [
-       DrawerItem(
+      DrawerItem(
           title: 'Balance Sheet',
           icon: Icons.document_scanner_outlined,
-          route: Routes.managerBalancesheet),  
+          route: Routes.managerBalancesheet),
       DrawerItem(
           title: 'Dashboard',
           icon: FontAwesomeIcons.tachometer,
-          route: Routes.ManagerDashboardScreen),  
+          route: Routes.ManagerDashboardScreen),
       DrawerItem(
           title: 'Booking',
           icon: FontAwesomeIcons.calendarDays,
           route: Routes.Managerappointmentsscreen),
-      DrawerItem(
-        title: 'Services',
-        route: Routes.ManagerServicescreen, // parent doesn’t navigate
-        icon: Icons.room_service_outlined,
-      ),
-      DrawerItem(
-        title: 'packages',
-        route: Routes.ManagerPackagescreen, // parent doesn’t navigate
-        icon: Icons.room_service_outlined,
-      ),
       DrawerItem(
           title: 'Users',
           icon: Icons.supervised_user_circle_outlined,
@@ -52,6 +42,17 @@ class ManagerDrawerScreen extends StatelessWidget {
                 icon: Icons.person_search_outlined,
                 route: Routes.ManagerGetStaffScreen),
           ]),
+      DrawerItem(
+        title: 'Services',
+        route: Routes.ManagerServicescreen, // parent doesn’t navigate
+        icon: Icons.settings_applications_outlined,
+      ),
+      DrawerItem(
+        title: 'Packages',
+        route: Routes.ManagerPackagescreen, // parent doesn’t navigate
+        icon: Icons.card_travel_rounded,
+      ),
+
       DrawerItem(
           title: 'Expence',
           icon: Icons.money_off_csred_outlined,
@@ -124,7 +125,7 @@ class ManagerDrawerScreen extends StatelessWidget {
             //     route: Routes.ManagerVariationGetscreen),
           ]),
       DrawerItem(
-          title: 'orders',
+          title: 'Orders',
           icon: Icons.paid_outlined,
           route: Routes.ManagerOrderReportScreen),
       DrawerItem(

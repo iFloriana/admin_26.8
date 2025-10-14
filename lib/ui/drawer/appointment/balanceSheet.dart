@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:pdf/pdf.dart' as pw;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -467,7 +468,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
       body: Builder(
         builder: (context) {
           if (isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingAvatar());
           }
           if (errorMessage.isNotEmpty) {
             return Center(child: Text(errorMessage));
