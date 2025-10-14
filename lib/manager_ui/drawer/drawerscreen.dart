@@ -16,10 +16,14 @@ class ManagerDrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<DrawerItem> drawerItems = [
+       DrawerItem(
+          title: 'Balance Sheet',
+          icon: Icons.document_scanner_outlined,
+          route: Routes.managerBalancesheet),  
       DrawerItem(
           title: 'Dashboard',
           icon: FontAwesomeIcons.tachometer,
-          route: Routes.ManagerDashboardScreen),
+          route: Routes.ManagerDashboardScreen),  
       DrawerItem(
           title: 'Booking',
           icon: FontAwesomeIcons.calendarDays,

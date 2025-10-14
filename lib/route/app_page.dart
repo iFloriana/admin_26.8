@@ -1,3 +1,4 @@
+import 'package:flutter_template/manager_ui/managerBalancesheet.dart';
 import 'package:flutter_template/manager_ui/manager_appointment/manager_appointmentScreen.dart';
 import 'package:flutter_template/manager_ui/manager_products/Tags/tagsScreen.dart';
 import 'package:flutter_template/manager_ui/manager_products/allProducts/addProductsScreen.dart';
@@ -430,10 +431,15 @@ class AppPages {
         name: Routes.DailySummaryScreen,
         page: () => DailySummaryScreen(),
         transition: Transition.rightToLeft),
-        //   GetPage(
-        // name: Routes.ManagerStaffAttendanceReportPage,
-        // page: () => ManagerStaffAttendanceReportPage(),
-        // transition: Transition.rightToLeft),
+          GetPage(
+    name: Routes.managerBalancesheet,
+    page: () => managerBalancesheet(),
+    transition: Transition.rightToLeft),
+    //   GetPage(
+    // name: Routes.ManagerStaffAttendanceReportPage,
+    // page: () => ManagerStaffAttendanceReportPage(),
+    // transition: Transition.rightToLeft),
+  
   
   ];
 }
