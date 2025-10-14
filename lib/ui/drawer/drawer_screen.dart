@@ -21,6 +21,10 @@ class DrawerScreen extends StatelessWidget {
           icon: Icons.document_scanner_outlined,
           route: Routes.SummaryPage),
       DrawerItem(
+          title: 'Balance Sheet',
+          icon: Icons.document_scanner_outlined,
+          route: Routes.DailySummaryScreen),
+      DrawerItem(
           title: 'Dashboard',
           icon: FontAwesomeIcons.gauge,
           route: Routes.dashboardScreen),

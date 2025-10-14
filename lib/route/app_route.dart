@@ -98,7 +98,7 @@ static const Renewpackagescreen = "/Renewpackagescreen";
   static const managerFinancePage = "/managerFinancePage";
   static const ManagerSummaryPage = "/ManagerSummaryPage";
   static const SummaryPage = "/SummaryPage";
-
+  static const DailySummaryScreen = "/DailySummaryScreen";
   static const StaffDashboard = "/StaffDashboard";
 
   static const StaffAttendanceReportPage = "/StaffAttendanceReportPage";

@@ -21,6 +21,7 @@ class Appointment {
   final String? clientImage;
   final String? clientPhone;
   final num amount;
+  final num totalPayment;
   final String staffName;
   final String? staffImage;
   final String serviceName;
@@ -39,6 +40,7 @@ class Appointment {
     this.clientImage,
     this.clientPhone,
     required this.amount,
+    required this.totalPayment,
     required this.staffName,
     this.staffImage,
     required this.serviceName,
@@ -56,6 +58,7 @@ class Appointment {
     final firstService = services.isNotEmpty ? services[0] : {};
     final service = firstService['service'] ?? {};
     final staff = firstService['staff'] ?? {};
+
     final packageAndMembership =
         customer['package_and_membership'] as List? ?? [];
 
@@ -183,6 +186,7 @@ class Appointment {
       clientName: toString(customer['full_name']),
       clientImage:
           customer['image'] is Map ? null : toString(customer['image']),
+      totalPayment: toInt(json['total_payment']), // NEW
       clientPhone: toString(customer['phone_number']),
       amount: toInt(json['service_total_amount']),
       staffName: toString(staff['full_name']),

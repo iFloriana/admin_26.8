@@ -265,7 +265,7 @@ class SummaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Finance Summary",
+        title: "Summary",
         actions: [
           IconButton(
             icon: const Icon(Icons.date_range),

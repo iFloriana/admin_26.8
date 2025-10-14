@@ -190,7 +190,7 @@ class Appointmentscreen extends StatelessWidget {
                               ),
                       ),
 
-                      DataCell(Text('₹ ${a.amount}',
+                     DataCell(Text('₹ ${a.totalPayment}',
                           style: TextStyle(color: Colors.black))),
                       DataCell(
                         a.staffName == '-' || a.staffName.isEmpty

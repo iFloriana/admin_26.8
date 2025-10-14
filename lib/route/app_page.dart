@@ -19,6 +19,7 @@ import 'package:flutter_template/ui/auth/renewPackage/renewPackageScreen.dart';
 import 'package:flutter_template/ui/drawer/Branchmembership/add/branchMembershipAddScreen.dart';
 import 'package:flutter_template/ui/drawer/Branchmembership/get/branchMembershipListScreen.dart';
 import 'package:flutter_template/ui/drawer/admin_expence.dart';
+import 'package:flutter_template/ui/drawer/appointment/balanceSheet.dart';
 import 'package:flutter_template/ui/drawer/branches/getBranches/getBranchesScreen.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchescontroller.dart';
@@ -425,7 +426,10 @@ class AppPages {
         name: Routes.ManagerProductDetailScreen,
         page: () => ManagerProductDetailScreen(),
         transition: Transition.rightToLeft),
-
+    GetPage(
+        name: Routes.DailySummaryScreen,
+        page: () => DailySummaryScreen(),
+        transition: Transition.rightToLeft),
         //   GetPage(
         // name: Routes.ManagerStaffAttendanceReportPage,
         // page: () => ManagerStaffAttendanceReportPage(),
