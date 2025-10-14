@@ -24,35 +24,33 @@ class ProductSubCategory {
   });
 
   factory ProductSubCategory.fromJson(Map<String, dynamic> json) {
-    // Handle image_url or image (string or map)
     String imageUrl = '';
-    if (json['image_url'] != null && json['image_url'] is String) {
-      imageUrl = json['image_url'];
-    } else if (json['image_url'] != null) {
+    if (json['image_url'] != null) {
       if (json['image_url'] is String) {
-        imageUrl = json['image_url'];
-      } else if (json['image_url'] is Map && json['image']['data'] != null) {
-        imageUrl = json['image_url']['data'];
+        imageUrl = json['image_url'].toString();
+      } else if (json['image_url'] is Map &&
+          json['image_url']['data'] != null) {
+        imageUrl = json['image_url']['data'].toString();
       }
     }
     return ProductSubCategory(
-      id: json['_id'] ?? '',
+      id: json['_id']?.toString() ?? '',
       branchId: (json['branch_id'] as List<dynamic>?)
               ?.map((branch) => Branch.fromJson(branch))
               .toList() ??
           [],
       image: imageUrl,
-      name: json['name'] ?? '',
+      name: json['name']?.toString() ?? '',
       productCategoryId:
           ProductCategory.fromJson(json['product_category_id'] ?? {}),
       brandId: (json['brand_id'] as List<dynamic>?)
               ?.map((brand) => Brand.fromJson(brand))
               .toList() ??
           [],
-      status: json['status'] ?? 0,
-      salonId: json['salon_id'] ?? '',
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
+      status: json['status'] is int ? json['status'] : 0,
+      salonId: json['salon_id']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString() ?? '',
+      updatedAt: json['updatedAt']?.toString() ?? '',
     );
   }
 }
@@ -109,39 +107,47 @@ class Branch {
   });
 
   factory Branch.fromJson(Map<String, dynamic> json) {
-    // Handle image as string or map
     String imageUrl = '';
-    if (json['image'] != null) {
-      if (json['image'] is String) {
-        imageUrl = json['image'];
-      } else if (json['image'] is Map && json['image']['data'] != null) {
-        imageUrl = json['image']['data'];
+    if (json['image_url'] != null) {
+      if (json['image_url'] is String) {
+        imageUrl = json['image_url'].toString();
+      } else if (json['image_url'] is Map &&
+          json['image_url']['data'] != null) {
+        imageUrl = json['image_url']['data'].toString();
       }
     }
     return Branch(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
-      salonId: json['salon_id'] ?? '',
-      category: json['category'] ?? '',
-      status: json['status'] ?? 0,
-      contactEmail: json['contact_email'] ?? '',
-      contactNumber: json['contact_number'] ?? '',
-      paymentMethod: List<String>.from(json['payment_method'] ?? []),
-      serviceId: List<String>.from(json['service_id'] ?? []),
-      address: json['address'] ?? '',
-      landmark: json['landmark'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
-      city: json['city'] ?? '',
-      postalCode: json['postal_code'] ?? '',
-      latitude: (json['latitude'] ?? 0.0).toDouble(),
-      longitude: (json['longitude'] ?? 0.0).toDouble(),
-      description: json['description'] ?? '',
+      id: json['_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      salonId: json['salon_id']?.toString() ?? '',
+      category: json['category']?.toString() ?? '',
+      status: json['status'] is int ? json['status'] : 0,
+      contactEmail: json['contact_email']?.toString() ?? '',
+      contactNumber: json['contact_number']?.toString() ?? '',
+      paymentMethod: List<String>.from(
+          json['payment_method']?.map((x) => x.toString()) ?? []),
+      serviceId:
+          List<String>.from(json['service_id']?.map((x) => x.toString()) ?? []),
+      address: json['address']?.toString() ?? '',
+      landmark: json['landmark']?.toString() ?? '',
+      country: json['country']?.toString() ?? '',
+      state: json['state']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      postalCode: json['postal_code']?.toString() ?? '',
+      latitude: (json['latitude'] is num
+              ? json['latitude']
+              : double.tryParse(json['latitude']?.toString() ?? '0.0')) ??
+          0.0,
+      longitude: (json['longitude'] is num
+              ? json['longitude']
+              : double.tryParse(json['longitude']?.toString() ?? '0.0')) ??
+          0.0,
+      description: json['description']?.toString() ?? '',
       image: imageUrl,
-      ratingStar: json['rating_star'] ?? 0,
-      totalReview: json['total_review'] ?? 0,
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
+      ratingStar: json['rating_star'] is int ? json['rating_star'] : 0,
+      totalReview: json['total_review'] is int ? json['total_review'] : 0,
+      createdAt: json['createdAt']?.toString() ?? '',
+      updatedAt: json['updatedAt']?.toString() ?? '',
     );
   }
 }
@@ -170,25 +176,27 @@ class ProductCategory {
   });
 
   factory ProductCategory.fromJson(Map<String, dynamic> json) {
-    // Handle image as string or map
     String imageUrl = '';
-    if (json['image'] != null) {
-      if (json['image'] is String) {
-        imageUrl = json['image'];
-      } else if (json['image'] is Map && json['image']['data'] != null) {
-        imageUrl = json['image']['data'];
+    if (json['image_url'] != null) {
+      if (json['image_url'] is String) {
+        imageUrl = json['image_url'].toString();
+      } else if (json['image_url'] is Map &&
+          json['image_url']['data'] != null) {
+        imageUrl = json['image_url']['data'].toString();
       }
     }
     return ProductCategory(
-      id: json['_id'] ?? '',
-      branchId: List<String>.from(json['branch_id'] ?? []),
+      id: json['_id']?.toString() ?? '',
+      branchId:
+          List<String>.from(json['branch_id']?.map((x) => x.toString()) ?? []),
       image: imageUrl,
-      name: json['name'] ?? '',
-      brandId: List<String>.from(json['brand_id'] ?? []),
-      status: json['status'] ?? 0,
-      salonId: json['salon_id'] ?? '',
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
+      name: json['name']?.toString() ?? '',
+      brandId:
+          List<String>.from(json['brand_id']?.map((x) => x.toString()) ?? []),
+      status: json['status'] is int ? json['status'] : 0,
+      salonId: json['salon_id']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString() ?? '',
+      updatedAt: json['updatedAt']?.toString() ?? '',
     );
   }
 }
@@ -215,26 +223,25 @@ class Brand {
   });
 
   factory Brand.fromJson(Map<String, dynamic> json) {
-    // Handle image as string, map, or image_url
     String imageUrl = '';
-    if (json['image_url'] != null && json['image_url'] is String) {
-      imageUrl = json['image_url'];
-    } else if (json['image'] != null) {
-      if (json['image'] is String) {
-        imageUrl = json['image'];
-      } else if (json['image'] is Map && json['image']['data'] != null) {
-        imageUrl = json['image']['data'];
+    if (json['image_url'] != null) {
+      if (json['image_url'] is String) {
+        imageUrl = json['image_url'].toString();
+      } else if (json['image_url'] is Map &&
+          json['image_url']['data'] != null) {
+        imageUrl = json['image_url']['data'].toString();
       }
     }
     return Brand(
-      id: json['_id'] ?? '',
-      branchId: List<String>.from(json['branch_id'] ?? []),
+      id: json['_id']?.toString() ?? '',
+      branchId:
+          List<String>.from(json['branch_id']?.map((x) => x.toString()) ?? []),
       image: imageUrl,
-      name: json['name'] ?? '',
-      status: json['status'] ?? 0,
-      salonId: json['salon_id'] ?? '',
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
+      name: json['name']?.toString() ?? '',
+      status: json['status'] is int ? json['status'] : 0,
+      salonId: json['salon_id']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString() ?? '',
+      updatedAt: json['updatedAt']?.toString() ?? '',
     );
   }
 }

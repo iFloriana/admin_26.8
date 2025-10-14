@@ -53,38 +53,42 @@ class Branch {
 
   factory Branch.fromJson(Map<String, dynamic> json) {
     return Branch(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
-      salonId: json['salon_id'] ?? '',
-      category: json['category'] ?? '',
-      status: json['status'] ?? 0,
-      contactEmail: json['contact_email'] ?? '',
-      contactNumber: json['contact_number'] ?? '',
-      paymentMethod: List<String>.from(json['payment_method'] ?? []),
-      serviceId: List<String>.from(json['service_id'] ?? []),
-      address: json['address'] ?? '',
-      landmark: json['landmark'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
-      city: json['city'] ?? '',
-      postalCode: json['postal_code'] ?? '',
-      latitude: (json['latitude'] ?? 0.0).toDouble(),
-      longitude: (json['longitude'] ?? 0.0).toDouble(),
-      description: json['description'] ?? '',
-      image: json['image_url'] ?? '',
-      ratingStar: json['rating_star'] ?? 0,
-      totalReview: json['total_review'] ?? 0,
-      createdAt:
-          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt:
-          DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      id: json['_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      salonId: json['salon_id']?.toString() ?? '',
+      category: json['category']?.toString() ?? '',
+      status: json['status'] is int ? json['status'] : 0,
+      contactEmail: json['contact_email']?.toString() ?? '',
+      contactNumber: json['contact_number']?.toString() ?? '',
+      paymentMethod: List<String>.from(json['payment_method']?.map((x) => x.toString()) ?? []),
+      serviceId: List<String>.from(json['service_id']?.map((x) => x.toString()) ?? []),
+      address: json['address']?.toString() ?? '',
+      landmark: json['landmark']?.toString() ?? '',
+      country: json['country']?.toString() ?? '',
+      state: json['state']?.toString() ?? '',
+      city: json['city']?.toString() ?? '',
+      postalCode: json['postal_code']?.toString() ?? '',
+      latitude: (json['latitude'] is num
+          ? json['latitude']
+          : double.tryParse(json['latitude']?.toString() ?? '0.0')) ?? 0.0,
+      longitude: (json['longitude'] is num
+          ? json['longitude']
+          : double.tryParse(json['longitude']?.toString() ?? '0.0')) ?? 0.0,
+      description: json['description']?.toString() ?? '',
+      image: json['image_url']?.toString() ?? '',
+      ratingStar: json['rating_star'] is int ? json['rating_star'] : 0,
+      totalReview: json['total_review'] is int ? json['total_review'] : 0,
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 }
 
 class Brand {
   final String id;
-  final List<Branch> branchId;
+  final List<String> branchId;
   final String image;
   final String name;
   final int status;
@@ -105,19 +109,16 @@ class Brand {
 
   factory Brand.fromJson(Map<String, dynamic> json) {
     return Brand(
-      id: json['_id'] ?? '',
-      branchId: (json['branch_id'] as List<dynamic>?)
-              ?.map((branch) => Branch.fromJson(branch))
-              .toList() ??
-          [],
-      image: json['image_url'] ?? '',
-      name: json['name'] ?? '',
-      status: json['status'] ?? 0,
-      salonId: json['salon_id'] ?? '',
-      createdAt:
-          DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt:
-          DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
+      id: json['_id']?.toString() ?? '',
+      branchId: List<String>.from(json['branch_id']?.map((x) => x.toString()) ?? []),
+      image: json['image_url']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      status: json['status'] is int ? json['status'] : 0,
+      salonId: json['salon_id']?.toString() ?? '',
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 }

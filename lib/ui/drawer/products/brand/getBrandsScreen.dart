@@ -211,7 +211,7 @@ class Getbrandsscreen extends StatelessWidget {
     getController.nameController.text = brand.name;
     getController.isActive.value = brand.status == 1;
     final selectedBranches = getController.branchList
-        .where((b) => brand.branchId.any((cb) => cb.id == b.id))
+        .where((b) => brand.branchId.contains(b.id))
         .toList();
     getController.selectedBranches.value = selectedBranches;
     getController.branchController.clearAll();

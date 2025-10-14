@@ -414,3 +414,7 @@ class ManagerGetbrandsscreen extends StatelessWidget {
     );
   }
 }
+
+extension on String {
+  get id => null;
+}
