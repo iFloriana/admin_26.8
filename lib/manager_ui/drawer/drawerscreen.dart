@@ -56,7 +56,7 @@ class ManagerDrawerScreen extends StatelessWidget {
       ),
 
       DrawerItem(
-          title: 'Expence',
+          title: 'Expense',
           icon: Icons.money_off_csred_outlined,
           route: Routes.managerFinancePage),
 

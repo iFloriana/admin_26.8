@@ -133,7 +133,7 @@ class DrawerScreen extends StatelessWidget {
                 route: Routes.getCoupons),
           ]),
       DrawerItem(
-          title: 'Expence',
+          title: 'Expense',
           icon: Icons.attach_money,
           route: Routes.FinancePage),
       DrawerItem(

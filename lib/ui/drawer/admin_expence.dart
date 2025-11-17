@@ -595,7 +595,7 @@ class FinancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Expence Management",
+        title: "Expense Management",
         actions: [
           Obx(() {
             final selectedBranchName = controller.branchList

@@ -566,7 +566,7 @@ class managerFinancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Expence Management",
+        title: "Expense Management",
         actions: [
           Obx(() {
             final range = controller.selectedDateRange.value;
