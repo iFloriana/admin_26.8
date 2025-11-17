@@ -19,7 +19,7 @@ class PackagesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Preferable Package",
+        title: "Popular Packages",
       ),
       body: RefreshIndicator(
         color: primaryColor,

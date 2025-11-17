@@ -53,13 +53,13 @@ class ManagerSummaryController extends GetxController {
           summary.value = data["summary"] ?? {};
           staffList.value = data["staff"] ?? [];
         } else {
-          Get.snackbar("Error", "API returned success=false");
+          CustomSnackbar.showError("Error", "API returned success=false");
         }
       } else {
-        Get.snackbar("Error", "Failed to load summary");
+        CustomSnackbar.showError("Error", "Failed to load summary");
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.showError("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -253,7 +253,6 @@ class ManagerSummaryController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to export PDF: $e');
     }
   }
-
 }
 
 class ManagerSummaryPage extends StatelessWidget {

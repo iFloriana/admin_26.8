@@ -38,7 +38,7 @@ class RenewPackagesController extends GetxController {
 
   Future<void> verifyEmail(String email) async {
     if (email.isEmpty) {
-      Get.snackbar("Error", "Please enter an email");
+      CustomSnackbar.showError("Error", "Please enter an email");
       return;
     }
 
@@ -61,10 +61,11 @@ class RenewPackagesController extends GetxController {
         salonName.value = data['salonDetails']['salon_name'] ?? '';
         adminId.value = data['admin']['_id'] ?? ''; // Store adminId
       } else {
-        Get.snackbar("Error", "Server Error: ${response.statusMessage}");
+        CustomSnackbar.showError(
+            "Error", "Server Error: ${response.statusMessage}");
       }
     } catch (e) {
-      Get.snackbar("Failed", e.toString());
+      CustomSnackbar.showError("Failed", e.toString());
     } finally {
       isLoading.value = false;
     }

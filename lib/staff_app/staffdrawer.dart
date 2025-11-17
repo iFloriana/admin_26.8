@@ -7,6 +7,7 @@ import 'package:flutter_template/staff_app/timecard.dart'; // Import AttendanceC
 import 'package:flutter_template/staff_app/reports.dart'; // Import StaffReportScreen
 import 'package:flutter_template/staff_app/staffprofile.dart'; // Import StaffProfileScreen
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -35,10 +36,10 @@ class DashboardController extends GetxController {
           salonId = staffJson['salon_id'] as String?;
         }
       } catch (e) {
-        Get.snackbar('Error', 'Failed to load staff data: $e');
+        CustomSnackbar.showError('Error', 'Failed to load staff data: $e');
       }
     } else {
-      Get.snackbar('Error', 'Staff data not found in storage');
+      CustomSnackbar.showError('Error', 'Staff data not found in storage');
     }
     isLoading.value = false;
   }

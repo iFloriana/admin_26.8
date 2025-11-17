@@ -21,6 +21,8 @@ class ManagerDrawerScreen extends StatelessWidget {
           icon: Icons.document_scanner_outlined,
           route: Routes.managerBalancesheet),
       DrawerItem(
+          title: 'Summery', icon: Icons.dock, route: Routes.ManagerSummaryPage),
+      DrawerItem(
           title: 'Dashboard',
           icon: FontAwesomeIcons.tachometer,
           route: Routes.ManagerDashboardScreen),
@@ -57,8 +59,7 @@ class ManagerDrawerScreen extends StatelessWidget {
           title: 'Expence',
           icon: Icons.money_off_csred_outlined,
           route: Routes.managerFinancePage),
-      DrawerItem(
-          title: 'Summery', icon: Icons.dock, route: Routes.ManagerSummaryPage),
+
       // DrawerItem(
       //     title: "Staff Attendence",
       //     route: Routes.ManagerStaffAttendanceReportPage),

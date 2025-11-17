@@ -3,6 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
+import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 
@@ -26,12 +27,9 @@ class StaffProfileController extends GetxController {
         staffData.value = response.data['data'];
       }
     } catch (e) {
-      Get.snackbar(
+      CustomSnackbar.showError(
         "Error",
         "Failed to load staff profile",
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
       );
     }
     loading.value = false;

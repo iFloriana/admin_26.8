@@ -161,8 +161,7 @@ class FinanceController extends GetxController {
   }
 
   Future<void> fetchFinanceData() async {
-    if (selectedBranch.value.isEmpty)
-      return; // Do not fetch if no branch is selected
+    if (selectedBranch.value.isEmpty) return;
 
     try {
       isLoading.value = true;
@@ -323,7 +322,7 @@ class FinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -386,7 +385,7 @@ class FinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -449,7 +448,7 @@ class FinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -513,20 +512,22 @@ class FinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
   Future<void> pickImage(ImageSource source) async {
     if (source == ImageSource.camera) {
       if (await Permission.camera.request().isDenied) {
-        Get.snackbar("Permission Denied", "Camera access is required");
+        CustomSnackbar.showError(
+            "Permission Denied", "Camera access is required");
         return;
       }
     } else {
       if (await Permission.photos.request().isDenied &&
           await Permission.storage.request().isDenied) {
-        Get.snackbar("Permission Denied", "Gallery access is required");
+        CustomSnackbar.showError(
+            "Permission Denied", "Gallery access is required");
         return;
       }
     }
@@ -703,7 +704,6 @@ class FinancePage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // 🔹 Top Icon
                                     Container(
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
@@ -724,8 +724,6 @@ class FinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 15),
-
-                                    // 🔹 Title
                                     Text(
                                       "Add Expense",
                                       style: TextStyle(
@@ -735,8 +733,6 @@ class FinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-
-                                    // 🔹 Subtitle / small decorative icons
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -758,8 +754,6 @@ class FinancePage extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 20),
-
-                                    // 🔹 Amount Input
                                     TextField(
                                       controller: controller.amount,
                                       keyboardType: TextInputType.number,
@@ -782,8 +776,6 @@ class FinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 25),
-
-                                    // 🔹 Buttons
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
@@ -808,7 +800,6 @@ class FinancePage extends StatelessWidget {
                                             elevation: 5,
                                           ),
                                           onPressed: () {
-                                            // Save action
                                             controller
                                                 .updateOpeningBalanceDio();
                                           },
@@ -829,7 +820,8 @@ class FinancePage extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Expanded(
+                      child: SizedBox(
+                        width: 150, // Set a fixed width for the card
                         child: Card(
                           color: Colors.blue.shade50,
                           shape: RoundedRectangleBorder(
@@ -851,6 +843,7 @@ class FinancePage extends StatelessWidget {
                                       "₹ ${controller.openingBalance.value.toStringAsFixed(2)}",
                                       style: const TextStyle(
                                           fontSize: 18,
+                                          overflow: TextOverflow.ellipsis,
                                           color: Colors.blue,
                                           fontWeight: FontWeight.bold),
                                     )),
@@ -860,7 +853,8 @@ class FinancePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      width: 150, // Set a fixed width for the card
                       child: Card(
                         color: Colors.green.shade50,
                         shape: RoundedRectangleBorder(
@@ -881,6 +875,7 @@ class FinancePage extends StatelessWidget {
                                 "₹ ${controller.totalCredit.value.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                     fontSize: 18,
+                                    overflow: TextOverflow.ellipsis,
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -889,7 +884,8 @@ class FinancePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      width: 150, // Set a fixed width for the card
                       child: Card(
                         color: Colors.red.shade50,
                         shape: RoundedRectangleBorder(
@@ -910,6 +906,7 @@ class FinancePage extends StatelessWidget {
                                 "₹ ${controller.totalDebit.value.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                     fontSize: 18,
+                                    overflow: TextOverflow.ellipsis,
                                     color: Colors.red,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -922,8 +919,6 @@ class FinancePage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // 🔹 Transactions List by Date
             Expanded(
               child: ListView(
                 padding:

@@ -44,7 +44,6 @@ class managerFinanceController extends GetxController {
   final owner_deposit_noteCtrl = TextEditingController();
   final addExpenceamountCtrl = TextEditingController();
   final addExpencenoteCtrl = TextEditingController();
-  // var branchList = <Branch1>[].obs;
   var amount = TextEditingController();
   final categories = [
     "Food & Drinks",
@@ -56,8 +55,6 @@ class managerFinanceController extends GetxController {
   var financeData = <String, dynamic>{}.obs;
   var isLoading = false.obs;
   var selectedDateRange = Rxn<DateTimeRange>();
-  // var branches = <Map<String, String>>[].obs;
-  // var selectedBranch = "".obs;
   var expensesData = {}.obs;
   var openingBalance = 0.0.obs;
   // Totals
@@ -211,7 +208,6 @@ class managerFinanceController extends GetxController {
         double debit = 0;
         filteredMap.forEach((date, transactions) {
           for (var t in transactions) {
-            // Updated logic to handle new credit types
             if (t["type"] == "receive_from_owner_account" ||
                 t["type"] == "services" ||
                 t["type"] == "products" ||
@@ -264,8 +260,7 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId ??
-            "", // 🆕 Use the selected branch ID
+        "branch_id": getdata?.manager?.branchId?.sId ?? "",
         "type": "vendor_pay",
         "vendor_name": vendorNameCtrl.text.trim(),
         "amount": vendoramountCtrl.text.trim(),
@@ -298,7 +293,7 @@ class managerFinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -331,8 +326,7 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId ??
-            "", // 🆕 Use the selected branch ID
+        "branch_id": getdata?.manager?.branchId?.sId ?? "",
         "type": "receive_from_owner_account",
         "amount": receivce_from_owner_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -362,7 +356,7 @@ class managerFinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -395,8 +389,7 @@ class managerFinanceController extends GetxController {
 
       FormData formData = FormData.fromMap({
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId ??
-            "", // 🆕 Use the selected branch ID
+        "branch_id": getdata?.manager?.branchId?.sId ?? "",
         "type": "deposit_to_owner_account",
         "amount": owner_deposit_amountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -426,7 +419,7 @@ class managerFinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
@@ -460,8 +453,7 @@ class managerFinanceController extends GetxController {
       FormData formData = FormData.fromMap({
         "category": selectedCategory.value,
         "salon_id": getdata?.manager?.salonId,
-        "branch_id": getdata?.manager?.branchId?.sId ??
-            "", // 🆕 Use the selected branch ID
+        "branch_id": getdata?.manager?.branchId?.sId ?? "",
         "type": 'add_expense',
         "amount": addExpenceamountCtrl.text.trim(),
         "date": DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -491,20 +483,22 @@ class managerFinanceController extends GetxController {
       }
     } catch (e) {
       print("⚠️ Exception: $e");
-      Get.snackbar("Exception", e.toString());
+      CustomSnackbar.showError("Exception", e.toString());
     }
   }
 
   Future<void> pickImage(ImageSource source) async {
     if (source == ImageSource.camera) {
       if (await Permission.camera.request().isDenied) {
-        Get.snackbar("Permission Denied", "Camera access is required");
+        CustomSnackbar.showError(
+            "Permission Denied", "Camera access is required");
         return;
       }
     } else {
       if (await Permission.photos.request().isDenied &&
           await Permission.storage.request().isDenied) {
-        Get.snackbar("Permission Denied", "Gallery access is required");
+        CustomSnackbar.showError(
+            "Permission Denied", "Gallery access is required");
         return;
       }
     }
@@ -643,7 +637,6 @@ class managerFinancePage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // 🔹 Top Icon
                                     Container(
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
@@ -664,8 +657,6 @@ class managerFinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 15),
-
-                                    // 🔹 Title
                                     Text(
                                       "Add Expense",
                                       style: TextStyle(
@@ -675,8 +666,6 @@ class managerFinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-
-                                    // 🔹 Subtitle / small decorative icons
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -698,8 +687,6 @@ class managerFinancePage extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 20),
-
-                                    // 🔹 Amount Input
                                     TextField(
                                       controller: controller.amount,
                                       keyboardType: TextInputType.number,
@@ -722,8 +709,6 @@ class managerFinancePage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 25),
-
-                                    // 🔹 Buttons
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
@@ -748,7 +733,6 @@ class managerFinancePage extends StatelessWidget {
                                             elevation: 5,
                                           ),
                                           onPressed: () {
-                                            // Save action
                                             controller
                                                 .updateOpeningBalanceDio();
                                           },
@@ -769,7 +753,8 @@ class managerFinancePage extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Expanded(
+                      child: SizedBox(
+                        width: 150, // Set a fixed width for the card
                         child: Card(
                           color: Colors.blue.shade50,
                           shape: RoundedRectangleBorder(
@@ -791,6 +776,7 @@ class managerFinancePage extends StatelessWidget {
                                       "₹ ${controller.openingBalance.value.toStringAsFixed(2)}",
                                       style: const TextStyle(
                                           fontSize: 18,
+                                          overflow: TextOverflow.ellipsis,
                                           color: Colors.blue,
                                           fontWeight: FontWeight.bold),
                                     )),
@@ -800,7 +786,8 @@ class managerFinancePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      width: 150, // Set a fixed width for the card
                       child: Card(
                         color: Colors.green.shade50,
                         shape: RoundedRectangleBorder(
@@ -821,6 +808,7 @@ class managerFinancePage extends StatelessWidget {
                                 "₹ ${controller.totalCredit.value.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                     fontSize: 18,
+                                    overflow: TextOverflow.ellipsis,
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -829,7 +817,8 @@ class managerFinancePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      width: 150, // Set a fixed width for the card
                       child: Card(
                         color: Colors.red.shade50,
                         shape: RoundedRectangleBorder(
@@ -850,6 +839,7 @@ class managerFinancePage extends StatelessWidget {
                                 "₹ ${controller.totalDebit.value.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                     fontSize: 18,
+                                    overflow: TextOverflow.ellipsis,
                                     color: Colors.red,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -862,8 +852,6 @@ class managerFinancePage extends StatelessWidget {
                 ),
               ),
             ),
-
-            // 🔹 Transactions List by Date
             Expanded(
               child: ListView(
                 padding:
@@ -924,7 +912,6 @@ class managerFinancePage extends StatelessWidget {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Amount
                                 Text(
                                   "₹ ${txn["amount"]}",
                                   style: TextStyle(
@@ -934,8 +921,6 @@ class managerFinancePage extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-
-                                // 🔹 Show invoice icon if image_url exists
                                 if (txn["image_url"] != null &&
                                     txn["image_url"].toString().isNotEmpty)
                                   GestureDetector(

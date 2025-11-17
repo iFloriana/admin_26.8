@@ -35,7 +35,21 @@ class PackagesController extends GetxController {
     super.onClose();
   }
 
-  void fetchPackages() async {
+  // void fetchPackages() async {
+  //   try {
+  //     final response = await dioClient.getData(
+  //       '${Apis.baseUrl}${Endpoints.packages}',
+  //       (json) => (json as List<dynamic>)
+  //           .map((e) => Package_model.fromJson(e))
+  //           .toList(),
+  //     );
+  //     packages.value = response;
+  //     // filterPackages();
+  //   } catch (e) {
+  //     CustomSnackbar.showError('Error', e.toString());
+  //   }
+  // }
+void fetchPackages() async {
     try {
       final response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.packages}',
@@ -44,12 +58,13 @@ class PackagesController extends GetxController {
             .toList(),
       );
       packages.value = response;
-      // filterPackages();
+
+      // Direct sync: Show all packages without filtering
+      filteredPackages.value = List<Package_model>.from(packages);
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
-
   // void filterPackages() {
   //   switch (selectedFilter.value) {
   //     case '15-Days':

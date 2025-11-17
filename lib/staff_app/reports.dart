@@ -88,7 +88,7 @@ class StaffReportController extends GetxController
       }
       staffEarningsData.value = staffEarningsResponse.data;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch data: $e');
+      CustomSnackbar.showError('Error', 'Failed to fetch data: $e');
     } finally {
       isLoading(false);
     }
@@ -127,8 +127,7 @@ class StaffReportScreen extends StatelessWidget {
       body: Obx(
         () => controller.isLoading.value
             ? Center(
-                child: CustomLoadingAvatar(
-                ),
+                child: CustomLoadingAvatar(),
               )
             : TabBarView(
                 controller: controller.tabController,
