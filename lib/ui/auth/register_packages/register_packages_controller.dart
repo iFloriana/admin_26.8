@@ -35,21 +35,7 @@ class PackagesController extends GetxController {
     super.onClose();
   }
 
-  // void fetchPackages() async {
-  //   try {
-  //     final response = await dioClient.getData(
-  //       '${Apis.baseUrl}${Endpoints.packages}',
-  //       (json) => (json as List<dynamic>)
-  //           .map((e) => Package_model.fromJson(e))
-  //           .toList(),
-  //     );
-  //     packages.value = response;
-  //     // filterPackages();
-  //   } catch (e) {
-  //     CustomSnackbar.showError('Error', e.toString());
-  //   }
-  // }
-void fetchPackages() async {
+  void fetchPackages() async {
     try {
       final response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.packages}',
@@ -65,35 +51,7 @@ void fetchPackages() async {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
-  // void filterPackages() {
-  //   switch (selectedFilter.value) {
-  //     case '15-Days':
-  //       filteredPackages.value =
-  //           packages.where((pkg) => pkg.subscriptionPlan == "15-Days").toList();
-  //       break;
-  //     case 'Monthly':
-  //       filteredPackages.value =
-  //           packages.where((pkg) => pkg.subscriptionPlan == "1-month").toList();
-  //       break;
-  //     case 'Quarterly':
-  //       filteredPackages.value = packages
-  //           .where((pkg) => pkg.subscriptionPlan == "3-months")
-  //           .toList();
-  //       break;
-  //     case 'Half-Yearly':
-  //       filteredPackages.value = packages
-  //           .where((pkg) => pkg.subscriptionPlan == "6-months")
-  //           .toList();
-  //       break;
-  //     case 'Yearly':
-  //       filteredPackages.value =
-  //           packages.where((pkg) => pkg.subscriptionPlan == "1-year").toList();
-  //       break;
-  //     default:
-  //       filteredPackages.value = packages;
-  //   }
-  // }
-
+  
   void updateSelected(String value) {
     selectedPackageId.value = value;
     print("================>${selectedPackageId.value.toString()}");
