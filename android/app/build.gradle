@@ -10,7 +10,7 @@ def keystorePropertiesFile = rootProject.file("key.properties")
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    namespace = "com.dhairya_soni.flutter_template"
+    namespace = "com.iflorainfopvtltd.ifloriana"
     compileSdkVersion 36
     ndkVersion "29.0.14033849"
 
@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.dhairya_soni.flutter_template"
+        applicationId = "com.iflorainfopvtltd.ifloriana"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
         versionCode 4

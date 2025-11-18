@@ -1,4 +1,4 @@
-package com.dhairya_soni.flutter_template
+package com.iflorainfopvtltd.ifloriana
 
 import io.flutter.embedding.android.FlutterActivity
 
